@@ -40,8 +40,13 @@ export type SubmissionStatus =
   | 'correct'
   | 'incorrect'
 export type GradedBy = 'claude_api' | 'parent_override'
-export type LedgerType = 'star' | 'weekly_bonus' | 'parent_reward'
+export type LedgerType =
+  | 'star'
+  | 'weekly_bonus'
+  | 'parent_reward'
+  | 'withdrawal'
 export type RewardKind = 'money' | 'privilege'
+export type PaymentMethod = 'cash' | 'bit' | 'bank_transfer' | 'other'
 export type NotificationChannel = 'in_app' | 'email' | 'whatsapp'
 export type NotificationTrigger =
   | 'correct_answer'
@@ -361,6 +366,7 @@ export type Database = {
           label: string | null
           note: string | null
           created_at: string | null
+          payment_method: PaymentMethod | null
         }
         Insert: {
           id?: string
@@ -371,6 +377,7 @@ export type Database = {
           label?: string | null
           note?: string | null
           created_at?: string | null
+          payment_method?: PaymentMethod | null
         }
         Update: {
           id?: string
@@ -381,6 +388,7 @@ export type Database = {
           label?: string | null
           note?: string | null
           created_at?: string | null
+          payment_method?: PaymentMethod | null
         }
         Relationships: [
           {
