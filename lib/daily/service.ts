@@ -124,9 +124,16 @@ function pickDailySet(
     five.push(q.id)
   }
 
-  // Bonus: prefer a hard question from an enabled category.
-  let bonus: BankRow | null = null
-  for (const c of enabled) if ((bonus = pickForCategory(c, 'hard'))) break
+  // Bonus is ALWAYS the 'hard' tier (docs → Difficulty calibration). Prefer an
+  // enabled category; fall back to any hard question so the bonus stays hard even
+  // if the child's categories have none left; only if the bank has no hard tier
+  // at all do we take anything, so the game never breaks.
+  let bonus =
+    pick(
+      avail(
+        (q) => enabled.includes(q.category) && q.difficulty_tier === 'hard'
+      )
+    ) ?? pick(avail((q) => q.difficulty_tier === 'hard'))
   if (!bonus) bonus = pick(avail(() => true))
   if (!bonus) throw new Error('No question available for the bonus slot')
 

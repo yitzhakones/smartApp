@@ -7,7 +7,7 @@
 //   • earnedToday / dashboard stats reflect real child_stats + shekel_per_star
 // Skip / navigation / bonus-unlock logic is preserved verbatim from the mockup.
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   Check,
   X,
@@ -136,24 +136,30 @@ export function StoryMode({
       return 'open'
     })
   )
+  // Queue holds only the 5 regular questions. The bonus is NOT auto-queued — the
+  // player explicitly opts into it on the bonus-choice screen (docs → Difficulty
+  // calibration).
   const [queue, setQueue] = useState<number[]>(() => {
     const initial: number[] = []
     for (let i = 0; i < 5; i++) {
       const q = questions[i]
       if (q.status !== 'correct' && q.status !== 'incorrect') initial.push(i)
     }
-    const bonus = questions[5]
+    return initial
+  })
+  // Which screen of the play flow to show. `done` / `bonusChoice` are explicit
+  // stages set ONLY after the player dismisses a result (see advanceAfterResult)
+  // — never derived from queue length, which empties the instant the last item
+  // resolves, before its result screen has been seen.
+  const [stage, setStage] = useState<'playing' | 'bonusChoice' | 'done'>(() => {
     const first5Resolved = questions
       .slice(0, 5)
       .every((x) => x.status === 'correct' || x.status === 'incorrect')
-    if (
-      first5Resolved &&
-      bonus &&
-      bonus.status !== 'correct' &&
-      bonus.status !== 'incorrect'
-    )
-      initial.push(5)
-    return initial
+    if (!first5Resolved) return 'playing'
+    const bonus = questions[5]
+    const bonusResolved =
+      !!bonus && (bonus.status === 'correct' || bonus.status === 'incorrect')
+    return bonusResolved ? 'done' : 'bonusChoice'
   })
   const [phase, setPhase] = useState<'question' | 'grading' | 'result'>(
     'question'
@@ -180,27 +186,19 @@ export function StoryMode({
   const bg = q ? CATEGORY_BG[displayKey(q)] : CATEGORY_BG.math
   const accent = q ? CATEGORY_ACCENT[displayKey(q)] : ACCENT
 
-  function resolveCurrent(newStatus: UIStatus) {
+  // Mark the current item's result on the progress bar (statuses only). The queue
+  // is intentionally NOT touched here — the item stays "current" so its result
+  // screen keeps showing until the player taps to continue (advanceAfterResult).
+  function markResolved(newStatus: UIStatus) {
     setStatuses((prev) => {
       const next = [...prev]
       next[current] = newStatus
-      // אם כל ה-5 הרגילות נענו בפועל (נכון/לא נכון) - פותחים בונוס
+      // Unlock the bonus diamond once all 5 regulars are resolved.
       const first5Resolved = next
         .slice(0, 5)
         .every((s) => s === 'correct' || s === 'incorrect')
       if (first5Resolved && next[5] === 'locked') next[5] = 'open'
       return next
-    })
-    setQueue((prev) => {
-      const rest = prev.filter((i) => i !== current)
-      const first5Resolved = statuses
-        .slice(0, 5)
-        .every((s, i) =>
-          i === current ? true : s === 'correct' || s === 'incorrect'
-        )
-      if (first5Resolved && statuses[5] === 'locked' && current < 5)
-        return [...rest, 5]
-      return rest
     })
   }
 
@@ -224,7 +222,7 @@ export function StoryMode({
       setResultFeedback(data.feedbackMessage ?? '')
       setResultAward(award)
       setPhase('result')
-      resolveCurrent(correct ? 'correct' : 'incorrect')
+      markResolved(correct ? 'correct' : 'incorrect')
       if (correct) {
         setEarnedToday((v) => v + award)
         setPulseEarned(true)
@@ -257,10 +255,28 @@ export function StoryMode({
   }
 
   function advanceAfterResult() {
-    if (phase !== 'result') return
+    if (phase !== 'result' || current === undefined) return
+    const resolved = current
+    const wasBonus = resolved === 5
+    const remaining = queue.filter((i) => i !== resolved)
+
+    setQueue(remaining)
     setAnswer('')
     setPhase('question')
     setLastCorrect(null)
+
+    // Decide the next stage ONLY now — after the final result has been seen and
+    // dismissed — rather than deriving it from the queue during render.
+    if (wasBonus) {
+      setStage('done')
+    } else if (remaining.length === 0) {
+      // Last regular question cleared → offer the bonus as an explicit choice,
+      // unless it was already played, in which case the day is done.
+      const bonusResolved =
+        statuses[5] === 'correct' || statuses[5] === 'incorrect'
+      setStage(bonusResolved ? 'done' : 'bonusChoice')
+    }
+    // else: regular questions remain → stay in 'playing'.
   }
 
   function handleScreenTap() {
@@ -268,7 +284,17 @@ export function StoryMode({
     advanceAfterResult()
   }
 
-  const allDone = queue.length === 0
+  // The player opts into the bonus (or not) on the bonus-choice screen.
+  function attemptBonus() {
+    setQueue([5])
+    setAnswer('')
+    setLastCorrect(null)
+    setPhase('question')
+    setStage('playing')
+  }
+  function finishForToday() {
+    setStage('done')
+  }
 
   // ---------- מסך בית (כניסה לאפליקציה) ----------
   if (screen === 'intro') {
@@ -336,14 +362,87 @@ export function StoryMode({
         onBack={() => setScreen('game')}
         earnedToday={earnedToday}
         childName={childName}
+        accessToken={accessToken}
         stats={stats}
         parentMessage={parentMessage}
       />
     )
   }
 
+  // ---------- מסך בחירת בונוס (אופט-אין מפורש, לא ממשיכים אוטומטית) ----------
+  if (stage === 'bonusChoice') {
+    return (
+      <div
+        dir="rtl"
+        style={{
+          background: BASE,
+          minHeight: '100vh',
+          maxWidth: 420,
+          margin: '0 auto',
+          fontFamily: RUBIK,
+        }}
+        className="flex flex-col items-center justify-center gap-5 px-8"
+      >
+        <style>{KEYFRAMES}</style>
+        <div
+          style={{
+            width: 54,
+            height: 54,
+            transform: 'rotate(45deg)',
+            borderRadius: 12,
+            background: `linear-gradient(135deg, ${AMBER}, ${ACCENT2})`,
+            boxShadow: `0 0 26px ${ACCENT2}`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Zap
+            size={26}
+            color={BASE}
+            fill={BASE}
+            style={{ transform: 'rotate(-45deg)' }}
+          />
+        </div>
+        <p
+          style={{ color: 'white', fontFamily: RUBIK }}
+          className="text-2xl font-black text-center"
+        >
+          כל הכבוד! סיימת את כל השאלות 🎉
+        </p>
+        <p
+          style={{ color: '#B7BCC8', fontFamily: ASSISTANT }}
+          className="text-base text-center"
+        >
+          יש עוד שאלת בונוס אחת — שווה פי 3 כוכבים. רוצה לנסות?
+        </p>
+        <button
+          onClick={attemptBonus}
+          className="px-10 py-4 rounded-full font-black text-lg"
+          style={{ background: ACCENT2, color: 'white' }}
+        >
+          אני רוצה בונוס! ✨
+        </button>
+        <button
+          onClick={finishForToday}
+          className="px-8 py-3 rounded-full font-bold text-base"
+          style={{ background: 'rgba(255,255,255,0.12)', color: 'white' }}
+        >
+          מספיק להיום
+        </button>
+        <button
+          onClick={() => setScreen('dashboard')}
+          className="flex items-center gap-1 font-bold text-sm"
+          style={{ color: 'rgba(255,255,255,0.55)' }}
+        >
+          <BarChart3 size={15} /> הסטטוס שלי
+        </button>
+      </div>
+    )
+  }
+
   // ---------- מסך "סיימת להיום" ----------
-  if (allDone) {
+  if (stage === 'done') {
     return (
       <div
         dir="rtl"
@@ -696,18 +795,47 @@ function ChildDashboard({
   onBack,
   earnedToday,
   childName,
+  accessToken,
   stats,
   parentMessage,
 }: {
   onBack: () => void
   earnedToday: number
   childName: string
+  accessToken: string
   stats: { totalStars: number; totalMoney: number; streak: number }
   parentMessage: string | null
 }) {
-  const totalStars = stats.totalStars
-  const totalMoney = stats.totalMoney
-  const streak = stats.streak
+  // The page-load stats are the initial value (never blank); refetch fresh each
+  // time the dashboard is opened so stars/money/streak reflect answers given
+  // since load. This component remounts on every open, so a mount effect suffices.
+  const [live, setLive] = useState(stats)
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/child/stats', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ accessToken }),
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (!cancelled && d && typeof d.totalStars === 'number') {
+          setLive({
+            totalStars: d.totalStars,
+            totalMoney: Number(d.totalMoney),
+            streak: d.streak,
+          })
+        }
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [accessToken])
+
+  const totalStars = live.totalStars
+  const totalMoney = live.totalMoney
+  const streak = live.streak
   const withinDecade = totalStars % 10 || (totalStars > 0 ? 10 : 0)
   const [range, setRange] = useState<'week' | 'month' | 'year'>('week')
   const trend = CHILD_TREND[range]
