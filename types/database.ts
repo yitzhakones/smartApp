@@ -540,13 +540,16 @@ export type Database = {
         Args: { cid: string }
         Returns: boolean
       }
-      grade_and_reward: {
+      apply_grading_result: {
         Args: {
+          p_submission_id: string
           p_child_id: string
+          p_status: string
+          p_feedback: string
           p_amount_nis: number
           p_play_date: string
         }
-        // TRUE when this star crossed a 10-star milestone.
+        // TRUE when a correct answer crossed a 10-star milestone.
         Returns: boolean
       }
     }

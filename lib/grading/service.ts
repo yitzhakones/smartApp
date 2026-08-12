@@ -121,33 +121,25 @@ export async function gradeSubmission(input: {
     ? 'correct'
     : 'incorrect'
 
-  // 5. Persist the verdict (locks the submission).
-  await db
-    .from('submissions')
-    .update({
-      status,
-      graded_at: new Date().toISOString(),
-      graded_by: 'claude_api',
-      ai_feedback_text: graded.feedbackMessage,
-    })
-    .eq('id', submissionId)
-
-  let milestoneReached = false
-  if (graded.isCorrect) {
-    // Star ledger row + child_stats rollup + milestone notification, all in one
-    // atomic transaction (see migration 003 grade_and_reward) so a partial write
-    // can never corrupt money owed.
-    const { data: milestone, error: rewardErr } = await db.rpc(
-      'grade_and_reward',
-      {
-        p_child_id: submission.child_id,
-        p_amount_nis: awardNis,
-        p_play_date: dailySet.date,
-      }
-    )
-    if (rewardErr) throw rewardErr
-    milestoneReached = milestone ?? false
-  }
+  // 5. Persist the verdict AND apply the reward in one atomic, idempotent
+  // transaction (migration 006 apply_grading_result): it marks the submission,
+  // writes the feedback, and — on correct — inserts the star ledger row, rolls up
+  // child_stats, and creates any milestone notification. Folding these together
+  // means a reward failure can never leave a locked-correct submission with no
+  // money (the failure class that caused the earlier bug).
+  const { data: milestone, error: rpcErr } = await db.rpc(
+    'apply_grading_result',
+    {
+      p_submission_id: submissionId,
+      p_child_id: submission.child_id,
+      p_status: status,
+      p_feedback: graded.feedbackMessage,
+      p_amount_nis: awardNis,
+      p_play_date: dailySet.date,
+    }
+  )
+  if (rpcErr) throw rpcErr
+  const milestoneReached = graded.isCorrect ? (milestone ?? false) : false
 
   return {
     status,
