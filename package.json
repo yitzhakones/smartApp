@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "seed:questions": "node --env-file=.env.local scripts/seed-questions.mjs"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.116.0",
     "@ducanh2912/next-pwa": "^10.2.9",
     "@supabase/ssr": "^0.12.4",
     "@supabase/supabase-js": "^2.45.4",

@@ -540,6 +540,15 @@ export type Database = {
         Args: { cid: string }
         Returns: boolean
       }
+      grade_and_reward: {
+        Args: {
+          p_child_id: string
+          p_shekel_per_star: number
+          p_play_date: string
+        }
+        // TRUE when this star crossed a 10-star milestone.
+        Returns: boolean
+      }
     }
     Enums: Record<never, never>
     CompositeTypes: Record<never, never>
