@@ -1,10 +1,13 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8 text-center">
-      <h1 className="text-3xl font-black">חידון יומי 🎯</h1>
-      <p className="max-w-sm text-sm opacity-70">
-        הפלטפורמה בהקמה — הבסיס (Next.js 14 · PWA · Supabase) מוכן.
-      </p>
-    </main>
-  )
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
+
+// Route to the right place: authenticated parents go to the dashboard (where the
+// consent gate then applies); everyone else lands on login.
+export default async function Home() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  redirect(user ? '/dashboard' : '/login')
 }
