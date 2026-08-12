@@ -46,6 +46,22 @@ export interface TodaysGame {
   questions: GameQuestion[]
 }
 
+/** The child has no enabled_categories — parent hasn't finished setup. */
+export class NoEnabledCategoriesError extends Error {
+  constructor(childId: string) {
+    super(`Child ${childId} has no enabled categories`)
+    this.name = 'NoEnabledCategoriesError'
+  }
+}
+
+/** The shared question bank is empty — run the seed script. */
+export class EmptyBankError extends Error {
+  constructor() {
+    super('Question bank is empty — run `npm run seed:questions`')
+    this.name = 'EmptyBankError'
+  }
+}
+
 // --- deterministic RNG (xmur3 seed → mulberry32) -----------------------------
 function xmur3(str: string): () => number {
   let h = 1779033703 ^ str.length
@@ -137,7 +153,7 @@ export async function getOrCreateTodaysGame(
   child: ChildForDaily
 ): Promise<TodaysGame> {
   if (!child.enabled_categories || child.enabled_categories.length === 0) {
-    throw new Error('Child has no enabled categories — cannot build a daily set')
+    throw new NoEnabledCategoriesError(child.id)
   }
   const date = todayISO()
 
@@ -153,7 +169,22 @@ export async function getOrCreateTodaysGame(
   let fiveIds: string[]
   let bonusId: string
 
-  if (existing) {
+  // Only trust an existing set if it has 5 ids that ALL still resolve to real
+  // questions. A set built before the bank was seeded (or against since-removed
+  // questions) is discarded and regenerated, so a stale row can never wedge the
+  // child on the "setup" screen.
+  const existingValid =
+    !!existing &&
+    Array.isArray(existing.question_ids) &&
+    existing.question_ids.length === 5 &&
+    (await allResolve(db, existing.question_ids))
+
+  if (existing && !existingValid) {
+    await db.from('submissions').delete().eq('daily_set_id', existing.id)
+    await db.from('daily_sets').delete().eq('id', existing.id)
+  }
+
+  if (existing && existingValid) {
     dailySetId = existing.id
     fiveIds = existing.question_ids
     bonusId = await ensureBonus(db, dailySetId, child, fiveIds, date)
@@ -162,9 +193,10 @@ export async function getOrCreateTodaysGame(
       .from('questions')
       .select('id, category, difficulty_tier, text_he, text_en')
     if (bankErr) throw bankErr
+    if (!bank || bank.length === 0) throw new EmptyBankError()
 
     const picked = pickDailySet(
-      (bank ?? []) as BankRow[],
+      bank as BankRow[],
       child.enabled_categories,
       child.category_levels ?? {},
       `${child.id}|${date}`
@@ -203,6 +235,16 @@ export async function getOrCreateTodaysGame(
   }
 
   return buildGame(db, child, dailySetId, fiveIds, bonusId)
+}
+
+/** True iff every id still resolves to a real question row. */
+async function allResolve(
+  db: SupabaseClient<Database>,
+  ids: string[]
+): Promise<boolean> {
+  if (ids.length === 0) return false
+  const { data } = await db.from('questions').select('id').in('id', ids)
+  return (data?.length ?? 0) === ids.length
 }
 
 /** Find (or create) the bonus submission for an existing daily set. */

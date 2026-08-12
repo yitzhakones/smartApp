@@ -87,8 +87,9 @@ export async function gradeAnswer(input: {
     max_tokens: 2048,
     system: SYSTEM_PROMPT,
     output_config: {
-      // Low effort: this is a simple classification; keeps latency and cost down.
-      effort: 'low',
+      // Structured output guarantees the { is_correct, feedback_message } shape.
+      // No `effort` here: it's unsupported on Haiku (the default grading model)
+      // and unneeded for a simple classification task.
       format: { type: 'json_schema', schema: RESULT_SCHEMA },
     },
     messages: [{ role: 'user', content: userPrompt }],

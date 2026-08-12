@@ -1,7 +1,11 @@
 import { notFound } from 'next/navigation'
 import type { DifficultyTier } from '@/types/database'
 import { createServiceClient } from '@/lib/supabase/service'
-import { getOrCreateTodaysGame } from '@/lib/daily/service'
+import {
+  EmptyBankError,
+  NoEnabledCategoriesError,
+  getOrCreateTodaysGame,
+} from '@/lib/daily/service'
 import { StoryMode } from './story-mode'
 
 // The child app. Children have no auth session — the unguessable access_token in
@@ -58,11 +62,30 @@ export default async function ChildPlayPage({
         DifficultyTier
       >,
     })
-  } catch {
+  } catch (err) {
+    // Surface the real cause in the server logs, and show the child a message
+    // that matches what actually went wrong (not a catch-all).
+    console.error('[child app] failed to build today’s game:', err)
+    if (err instanceof EmptyBankError) {
+      return (
+        <Message
+          title="אין עדיין שאלות"
+          body="מאגר השאלות ריק — יש להריץ את סקריפט הזריעה (npm run seed:questions)."
+        />
+      )
+    }
+    if (err instanceof NoEnabledCategoriesError) {
+      return (
+        <Message
+          title="עוד רגע מתחילים…"
+          body="צריך לבחור קטגוריות עבור הילד/ה בהגדרות ההורה."
+        />
+      )
+    }
     return (
       <Message
-        title="עוד רגע מתחילים…"
-        body="החשבון עדיין בהגדרה — צריך לבחור קטגוריות ולוודא שיש שאלות במאגר."
+        title="משהו השתבש"
+        body="לא הצלחנו לטעון את המשחק להיום. נסו שוב עוד רגע."
       />
     )
   }

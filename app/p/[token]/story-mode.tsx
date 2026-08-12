@@ -83,7 +83,10 @@ const KEYFRAMES = `
   @keyframes flash { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
   @keyframes pulseRing { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); } 50% { box-shadow: 0 0 0 4px rgba(255,255,255,0); } }
 `
-const FONTS = `@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700;900&family=Assistant:wght@400;700&display=swap');`
+// Fonts are loaded once via next/font in app/layout.tsx and referenced through
+// the CSS variables below — no runtime @import (avoids the hydration mismatch).
+const RUBIK = 'var(--font-rubik), system-ui'
+const ASSISTANT = 'var(--font-assistant), system-ui'
 
 export interface GameQuestion {
   submissionId: string
@@ -278,11 +281,11 @@ export function StoryMode({
           minHeight: '100vh',
           maxWidth: 420,
           margin: '0 auto',
-          fontFamily: "'Rubik', system-ui",
+          fontFamily: RUBIK,
         }}
         className="flex flex-col items-center justify-center gap-5 px-8"
       >
-        <style>{`${FONTS}${KEYFRAMES}`}</style>
+        <style>{KEYFRAMES}</style>
         <div
           style={{
             width: 70,
@@ -297,13 +300,13 @@ export function StoryMode({
           <Zap size={34} color={BASE} fill={BASE} />
         </div>
         <p
-          style={{ color: 'white', fontFamily: 'Rubik' }}
+          style={{ color: 'white', fontFamily: RUBIK }}
           className="text-2xl font-black text-center"
         >
           היי {childName} 👋
         </p>
         <p
-          style={{ color: '#B7BCC8', fontFamily: 'Assistant' }}
+          style={{ color: '#B7BCC8', fontFamily: ASSISTANT }}
           className="text-base text-center"
         >
           {remaining} שאלות מחכות לך היום + בונוס מיוחד בסוף
@@ -349,20 +352,20 @@ export function StoryMode({
           minHeight: '100vh',
           maxWidth: 420,
           margin: '0 auto',
-          fontFamily: "'Rubik', system-ui",
+          fontFamily: RUBIK,
         }}
         className="flex flex-col items-center justify-center gap-4 px-6"
       >
-        <style>{`${FONTS}${KEYFRAMES}`}</style>
+        <style>{KEYFRAMES}</style>
         <Zap size={52} color={ACCENT} fill={ACCENT} />
         <p
-          style={{ color: 'white', fontFamily: 'Rubik' }}
+          style={{ color: 'white', fontFamily: RUBIK }}
           className="text-3xl font-black text-center"
         >
           סיימת את היום! 🔥
         </p>
         <p
-          style={{ color: '#B7BCC8', fontFamily: 'Assistant' }}
+          style={{ color: '#B7BCC8', fontFamily: ASSISTANT }}
           className="text-base text-center"
         >
           מחר יחכו לך 5 שאלות חדשות + בונוס נוסף
@@ -390,10 +393,10 @@ export function StoryMode({
         margin: '0 auto',
         position: 'relative',
         overflow: 'hidden',
-        fontFamily: "'Rubik', system-ui",
+        fontFamily: RUBIK,
       }}
     >
-      <style>{`${FONTS}${KEYFRAMES}`}</style>
+      <style>{KEYFRAMES}</style>
 
       {phase === 'result' && (
         <div
@@ -511,7 +514,7 @@ export function StoryMode({
         <div className="px-6">
           {phase !== 'result' && q && (
             <p
-              style={{ color: 'white', fontFamily: 'Rubik' }}
+              style={{ color: 'white', fontFamily: RUBIK }}
               className="text-4xl font-black leading-snug mb-8 text-center"
             >
               {q.text}
@@ -536,7 +539,7 @@ export function StoryMode({
                   onPaste={(e) => e.preventDefault()}
                   placeholder="כתבי כאן..."
                   className="flex-1 bg-transparent outline-none text-white px-2 text-xl font-bold"
-                  style={{ fontFamily: 'Assistant' }}
+                  style={{ fontFamily: ASSISTANT }}
                 />
                 <button
                   onClick={submit}
@@ -618,7 +621,7 @@ export function StoryMode({
               </div>
 
               <p
-                style={{ color: 'white', fontFamily: 'Rubik' }}
+                style={{ color: 'white', fontFamily: RUBIK }}
                 className="text-5xl font-black text-center mb-2"
               >
                 {lastCorrect ? 'מדויק!' : 'כמעט!'}
@@ -626,7 +629,7 @@ export function StoryMode({
 
               {lastCorrect ? (
                 <div className="rounded-full px-6 py-2 mt-1" style={{ background: 'rgba(0,0,0,0.35)' }}>
-                  <p style={{ color: ACCENT, fontFamily: 'Rubik' }} className="text-2xl font-black">
+                  <p style={{ color: ACCENT, fontFamily: RUBIK }} className="text-2xl font-black">
                     {isBonus ? `+ ₪${resultAward} בונוס` : `+ ₪${resultAward}`}
                   </p>
                 </div>
@@ -635,7 +638,7 @@ export function StoryMode({
                   className="rounded-2xl px-5 py-3 mt-1 text-center"
                   style={{ background: 'rgba(0,0,0,0.35)' }}
                 >
-                  <p style={{ color: '#D8DBE4', fontFamily: 'Assistant' }} className="text-base font-bold">
+                  <p style={{ color: '#D8DBE4', fontFamily: ASSISTANT }} className="text-base font-bold">
                     התשובה הנכונה: {resultAnswer}
                   </p>
                 </div>
@@ -643,7 +646,7 @@ export function StoryMode({
 
               {resultFeedback && (
                 <p
-                  style={{ color: 'white', fontFamily: 'Assistant' }}
+                  style={{ color: 'white', fontFamily: ASSISTANT }}
                   className="text-sm mt-4 text-center px-3 leading-snug"
                 >
                   {resultFeedback}
@@ -651,7 +654,7 @@ export function StoryMode({
               )}
 
               <p
-                style={{ color: 'white', fontFamily: 'Assistant' }}
+                style={{ color: 'white', fontFamily: ASSISTANT }}
                 className="text-sm mt-6 font-bold px-4 py-1.5 rounded-full"
               >
                 <span style={{ background: 'rgba(0,0,0,0.4)', padding: '6px 14px', borderRadius: 99 }}>
@@ -718,12 +721,12 @@ function ChildDashboard({
         minHeight: '100vh',
         maxWidth: 420,
         margin: '0 auto',
-        fontFamily: "'Rubik', system-ui",
+        fontFamily: RUBIK,
         position: 'relative',
         overflow: 'hidden',
       }}
     >
-      <style>{`${FONTS}${KEYFRAMES}`}</style>
+      <style>{KEYFRAMES}</style>
       <div
         style={{
           position: 'absolute',
@@ -747,7 +750,7 @@ function ChildDashboard({
           >
             <ChevronRight size={18} /> חזרה למשחק
           </button>
-          <p style={{ color: 'white', fontFamily: 'Rubik' }} className="text-lg font-black">
+          <p style={{ color: 'white', fontFamily: RUBIK }} className="text-lg font-black">
             היי {childName} 👋
           </p>
         </div>
@@ -756,14 +759,14 @@ function ChildDashboard({
           className="rounded-[26px] p-6 text-center mb-4"
           style={{ background: `linear-gradient(135deg, ${ACCENT}, #7CFF7A)`, borderRadius: 26 }}
         >
-          <p style={{ color: BASE, fontFamily: 'Assistant' }} className="text-sm font-bold mb-1">
+          <p style={{ color: BASE, fontFamily: ASSISTANT }} className="text-sm font-bold mb-1">
             סך הכל נחסך
           </p>
-          <p style={{ color: BASE, fontFamily: 'Rubik' }} className="text-6xl font-black">
+          <p style={{ color: BASE, fontFamily: RUBIK }} className="text-6xl font-black">
             ₪{totalMoney}
           </p>
           {earnedToday > 0 && (
-            <p style={{ color: BASE, fontFamily: 'Assistant' }} className="text-sm font-bold mt-1">
+            <p style={{ color: BASE, fontFamily: ASSISTANT }} className="text-sm font-bold mt-1">
               ₪{earnedToday} מהיום 🔥
             </p>
           )}
@@ -774,10 +777,10 @@ function ChildDashboard({
             className="rounded-3xl p-4 text-center"
             style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
           >
-            <p style={{ color: ACCENT2, fontFamily: 'Rubik' }} className="text-4xl font-black">
+            <p style={{ color: ACCENT2, fontFamily: RUBIK }} className="text-4xl font-black">
               {totalStars}
             </p>
-            <p style={{ color: '#B7BCC8', fontFamily: 'Assistant' }} className="text-xs font-bold mt-1">
+            <p style={{ color: '#B7BCC8', fontFamily: ASSISTANT }} className="text-xs font-bold mt-1">
               כוכבים בסך הכול
             </p>
           </div>
@@ -787,11 +790,11 @@ function ChildDashboard({
           >
             <div className="flex items-center gap-1">
               <Flame size={22} color={AMBER} fill={AMBER} />
-              <p style={{ color: AMBER, fontFamily: 'Rubik' }} className="text-4xl font-black">
+              <p style={{ color: AMBER, fontFamily: RUBIK }} className="text-4xl font-black">
                 {streak}
               </p>
             </div>
-            <p style={{ color: '#B7BCC8', fontFamily: 'Assistant' }} className="text-xs font-bold mt-1">
+            <p style={{ color: '#B7BCC8', fontFamily: ASSISTANT }} className="text-xs font-bold mt-1">
               ימים ברצף
             </p>
           </div>
@@ -802,10 +805,10 @@ function ChildDashboard({
           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
         >
           <div className="flex items-center justify-between mb-2">
-            <p style={{ color: 'white', fontFamily: 'Rubik' }} className="font-black text-sm">
+            <p style={{ color: 'white', fontFamily: RUBIK }} className="font-black text-sm">
               לתגמול הבא
             </p>
-            <p style={{ color: ACCENT2, fontFamily: 'Assistant' }} className="text-xs font-bold">
+            <p style={{ color: ACCENT2, fontFamily: ASSISTANT }} className="text-xs font-bold">
               {withinDecade}/10 כוכבים
             </p>
           </div>
@@ -826,7 +829,7 @@ function ChildDashboard({
           style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)' }}
         >
           <div className="flex items-center justify-between mb-3">
-            <p style={{ color: 'white', fontFamily: 'Rubik' }} className="font-black text-sm">
+            <p style={{ color: 'white', fontFamily: RUBIK }} className="font-black text-sm">
               גרף השיפור שלך
             </p>
             <div className="flex gap-1 rounded-full p-1" style={{ background: 'rgba(0,0,0,0.3)' }}>
@@ -863,7 +866,7 @@ function ChildDashboard({
                 <p
                   style={{
                     color: i === trend.values.length - 1 ? ACCENT : '#8A8F9E',
-                    fontFamily: 'Assistant',
+                    fontFamily: ASSISTANT,
                   }}
                   className="text-[10px] font-bold"
                 >
@@ -873,10 +876,10 @@ function ChildDashboard({
             ))}
           </div>
           <div className="flex flex-col gap-1.5 mt-3">
-            <p style={{ color: ACCENT, fontFamily: 'Assistant' }} className="text-xs font-black">
+            <p style={{ color: ACCENT, fontFamily: ASSISTANT }} className="text-xs font-black">
               🔥 הכי השתפרת ב{trend.best}!
             </p>
-            <p style={{ color: '#8A8F9E', fontFamily: 'Assistant' }} className="text-xs font-bold">
+            <p style={{ color: '#8A8F9E', fontFamily: ASSISTANT }} className="text-xs font-bold">
               כדאי לתרגל עוד קצת ב{trend.practiceMore}
             </p>
           </div>
@@ -884,10 +887,10 @@ function ChildDashboard({
 
         {parentMessage && (
           <div className="rounded-3xl p-4" style={{ background: `${ACCENT2}22`, border: `1px solid ${ACCENT2}55` }}>
-            <p style={{ color: ACCENT2, fontFamily: 'Rubik' }} className="font-black text-sm mb-1">
+            <p style={{ color: ACCENT2, fontFamily: RUBIK }} className="font-black text-sm mb-1">
               💌 הודעה מההורה
             </p>
-            <p style={{ color: 'white', fontFamily: 'Assistant' }} className="text-sm">
+            <p style={{ color: 'white', fontFamily: ASSISTANT }} className="text-sm">
               {parentMessage}
             </p>
           </div>
