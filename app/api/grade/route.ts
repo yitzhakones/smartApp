@@ -62,6 +62,8 @@ export async function POST(request: NextRequest) {
           status: err.status,
           isCorrect: err.status === 'correct',
           feedbackMessage: submission.ai_feedback_text ?? '',
+          correctAnswer: '',
+          awardedNis: 0,
           milestoneReached: false,
           alreadyGraded: true,
         },

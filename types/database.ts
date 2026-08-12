@@ -543,7 +543,7 @@ export type Database = {
       grade_and_reward: {
         Args: {
           p_child_id: string
-          p_shekel_per_star: number
+          p_amount_nis: number
           p_play_date: string
         }
         // TRUE when this star crossed a 10-star milestone.

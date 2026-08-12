@@ -1,0 +1,100 @@
+import { notFound } from 'next/navigation'
+import type { DifficultyTier } from '@/types/database'
+import { createServiceClient } from '@/lib/supabase/service'
+import { getOrCreateTodaysGame } from '@/lib/daily/service'
+import { StoryMode } from './story-mode'
+
+// The child app. Children have no auth session — the unguessable access_token in
+// the URL (app.com/p/{access_token}) is their identity, resolved server-side via
+// the service role. Node runtime + always dynamic (per-child, per-day data).
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
+function Message({ title, body }: { title: string; body: string }) {
+  return (
+    <div
+      dir="rtl"
+      style={{
+        background: '#0B0B0F',
+        minHeight: '100vh',
+        maxWidth: 420,
+        margin: '0 auto',
+      }}
+      className="flex flex-col items-center justify-center gap-3 px-8 text-center"
+    >
+      <p className="text-2xl font-black text-white">{title}</p>
+      <p className="text-sm" style={{ color: '#B7BCC8' }}>
+        {body}
+      </p>
+    </div>
+  )
+}
+
+export default async function ChildPlayPage({
+  params,
+}: {
+  params: { token: string }
+}) {
+  const db = createServiceClient()
+
+  const { data: child } = await db
+    .from('children')
+    .select(
+      'id, display_name, locale, enabled_categories, category_levels, shekel_per_star'
+    )
+    .eq('access_token', params.token)
+    .maybeSingle()
+
+  if (!child) notFound()
+
+  let game
+  try {
+    game = await getOrCreateTodaysGame(db, {
+      id: child.id,
+      locale: child.locale,
+      enabled_categories: child.enabled_categories,
+      category_levels: (child.category_levels ?? {}) as Record<
+        string,
+        DifficultyTier
+      >,
+    })
+  } catch {
+    return (
+      <Message
+        title="עוד רגע מתחילים…"
+        body="החשבון עדיין בהגדרה — צריך לבחור קטגוריות ולוודא שיש שאלות במאגר."
+      />
+    )
+  }
+
+  const { data: stats } = await db
+    .from('child_stats')
+    .select('total_stars, total_money_owed_nis, streak')
+    .eq('child_id', child.id)
+    .maybeSingle()
+
+  const { data: msg } = await db
+    .from('reward_ledger')
+    .select('note')
+    .eq('child_id', child.id)
+    .eq('type', 'parent_reward')
+    .not('note', 'is', null)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  return (
+    <StoryMode
+      childName={child.display_name}
+      accessToken={params.token}
+      shekelPerStar={Number(child.shekel_per_star)}
+      questions={game.questions}
+      stats={{
+        totalStars: stats?.total_stars ?? 0,
+        totalMoney: Number(stats?.total_money_owed_nis ?? 0),
+        streak: stats?.streak ?? 0,
+      }}
+      parentMessage={msg?.note ?? null}
+    />
+  )
+}

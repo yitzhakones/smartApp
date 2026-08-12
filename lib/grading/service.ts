@@ -21,10 +21,17 @@ import type { Database, SubmissionStatus } from '@/types/database'
 import { createServiceClient } from '@/lib/supabase/service'
 import { gradeAnswer, type GradeResult } from './claude'
 
+// A correct bonus answer pays 3× shekel_per_star (docs → Grading).
+const BONUS_MULTIPLIER = 3
+
 export interface GradeSubmissionResult {
   status: Extract<SubmissionStatus, 'correct' | 'incorrect'>
   isCorrect: boolean
   feedbackMessage: string
+  /** The answer key in the child's locale — shown on the result screen. */
+  correctAnswer: string
+  /** Money awarded for this answer (0 if incorrect; 3× on a correct bonus). */
+  awardedNis: number
   /** True when this correct answer crossed a 10-star milestone. */
   milestoneReached: boolean
 }
@@ -53,7 +60,7 @@ export async function gradeSubmission(input: {
     .from('submissions')
     .select(
       `id, status, child_id, question_id, submitted_at,
-       daily_sets!inner ( date ),
+       daily_sets!inner ( date, question_ids ),
        questions!inner ( text_he, text_en, answer_key_he, answer_key_en, category, difficulty_tier ),
        children!inner ( locale, shekel_per_star )`
     )
@@ -81,6 +88,11 @@ export async function gradeSubmission(input: {
   const locale = child.locale
   const answerKey = locale === 'he' ? question.answer_key_he : question.answer_key_en
   const questionText = locale === 'he' ? question.text_he : question.text_en
+
+  // The bonus question is the one not among the daily set's 5 regular ids; it
+  // pays 3× shekel_per_star (docs → Grading). Everything else pays 1×.
+  const isBonus = !dailySet.question_ids.includes(submission.question_id)
+  const awardNis = Number(child.shekel_per_star) * (isBonus ? BONUS_MULTIPLIER : 1)
 
   // 3. Record the answer and move to `grading`.
   await db
@@ -129,7 +141,7 @@ export async function gradeSubmission(input: {
       'grade_and_reward',
       {
         p_child_id: submission.child_id,
-        p_shekel_per_star: child.shekel_per_star,
+        p_amount_nis: awardNis,
         p_play_date: dailySet.date,
       }
     )
@@ -141,6 +153,8 @@ export async function gradeSubmission(input: {
     status,
     isCorrect: graded.isCorrect,
     feedbackMessage: graded.feedbackMessage,
+    correctAnswer: answerKey,
+    awardedNis: graded.isCorrect ? awardNis : 0,
     milestoneReached,
   }
 }
