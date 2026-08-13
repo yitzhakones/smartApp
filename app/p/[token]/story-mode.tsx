@@ -94,6 +94,18 @@ export interface GameQuestion {
   text: string
   status: SubmissionStatus
   isBonus: boolean
+  // Present only for already-graded questions (for the locked read-only view).
+  answerText: string | null
+  feedback: string | null
+  correctAnswer: string | null
+}
+
+interface ResultData {
+  isCorrect: boolean
+  answerText: string
+  feedback: string
+  correctAnswer: string
+  award: number
 }
 
 type UIStatus = 'locked' | 'open' | 'skipped' | 'correct' | 'incorrect'
@@ -179,12 +191,39 @@ export function StoryMode({
     )
   )
   const [pulseEarned, setPulseEarned] = useState(false)
+  // When set, a graded question is being reviewed read-only (no input). Kept
+  // separate from the answering queue so review never touches play state.
+  const [reviewIndex, setReviewIndex] = useState<number | null>(null)
+  // Per-question stored result, so any graded question renders a locked read-only
+  // view. Seeded from the server for questions graded before this session; updated
+  // as questions are graded during it.
+  const [results, setResults] = useState<Record<number, ResultData>>(() => {
+    const init: Record<number, ResultData> = {}
+    questions.forEach((qq, i) => {
+      if (qq.status === 'correct' || qq.status === 'incorrect') {
+        init[i] = {
+          isCorrect: qq.status === 'correct',
+          answerText: qq.answerText ?? '',
+          feedback: qq.feedback ?? '',
+          correctAnswer: qq.correctAnswer ?? '',
+          award: qq.status === 'correct' ? shekelPerStar * (qq.isBonus ? 3 : 1) : 0,
+        }
+      }
+    })
+    return init
+  })
 
   const current = queue[0]
   const q = current !== undefined ? questions[current] : null
   const isBonus = !!q?.isBonus
-  const bg = q ? CATEGORY_BG[displayKey(q)] : CATEGORY_BG.math
-  const accent = q ? CATEGORY_ACCENT[displayKey(q)] : ACCENT
+  // A graded question must never render an editable input — always read-only.
+  const currentGraded =
+    current !== undefined &&
+    (statuses[current] === 'correct' || statuses[current] === 'incorrect')
+  // The question whose theme (bg/label) is on screen: the reviewed one, else current.
+  const displayQ = reviewIndex !== null ? questions[reviewIndex] : q
+  const bg = displayQ ? CATEGORY_BG[displayKey(displayQ)] : CATEGORY_BG.math
+  const accent = displayQ ? CATEGORY_ACCENT[displayKey(displayQ)] : ACCENT
 
   // Mark the current item's result on the progress bar (statuses only). The queue
   // is intentionally NOT touched here — the item stays "current" so its result
@@ -221,6 +260,16 @@ export function StoryMode({
       setResultAnswer(data.correctAnswer ?? '')
       setResultFeedback(data.feedbackMessage ?? '')
       setResultAward(award)
+      setResults((prev) => ({
+        ...prev,
+        [current]: {
+          isCorrect: correct,
+          answerText: answer,
+          feedback: data.feedbackMessage ?? '',
+          correctAnswer: data.correctAnswer ?? '',
+          award,
+        },
+      }))
       setPhase('result')
       markResolved(correct ? 'correct' : 'incorrect')
       if (correct) {
@@ -247,18 +296,40 @@ export function StoryMode({
     setAnswer('')
   }
 
+  // Answer/return-to a not-yet-graded question. Keeps the queue free of graded
+  // items so a graded question can never become the "current" answering item.
   function jumpTo(i: number) {
     if (statuses[i] !== 'open' && statuses[i] !== 'skipped') return
-    setQueue((prev) => [i, ...prev.filter((x) => x !== i)])
+    setReviewIndex(null)
+    setQueue((prev) => [
+      i,
+      ...prev.filter(
+        (x) =>
+          x !== i && statuses[x] !== 'correct' && statuses[x] !== 'incorrect'
+      ),
+    ])
     setAnswer('')
     setPhase('question')
+  }
+
+  // Progress-bar tap: graded → read-only review; open/skipped → jump to answer.
+  function openSegment(i: number) {
+    const s = statuses[i]
+    if (s === 'correct' || s === 'incorrect') setReviewIndex(i)
+    else if (s === 'open' || s === 'skipped') jumpTo(i)
+    // 'locked' (bonus not yet unlocked) → do nothing
   }
 
   function advanceAfterResult() {
     if (phase !== 'result' || current === undefined) return
     const resolved = current
     const wasBonus = resolved === 5
-    const remaining = queue.filter((i) => i !== resolved)
+    const remaining = queue.filter(
+      (i) =>
+        i !== resolved &&
+        statuses[i] !== 'correct' &&
+        statuses[i] !== 'incorrect'
+    )
 
     setQueue(remaining)
     setAnswer('')
@@ -280,6 +351,10 @@ export function StoryMode({
   }
 
   function handleScreenTap() {
+    if (reviewIndex !== null) {
+      setReviewIndex(null) // exit read-only review, back to the current question
+      return
+    }
     if (phase !== 'result') return
     advanceAfterResult()
   }
@@ -497,7 +572,7 @@ export function StoryMode({
     >
       <style>{KEYFRAMES}</style>
 
-      {phase === 'result' && (
+      {phase === 'result' && reviewIndex === null && (
         <div
           style={{
             position: 'absolute',
@@ -539,7 +614,7 @@ export function StoryMode({
               key={i}
               onClick={(e) => {
                 e.stopPropagation()
-                jumpTo(i)
+                openSegment(i)
               }}
               className="flex-1 h-2.5 rounded-full overflow-hidden relative"
               style={{
@@ -563,7 +638,7 @@ export function StoryMode({
         <button
           onClick={(e) => {
             e.stopPropagation()
-            if (statuses[5] !== 'locked') jumpTo(5)
+            openSegment(5)
           }}
           className="flex items-center justify-center shrink-0"
           style={{
@@ -595,7 +670,7 @@ export function StoryMode({
           className="inline-block text-sm font-black px-4 py-1.5 rounded-full"
           style={{ background: 'rgba(255,255,255,0.18)', color: 'white', backdropFilter: 'blur(4px)' }}
         >
-          {q ? CATEGORY_LABEL[displayKey(q)] : ''}
+          {displayQ ? CATEGORY_LABEL[displayKey(displayQ)] : ''}
         </span>
         <span
           className="flex items-center gap-1.5 font-black px-4 py-1.5 rounded-full text-base"
@@ -611,7 +686,38 @@ export function StoryMode({
 
       <div className="relative z-10 flex flex-col justify-center" style={{ minHeight: '58vh' }}>
         <div className="px-6">
-          {phase !== 'result' && q && (
+          {/* Read-only review of an already-graded question (never an input). */}
+          {reviewIndex !== null && results[reviewIndex] && (
+            <>
+              <p
+                style={{ color: 'white', fontFamily: RUBIK }}
+                className="text-3xl font-black leading-snug mb-6 text-center"
+              >
+                {questions[reviewIndex].text}
+              </p>
+              <ReadOnlyResult
+                data={results[reviewIndex]}
+                isBonus={questions[reviewIndex].isBonus}
+                footer="געי לחזרה ←"
+              />
+            </>
+          )}
+
+          {/* Defensive: a graded question is somehow current — show its locked
+              result, never an editable input. */}
+          {reviewIndex === null &&
+            currentGraded &&
+            phase !== 'result' &&
+            current !== undefined &&
+            results[current] && (
+              <ReadOnlyResult
+                data={results[current]}
+                isBonus={isBonus}
+                footer="כבר ענית על השאלה הזו"
+              />
+            )}
+
+          {reviewIndex === null && !currentGraded && phase !== 'result' && q && (
             <p
               style={{ color: 'white', fontFamily: RUBIK }}
               className="text-4xl font-black leading-snug mb-8 text-center"
@@ -620,7 +726,7 @@ export function StoryMode({
             </p>
           )}
 
-          {phase === 'question' && (
+          {reviewIndex === null && !currentGraded && phase === 'question' && (
             <div className="flex flex-col gap-3">
               <div
                 onClick={(e) => e.stopPropagation()}
@@ -662,7 +768,7 @@ export function StoryMode({
             </div>
           )}
 
-          {phase === 'grading' && (
+          {reviewIndex === null && phase === 'grading' && (
             <div className="flex justify-center">
               <div className="flex gap-2">
                 {[0, 1, 2].map((i) => (
@@ -682,7 +788,7 @@ export function StoryMode({
             </div>
           )}
 
-          {phase === 'result' && (
+          {reviewIndex === null && phase === 'result' && (
             <div className="relative flex flex-col items-center" style={{ zIndex: 10 }}>
               {lastCorrect &&
                 CONFETTI.map((c, i) => (
@@ -764,6 +870,85 @@ export function StoryMode({
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+// Locked, read-only result for an already-graded question — no input, no submit,
+// no confetti/flash. Shows the verdict, the child's stored answer, the correct
+// answer (on a miss) / reward (on a hit), and the AI feedback.
+function ReadOnlyResult({
+  data,
+  isBonus,
+  footer,
+}: {
+  data: ResultData
+  isBonus: boolean
+  footer: string
+}) {
+  const { isCorrect, answerText, feedback, correctAnswer, award } = data
+  return (
+    <div className="relative flex flex-col items-center" style={{ zIndex: 10 }}>
+      <div
+        className="rounded-full flex items-center justify-center mb-4"
+        style={{
+          width: 96,
+          height: 96,
+          background: isCorrect ? ACCENT : AMBER,
+          boxShadow: isCorrect ? `0 0 40px ${ACCENT}` : `0 0 30px ${AMBER}88`,
+        }}
+      >
+        {isCorrect ? (
+          <Check size={52} color={BASE} strokeWidth={3.5} />
+        ) : (
+          <X size={52} color={BASE} strokeWidth={3.5} />
+        )}
+      </div>
+
+      <p
+        style={{ color: 'white', fontFamily: RUBIK }}
+        className="text-5xl font-black text-center mb-2"
+      >
+        {isCorrect ? 'מדויק!' : 'כמעט!'}
+      </p>
+
+      {isCorrect ? (
+        <div className="rounded-full px-6 py-2 mt-1" style={{ background: 'rgba(0,0,0,0.35)' }}>
+          <p style={{ color: ACCENT, fontFamily: RUBIK }} className="text-2xl font-black">
+            {isBonus ? `+ ₪${award} בונוס` : `+ ₪${award}`}
+          </p>
+        </div>
+      ) : (
+        <div className="rounded-2xl px-5 py-3 mt-1 text-center" style={{ background: 'rgba(0,0,0,0.35)' }}>
+          <p style={{ color: '#D8DBE4', fontFamily: ASSISTANT }} className="text-base font-bold">
+            התשובה הנכונה: {correctAnswer}
+          </p>
+        </div>
+      )}
+
+      {answerText && (
+        <p style={{ color: '#B7BCC8', fontFamily: ASSISTANT }} className="text-sm mt-3 text-center">
+          התשובה שלך: {answerText}
+        </p>
+      )}
+
+      {feedback && (
+        <p
+          style={{ color: 'white', fontFamily: ASSISTANT }}
+          className="text-sm mt-3 text-center px-3 leading-snug"
+        >
+          {feedback}
+        </p>
+      )}
+
+      <p
+        style={{ color: 'white', fontFamily: ASSISTANT }}
+        className="text-sm mt-6 font-bold px-4 py-1.5 rounded-full"
+      >
+        <span style={{ background: 'rgba(0,0,0,0.4)', padding: '6px 14px', borderRadius: 99 }}>
+          {footer}
+        </span>
+      </p>
     </div>
   )
 }

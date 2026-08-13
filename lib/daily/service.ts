@@ -38,6 +38,12 @@ export interface GameQuestion {
   text: string
   status: SubmissionStatus
   isBonus: boolean
+  // Populated ONLY for already-graded questions (correct/incorrect) so the client
+  // can render a locked read-only result. Null for ungraded questions — the answer
+  // key is never sent for a question the child hasn't answered yet (anti-cheat).
+  answerText: string | null
+  feedback: string | null
+  correctAnswer: string | null
 }
 
 export interface TodaysGame {
@@ -297,14 +303,14 @@ async function buildGame(
 ): Promise<TodaysGame> {
   const { data: subs, error: subsErr } = await db
     .from('submissions')
-    .select('id, question_id, status')
+    .select('id, question_id, status, answer_text, ai_feedback_text')
     .eq('daily_set_id', dailySetId)
   if (subsErr) throw subsErr
 
   const allIds = [...fiveIds, bonusId]
   const { data: qs, error: qErr } = await db
     .from('questions')
-    .select('id, category, text_he, text_en')
+    .select('id, category, text_he, text_en, answer_key_he, answer_key_en')
     .in('id', allIds)
   if (qErr) throw qErr
 
@@ -314,12 +320,20 @@ async function buildGame(
   const toGameQuestion = (qid: string, isBonus: boolean): GameQuestion => {
     const q = qById.get(qid)!
     const sub = subByQid.get(qid)!
+    const graded = sub.status === 'correct' || sub.status === 'incorrect'
     return {
       submissionId: sub.id,
       category: q.category,
       text: child.locale === 'he' ? q.text_he : q.text_en,
       status: sub.status,
       isBonus,
+      answerText: graded ? (sub.answer_text ?? '') : null,
+      feedback: graded ? (sub.ai_feedback_text ?? '') : null,
+      correctAnswer: graded
+        ? child.locale === 'he'
+          ? q.answer_key_he
+          : q.answer_key_en
+        : null,
     }
   }
 
