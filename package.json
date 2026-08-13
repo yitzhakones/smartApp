@@ -9,7 +9,9 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "seed:questions": "node --env-file=.env.local scripts/seed-questions.mjs"
+    "seed:questions": "node --env-file=.env.local scripts/seed-questions.mjs",
+    "test:reset": "node --env-file=.env.local scripts/reset-child.mjs",
+    "test:children": "node --env-file=.env.local scripts/create-test-children.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.116.0",
