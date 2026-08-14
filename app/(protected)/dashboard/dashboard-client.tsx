@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import type { Gender, Locale } from '@/types/database'
+import type { TrendData } from '@/lib/dashboard/trend'
 import { TabSwitcher } from './components/tab-switcher'
 import { SummaryCard } from './components/summary-card'
+import { TrendCard } from './components/trend-card'
 import { SHELL, INK, SOFT, ASSISTANT } from './theme'
 
 // One dashboard, one login. This client shell owns the active-tab state and the
@@ -23,6 +25,7 @@ export interface DashboardChild {
   stars: number
   money: number
   streak: number
+  trend: TrendData
 }
 
 export function DashboardClient({
@@ -58,7 +61,8 @@ export function DashboardClient({
       {active && (
         <div className="px-4 pb-24 flex flex-col gap-3 pt-2">
           <SummaryCard child={active} onBalanceChange={(money) => patchActive({ money })} />
-          {/* Stage 2+: TrendCard, bonus panel, activity feed, benchmark card. */}
+          <TrendCard data={active.trend} />
+          {/* Stage 3+: bonus panel, activity feed, benchmark card. */}
         </div>
       )}
     </div>
