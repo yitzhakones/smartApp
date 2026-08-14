@@ -561,6 +561,17 @@ export type Database = {
         // The new balance (total_money_owed_nis) after the withdrawal.
         Returns: number
       }
+      send_parent_reward: {
+        Args: {
+          p_child_id: string
+          p_kind: string
+          p_label: string
+          p_amount_nis: number | null
+          p_note: string | null
+        }
+        // The balance after the reward (unchanged when kind = privilege).
+        Returns: number
+      }
     }
     Enums: Record<never, never>
     CompositeTypes: Record<never, never>

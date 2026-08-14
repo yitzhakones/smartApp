@@ -10,7 +10,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import type { PaymentMethod } from '@/types/database'
+import type { PaymentMethod, RewardKind } from '@/types/database'
 
 export type ActionResult<T = void> =
   | ({ ok: true } & T)
@@ -67,6 +67,41 @@ export async function recordWithdrawal(input: {
     // Surfaces the RPC's guards (e.g. amount exceeds balance) as a clean message.
     return { ok: false, error: 'רישום המשיכה נכשל' }
   }
+
+  revalidatePath('/dashboard')
+  return { ok: true, balance: Number(newBalance) }
+}
+
+/**
+ * Send a bonus/privilege to a child: writes a `parent_reward` ledger row and,
+ * for kind=money, bumps child_stats.total_money_owed_nis — atomically
+ * (send_parent_reward RPC, migration 010). Privilege rewards never touch the
+ * balance, matching the doc ("privilege → no money impact, just recorded").
+ */
+export async function sendBonus(input: {
+  childId: string
+  kind: RewardKind
+  label: string
+  amountNis: number | null
+  note: string
+}): Promise<ActionResult<{ balance: number }>> {
+  const owned = await requireOwnedChild(input.childId)
+  if ('error' in owned) return { ok: false, error: owned.error }
+
+  if (!input.label.trim()) return { ok: false, error: 'חסר תיאור לתגמול' }
+  if (input.kind === 'money' && (!input.amountNis || input.amountNis <= 0)) {
+    return { ok: false, error: 'סכום לא תקין' }
+  }
+
+  const db = createServiceClient()
+  const { data: newBalance, error } = await db.rpc('send_parent_reward', {
+    p_child_id: input.childId,
+    p_kind: input.kind,
+    p_label: input.label,
+    p_amount_nis: input.kind === 'money' ? input.amountNis : null,
+    p_note: input.note.trim() || null,
+  })
+  if (error) return { ok: false, error: 'שליחת התגמול נכשלה' }
 
   revalidatePath('/dashboard')
   return { ok: true, balance: Number(newBalance) }

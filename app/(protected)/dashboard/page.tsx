@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { signOutAction } from '@/app/(auth)/actions'
 import { getChildTrend } from '@/lib/dashboard/trend-service'
+import { getOrSeedPresets } from '@/lib/dashboard/presets-service'
 import { DashboardClient, type DashboardChild } from './dashboard-client'
 
 export const metadata: Metadata = {
@@ -14,6 +15,12 @@ export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  // The (protected) layout already redirects unauthenticated visitors before
+  // this page ever renders — user is guaranteed here.
+  const parentId = user!.id
 
   // RLS scopes this to the logged-in parent (children.parent_id = auth.uid()),
   // and the embedded child_stats read is allowed by the "reads own children
@@ -24,6 +31,10 @@ export default async function DashboardPage() {
       'id, display_name, gender, locale, enabled_categories, child_stats ( total_stars, total_money_owed_nis, streak )'
     )
     .order('created_at')
+
+  // Reward presets are parent-level (shared across all their children), so
+  // fetched once rather than per child.
+  const presets = await getOrSeedPresets(supabase, parentId)
 
   // The trend chart needs a second, per-child query (correct submissions); run
   // all children's fetches concurrently rather than serially.
@@ -47,7 +58,7 @@ export default async function DashboardPage() {
 
   return (
     <>
-      <DashboardClient initialChildren={children} />
+      <DashboardClient initialChildren={children} presets={presets} />
       {/* Temporary sign-out affordance: it will move under the settings gear once
           the settings screens (separate task) are built. */}
       <form action={signOutAction} className="mx-auto max-w-[440px] px-4 pb-8">
