@@ -8,6 +8,7 @@
 // /api/placement; this screen never learns whether an answer was right.
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Send, Sparkles } from 'lucide-react'
 import type { PlacementSession } from '@/lib/placement/session'
 
@@ -39,6 +40,13 @@ export function PlacementQuiz({
   const [transitionMsg, setTransitionMsg] = useState('')
   const [doneMsg, setDoneMsg] = useState('מעולה, מתחילים!')
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const router = useRouter()
+
+  // Transition to the daily game by re-running the server component in place
+  // (router.refresh re-reads category_levels → renders the game, unmounting this
+  // screen). NOT window.location.reload(): a full reload can be served a stale
+  // cached placement page, which — combined with the alreadyDone guard — loops.
+  const goToGame = () => router.refresh()
 
   useEffect(() => {
     let cancelled = false
@@ -53,7 +61,7 @@ export function PlacementQuiz({
         if (cancelled) return
         if (!res.ok) throw new Error(step?.error ?? 'start failed')
         if (step.alreadyDone) {
-          window.location.reload() // levels already set → go to the game
+          router.refresh() // levels already set → render the game in place
           return
         }
         if (step.done) {
@@ -72,7 +80,7 @@ export function PlacementQuiz({
       cancelled = true
       if (timer.current) clearTimeout(timer.current)
     }
-  }, [accessToken])
+  }, [accessToken, router])
 
   async function submit() {
     if (!answer.trim() || !session) return
@@ -161,7 +169,7 @@ export function PlacementQuiz({
           {doneMsg}
         </p>
         <button
-          onClick={() => window.location.reload()}
+          onClick={goToGame}
           className="px-10 py-4 rounded-full font-black text-lg"
           style={{ background: ACCENT, color: BASE }}
         >
