@@ -552,6 +552,15 @@ export type Database = {
         // TRUE when a correct answer crossed a 10-star milestone.
         Returns: boolean
       }
+      apply_withdrawal: {
+        Args: {
+          p_child_id: string
+          p_amount: number
+          p_payment_method: string
+        }
+        // The new balance (total_money_owed_nis) after the withdrawal.
+        Returns: number
+      }
     }
     Enums: Record<never, never>
     CompositeTypes: Record<never, never>

@@ -1,37 +1,53 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { signOutAction } from '@/app/(auth)/actions'
+import { DashboardClient, type DashboardChild } from './dashboard-client'
 
 export const metadata: Metadata = {
   title: 'לוח הורים — חידון יומי',
 }
 
-// Placeholder landing for authenticated + consented parents. The real parent
-// dashboard (children tabs, stats, bonus panel, etc.) is built in later steps;
-// this exists so the consent gate has a protected route to guard.
+// Always render fresh: stats/balances change as children play and as the parent
+// records withdrawals, so this page must never be statically cached.
+export const dynamic = 'force-dynamic'
+
 export default async function DashboardPage() {
   const supabase = await createClient()
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
+
+  // RLS scopes this to the logged-in parent (children.parent_id = auth.uid()),
+  // and the embedded child_stats read is allowed by the "reads own children
+  // stats" policy — no explicit parent filter needed here.
+  const { data: rows } = await supabase
+    .from('children')
+    .select(
+      'id, display_name, gender, locale, child_stats ( total_stars, total_money_owed_nis, streak )'
+    )
+    .order('created_at')
+
+  const children: DashboardChild[] = (rows ?? []).map((c) => {
+    // Supabase types a to-one embed as an array; normalize to the single row.
+    const stats = Array.isArray(c.child_stats) ? c.child_stats[0] : c.child_stats
+    return {
+      id: c.id,
+      name: c.display_name,
+      gender: c.gender,
+      locale: c.locale,
+      stars: stats?.total_stars ?? 0,
+      money: Number(stats?.total_money_owed_nis ?? 0),
+      streak: stats?.streak ?? 0,
+    }
+  })
 
   return (
-    <main className="mx-auto max-w-2xl p-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-black">לוח הורים</h1>
-        <form action={signOutAction}>
-          <button
-            type="submit"
-            className="rounded-lg border border-black/15 px-3 py-1.5 text-sm font-medium"
-          >
-            התנתקות
-          </button>
-        </form>
-      </div>
-      <p className="mt-4 text-sm opacity-70">
-        מחוברים בתור <span dir="ltr">{user?.email}</span>. הלוח המלא ייבנה בשלבים
-        הבאים.
-      </p>
-    </main>
+    <>
+      <DashboardClient initialChildren={children} />
+      {/* Temporary sign-out affordance: it will move under the settings gear once
+          the settings screens (separate task) are built. */}
+      <form action={signOutAction} className="mx-auto max-w-[440px] px-4 pb-8">
+        <button type="submit" className="text-xs font-bold opacity-50 underline">
+          התנתקות
+        </button>
+      </form>
+    </>
   )
 }
