@@ -10,7 +10,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import type { PaymentMethod, RewardKind } from '@/types/database'
+import type { PaymentMethod, RewardKind, SubmissionStatus } from '@/types/database'
 
 export type ActionResult<T = void> =
   | ({ ok: true } & T)
@@ -70,6 +70,35 @@ export async function recordWithdrawal(input: {
 
   revalidatePath('/dashboard')
   return { ok: true, balance: Number(newBalance) }
+}
+
+/**
+ * Manually flip a graded submission's verdict — the "תקן ידנית" safety net for
+ * when Claude misjudged an answer. Atomically logs the override on the
+ * submission, writes a compensating star ledger row, and adjusts child_stats
+ * (apply_parent_override RPC, migration 011). Returns the new balance AND star
+ * count, since — unlike a withdrawal or bonus — an override can change both.
+ */
+export async function overrideGrade(input: {
+  submissionId: string
+  childId: string
+  newStatus: Extract<SubmissionStatus, 'correct' | 'incorrect'>
+  note: string
+}): Promise<ActionResult<{ balance: number; stars: number }>> {
+  const owned = await requireOwnedChild(input.childId)
+  if ('error' in owned) return { ok: false, error: owned.error }
+
+  const db = createServiceClient()
+  const { data, error } = await db.rpc('apply_parent_override', {
+    p_submission_id: input.submissionId,
+    p_child_id: input.childId,
+    p_new_status: input.newStatus,
+    p_note: input.note.trim() || null,
+  })
+  if (error || !data) return { ok: false, error: 'התיקון נכשל' }
+
+  revalidatePath('/dashboard')
+  return { ok: true, balance: Number(data.balance), stars: Number(data.stars) }
 }
 
 /**

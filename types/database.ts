@@ -367,6 +367,9 @@ export type Database = {
           note: string | null
           created_at: string | null
           payment_method: PaymentMethod | null
+          // Nullable (migration 008): only star rows written after 011 carry
+          // this — never backfilled for older rows or non-submission rewards.
+          submission_id: string | null
         }
         Insert: {
           id?: string
@@ -378,6 +381,7 @@ export type Database = {
           note?: string | null
           created_at?: string | null
           payment_method?: PaymentMethod | null
+          submission_id?: string | null
         }
         Update: {
           id?: string
@@ -389,6 +393,7 @@ export type Database = {
           note?: string | null
           created_at?: string | null
           payment_method?: PaymentMethod | null
+          submission_id?: string | null
         }
         Relationships: [
           {
@@ -571,6 +576,15 @@ export type Database = {
         }
         // The balance after the reward (unchanged when kind = privilege).
         Returns: number
+      }
+      apply_parent_override: {
+        Args: {
+          p_submission_id: string
+          p_child_id: string
+          p_new_status: string
+          p_note: string | null
+        }
+        Returns: { balance: number; stars: number }
       }
     }
     Enums: Record<never, never>

@@ -3,20 +3,23 @@
 import { useState } from 'react'
 import type { Gender, Locale, Tables } from '@/types/database'
 import type { TrendData } from '@/lib/dashboard/trend'
+import type { ActivityItem } from '@/lib/dashboard/activity-service'
 import { TabSwitcher } from './components/tab-switcher'
 import { SummaryCard } from './components/summary-card'
 import { TrendCard } from './components/trend-card'
 import { BonusPanel } from './components/bonus-panel'
+import { ActivityFeed } from './components/activity-feed'
 import { SHELL, INK, SOFT, ASSISTANT } from './theme'
 
 // One dashboard, one login. This client shell owns the active-tab state and the
 // per-child view-model (seeded from the server, then patched in place as
-// mutations return authoritative values — e.g. the balance after a withdrawal
-// or a money bonus), so switching tabs or recording either never needs a full
-// reload.
+// mutations return authoritative values — e.g. the balance after a withdrawal,
+// bonus, or override), so switching tabs or recording any of them never needs a
+// full reload.
 //
-// Renders the tab switcher, summary card, trend chart, and bonus panel. The
-// activity feed and benchmark card slot into the same per-child column next.
+// Renders the tab switcher, summary card, trend chart, bonus panel, and
+// activity feed (with the manual-override control). The benchmark card slots
+// into the same per-child column next.
 
 export interface DashboardChild {
   id: string
@@ -27,6 +30,7 @@ export interface DashboardChild {
   money: number
   streak: number
   trend: TrendData
+  activity: ActivityItem[]
 }
 
 type Preset = Pick<Tables<'reward_presets'>, 'id' | 'kind' | 'label' | 'amount_nis'>
@@ -68,7 +72,8 @@ export function DashboardClient({
           <SummaryCard child={active} onBalanceChange={(money) => patchActive({ money })} />
           <TrendCard data={active.trend} />
           <BonusPanel child={active} presets={presets} onBalanceChange={(money) => patchActive({ money })} />
-          {/* Stage 4+: activity feed + override, benchmark card. */}
+          <ActivityFeed childId={active.id} items={active.activity} onStatsChange={patchActive} />
+          {/* Stage 5: benchmark card. */}
         </div>
       )}
     </div>
