@@ -1,13 +1,15 @@
 // =============================================================================
 // scripts/reset-child.mjs — DEV-ONLY per-child test reset.
 //
-//   npm run test:reset -- <access_token> --force
+//   npm run test:reset -- <access_token> --force [--placement]
 //
 // Given a child's access_token, this:
 //   • deletes TODAY's daily_set for that child (submissions cascade with it), so
 //     a fresh set regenerates on the next visit,
 //   • clears that child's reward_ledger and notifications,
 //   • resets child_stats to zero (deletes the rollup row).
+//   • with --placement: also clears category_levels, so the next visit re-runs
+//     the placement quiz before the daily game.
 //
 // SAFETY — this is destructive, so it refuses to run unless ALL hold:
 //   1. --force is passed explicitly.
@@ -26,6 +28,7 @@ import { createClient } from '@supabase/supabase-js'
 const args = process.argv.slice(2)
 const force = args.includes('--force')
 const token = args.find((a) => !a.startsWith('--'))
+const alsoPlacement = args.includes('--placement')
 
 function die(msg) {
   console.error(`✗ ${msg}`)
@@ -99,10 +102,24 @@ const { data: notifs } = await db
 const { error: csErr } = await db.from('child_stats').delete().eq('child_id', child.id)
 if (csErr) die(csErr.message)
 
+// Optional: also clear calibration so the next visit re-runs the placement quiz.
+if (alsoPlacement) {
+  const { error: clErr } = await db
+    .from('children')
+    .update({ category_levels: {} })
+    .eq('id', child.id)
+  if (clErr) die(clErr.message)
+}
+
 console.log(
   `✓ deleted ${sets?.length ?? 0} daily_set(s) (+ their submissions), ` +
     `${ledger?.length ?? 0} ledger row(s), ${notifs?.length ?? 0} notification(s); ` +
-    `child_stats reset to zero.`
+    `child_stats reset to zero` +
+    (alsoPlacement ? '; category_levels cleared (placement will re-run).' : '.')
 )
-console.log('Next visit will regenerate a fresh daily set.')
+console.log(
+  alsoPlacement
+    ? 'Next visit will re-run the placement quiz, then a fresh daily set.'
+    : 'Next visit will regenerate a fresh daily set.'
+)
 process.exit(0)
