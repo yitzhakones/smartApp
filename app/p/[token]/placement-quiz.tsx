@@ -49,6 +49,10 @@ export function PlacementQuiz({
   const goToGame = () => router.refresh()
 
   useEffect(() => {
+    // INSTRUMENTATION: logs once per MOUNT. If this repeats every ~600ms in the
+    // browser console, PlacementQuiz is remounting (that would be the loop). It
+    // should print exactly once per placement session.
+    console.log('[PlacementQuiz] mount → start', new Date().toISOString())
     let cancelled = false
     ;(async () => {
       try {
@@ -60,11 +64,11 @@ export function PlacementQuiz({
         const step = await res.json()
         if (cancelled) return
         if (!res.ok) throw new Error(step?.error ?? 'start failed')
-        if (step.alreadyDone) {
-          router.refresh() // levels already set → render the game in place
-          return
-        }
-        if (step.done) {
+        // Already calibrated (or nothing to ask) → show the done screen and let
+        // the child TAP to continue. NEVER auto-navigate here: an automatic
+        // transition (reload OR refresh) that lands back on placement would
+        // re-trigger this effect and loop. Requiring a tap makes that impossible.
+        if (step.alreadyDone || step.done) {
           setDoneMsg(step.message ?? 'מעולה, מתחילים!')
           setPhase('done')
           return
@@ -80,7 +84,7 @@ export function PlacementQuiz({
       cancelled = true
       if (timer.current) clearTimeout(timer.current)
     }
-  }, [accessToken, router])
+  }, [accessToken])
 
   async function submit() {
     if (!answer.trim() || !session) return

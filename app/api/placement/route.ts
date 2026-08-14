@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
+import { rateLimit } from '@/lib/rate-limit'
 import { claudePlacementGrader } from '@/lib/grading/claude'
 import {
   PlacementAlreadyCompletedError,
@@ -34,6 +35,17 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { error: 'accessToken and a valid action are required' },
       { status: 400 }
+    )
+  }
+
+  // Safety net: cap runaway loops so a client bug can't hammer the DB / Claude.
+  // An ENTIRE placement is bounded (~11 calls: 1 start + ≤10 answers, plus a dev
+  // Strict-Mode double-start), so 15 in any 10s window never affects a real
+  // session but a sustained ~2–4/s loop blows past it and gets 429'd.
+  if (!rateLimit(`placement:${accessToken}`, 15, 10_000)) {
+    return NextResponse.json(
+      { error: 'Too many requests — slow down' },
+      { status: 429 }
     )
   }
 
