@@ -59,6 +59,16 @@ const CHILDREN = [
     enabled_categories: ['math', 'science', 'israeli_history', 'general_knowledge'],
     category_levels: { math: 'medium', science: 'easy', israeli_history: 'hard', general_knowledge: 'medium' },
   },
+  {
+    // No category_levels → first visit runs the placement quiz to calibrate them.
+    display_name: 'רותם',
+    gender: 'female',
+    locale: 'he',
+    access_mode: 'no_code',
+    access_pin: null,
+    enabled_categories: ['math', 'science', 'israeli_history'],
+    category_levels: {},
+  },
 ]
 
 console.log('base URL:', BASE, '\n')

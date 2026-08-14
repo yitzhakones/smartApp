@@ -7,6 +7,7 @@ import {
   getOrCreateTodaysGame,
 } from '@/lib/daily/service'
 import { StoryMode } from './story-mode'
+import { PlacementQuiz } from './placement-quiz'
 
 // The child app. Children have no auth session — the unguessable access_token in
 // the URL (app.com/p/{access_token}) is their identity, resolved server-side via
@@ -51,16 +52,23 @@ export default async function ChildPlayPage({
 
   if (!child) notFound()
 
+  // Difficulty calibration runs once, at setup: if the child has enabled
+  // categories but no category_levels yet, run the placement quiz first. It sets
+  // category_levels, then the child lands in the daily game on reload.
+  const levels = (child.category_levels ?? {}) as Record<string, DifficultyTier>
+  if (child.enabled_categories?.length && Object.keys(levels).length === 0) {
+    return (
+      <PlacementQuiz accessToken={params.token} childName={child.display_name} />
+    )
+  }
+
   let game
   try {
     game = await getOrCreateTodaysGame(db, {
       id: child.id,
       locale: child.locale,
       enabled_categories: child.enabled_categories,
-      category_levels: (child.category_levels ?? {}) as Record<
-        string,
-        DifficultyTier
-      >,
+      category_levels: levels,
     })
   } catch (err) {
     // Surface the real cause in the server logs, and show the child a message
