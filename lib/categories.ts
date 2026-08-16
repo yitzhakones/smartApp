@@ -9,3 +9,8 @@ export const CATEGORY_LABEL_HE: Record<Category, string> = {
   israeli_history: 'היסטוריה של ישראל',
   general_knowledge: 'ידע כללי',
 }
+
+// Fixed display order, matching the doc's own listing ("math / science /
+// israeli_history / general_knowledge") — used anywhere the full category bank
+// is iterated (e.g. EditChildScreen's category picker).
+export const CATEGORY_ORDER: Category[] = ['math', 'science', 'israeli_history', 'general_knowledge']
