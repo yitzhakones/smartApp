@@ -2,11 +2,8 @@
 // (landing-page-light-mockup.tsx) — every string exactly as written, both
 // locales already fully authored there. Not modified, only typed.
 //
-// NOTE: `example`, `exampleTag`, and `graded` are carried over as-is (per "use
-// the STRINGS dictionary structure from the mockup as-is") but nothing in the
-// mockup's JSX actually renders them — they look like leftovers from an
-// earlier layout iteration (an example-question card, maybe). Flagging rather
-// than dropping them silently.
+// `example`, `exampleTag`, and `graded` were dropped: confirmed dead weight
+// from an earlier mockup iteration (nothing in the layout ever rendered them).
 
 import { SOFT } from './theme'
 
@@ -49,10 +46,7 @@ export interface LandingStrings {
   steps: LandingStep[]
   trust: string
   finalCta: string
-  example: string
-  exampleTag: string
   streak: string
-  graded: string
 }
 
 export const LANDING_STRINGS: Record<Locale, LandingStrings> = {
@@ -90,10 +84,7 @@ export const LANDING_STRINGS: Record<Locale, LandingStrings> = {
     ],
     trust: 'נבדק אוטומטית, נשלט לגמרי על ידכם.\nבלי פרסומות, בלי תגמולי מזל, בלי הפתעות.',
     finalCta: 'בואו נתחיל',
-    example: 'באיזו שנה הוכרזה מדינת ישראל?',
-    exampleTag: 'היסטוריה של ישראל',
     streak: 'ימים ברצף',
-    graded: 'נבדק אוטומטית ✓',
   },
   en: {
     login: 'Log in',
@@ -129,9 +120,6 @@ export const LANDING_STRINGS: Record<Locale, LandingStrings> = {
     ],
     trust: 'Automatically graded, fully controlled by you.\nNo ads, no chance-based rewards, no surprises.',
     finalCta: "Let's get started",
-    example: 'In what year was the State of Israel declared?',
-    exampleTag: 'Israeli History',
     streak: 'day streak',
-    graded: 'Auto-graded ✓',
   },
 }

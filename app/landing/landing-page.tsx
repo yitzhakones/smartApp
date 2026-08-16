@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, Globe } from 'lucide-react'
 import { LANDING_STRINGS, type Locale } from './strings'
@@ -12,7 +12,8 @@ import { INK, PAPER, LIME_BRIGHT, FUCHSIA, SOFT, RUBIK, ASSISTANT } from './them
 // authenticated users straight to /dashboard before this ever renders).
 // Ported from landing-page-light-mockup.tsx — layout, spacing, copy, and
 // colors are locked; the only things actually wired to the real app are
-// navigation (sign up / log in) and the locale + reward-stepper interactivity
+// navigation (sign up / log in), the "How it works" CTA smooth-scrolling to
+// its own section on this page, and the locale + reward-stepper interactivity
 // the mockup already specified as client state.
 //
 // Fonts: no runtime <style>@import> (that caused a hydration mismatch
@@ -23,6 +24,11 @@ export function LandingPage() {
   const [perStar, setPerStar] = useState(1)
   const t = LANDING_STRINGS[locale]
   const dir = locale === 'he' ? 'rtl' : 'ltr'
+  const howItWorksRef = useRef<HTMLDivElement>(null)
+
+  function scrollToHowItWorks() {
+    howItWorksRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <div dir={dir} style={{ background: PAPER, minHeight: '100vh', fontFamily: RUBIK }}>
@@ -66,13 +72,13 @@ export function LandingPage() {
           >
             {t.cta1}
           </Link>
-          <Link
-            href="/login"
+          <button
+            onClick={scrollToHowItWorks}
             className="py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2"
             style={{ background: 'white', color: INK, border: `2px solid ${INK}` }}
           >
             {t.cta2} <ArrowLeft size={18} style={{ transform: locale === 'en' ? 'scaleX(-1)' : 'none' }} />
-          </Link>
+          </button>
         </div>
       </div>
 
@@ -122,7 +128,9 @@ export function LandingPage() {
           card + trend card, but is illustrative sample data, not a live fetch. */}
       <DashboardPreview t={t} />
 
-      <HowItWorks t={t} />
+      <div ref={howItWorksRef}>
+        <HowItWorks t={t} />
+      </div>
 
       {/* Trust strip */}
       <div className="px-6 pb-8">
