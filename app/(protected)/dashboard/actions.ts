@@ -8,6 +8,7 @@
 // role bypasses RLS, so this ownership check is what stands in for it.
 
 import { revalidatePath } from 'next/cache'
+import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import type {
@@ -170,8 +171,7 @@ export async function sendBonus(input: {
 // touches only one table and needs no cross-table atomicity.
 // -----------------------------------------------------------------------------
 
-export interface UpdateChildInput {
-  childId: string
+export interface ChildProfileInput {
   displayName: string
   gender: Gender
   locale: Locale
@@ -180,6 +180,70 @@ export interface UpdateChildInput {
   weeklyImprovementBonus: number
   accessMode: AccessMode
   accessPin: string | null
+}
+
+export interface UpdateChildInput extends ChildProfileInput {
+  childId: string
+}
+
+/** Shared by createChild and updateChild — the two write different rows, but the same shape. */
+function validateChildProfile(input: ChildProfileInput): string | null {
+  if (!input.displayName.trim()) return 'חסר שם'
+  if (input.enabledCategories.length === 0) return 'יש לבחור לפחות קטגוריה אחת'
+  if (!Number.isFinite(input.shekelPerStar) || input.shekelPerStar <= 0) {
+    return '₪ לכוכב חייב להיות מספר חיובי'
+  }
+  if (!Number.isFinite(input.weeklyImprovementBonus) || input.weeklyImprovementBonus < 0) {
+    return 'בונוס שבועי לא תקין'
+  }
+  if (input.accessMode === 'pin' && !/^\d{4}$/.test(input.accessPin ?? '')) {
+    return 'קוד PIN חייב להיות בן 4 ספרות'
+  }
+  return null
+}
+
+/**
+ * Create a brand-new child profile. RLS-scoped directly (children.parent_id =
+ * auth.uid(), enforced by the "Parent manages own children" policy's own
+ * WITH CHECK) — no service role needed. access_token is left for the column's
+ * own DB default (two concatenated gen_random_uuid()s, migration 001) rather
+ * than generated here — one less thing that could drift from the DB's own
+ * definition of "unguessable."
+ *
+ * On success this redirects straight into the new child's placement quiz
+ * (app/p/[token]/page.tsx already routes there on its own — a fresh child has
+ * enabled_categories set and category_levels empty, which is exactly the
+ * condition that page checks) rather than returning to the caller, matching
+ * the wizard's own "צור פרופיל והתחל כיול" framing. Only the failure path
+ * returns a value.
+ */
+export async function createChild(input: ChildProfileInput): Promise<ActionResult<never>> {
+  const validationError = validateChildProfile(input)
+  if (validationError) return { ok: false, error: validationError }
+  const accessPin = input.accessMode === 'pin' ? input.accessPin : null
+
+  const owned = await requireParent()
+  if ('error' in owned) return { ok: false, error: owned.error }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('children')
+    .insert({
+      parent_id: owned.parentId,
+      display_name: input.displayName.trim(),
+      gender: input.gender,
+      locale: input.locale,
+      enabled_categories: input.enabledCategories,
+      shekel_per_star: input.shekelPerStar,
+      weekly_improvement_bonus: input.weeklyImprovementBonus,
+      access_mode: input.accessMode,
+      access_pin: accessPin,
+    })
+    .select('access_token')
+    .single()
+  if (error || !data) return { ok: false, error: 'יצירת הפרופיל נכשלה' }
+
+  redirect(`/p/${data.access_token}`)
 }
 
 /**
@@ -192,25 +256,15 @@ export interface UpdateChildInput {
 export async function updateChild(
   input: UpdateChildInput
 ): Promise<ActionResult<{ child: UpdateChildInput }>> {
-  const displayName = input.displayName.trim()
-  if (!displayName) return { ok: false, error: 'חסר שם' }
-  if (input.enabledCategories.length === 0) return { ok: false, error: 'יש לבחור לפחות קטגוריה אחת' }
-  if (!Number.isFinite(input.shekelPerStar) || input.shekelPerStar <= 0) {
-    return { ok: false, error: '₪ לכוכב חייב להיות מספר חיובי' }
-  }
-  if (!Number.isFinite(input.weeklyImprovementBonus) || input.weeklyImprovementBonus < 0) {
-    return { ok: false, error: 'בונוס שבועי לא תקין' }
-  }
+  const validationError = validateChildProfile(input)
+  if (validationError) return { ok: false, error: validationError }
   const accessPin = input.accessMode === 'pin' ? input.accessPin : null
-  if (input.accessMode === 'pin' && !/^\d{4}$/.test(accessPin ?? '')) {
-    return { ok: false, error: 'קוד PIN חייב להיות בן 4 ספרות' }
-  }
 
   const supabase = await createClient()
   const { data, error } = await supabase
     .from('children')
     .update({
-      display_name: displayName,
+      display_name: input.displayName.trim(),
       gender: input.gender,
       locale: input.locale,
       enabled_categories: input.enabledCategories,

@@ -8,7 +8,9 @@
 
 export const INK = '#14172B'
 export const PAPER = '#FBF7EE'
+export const LIME = '#8FCB1F'
 export const FUCHSIA = '#D6127A'
+export const AMBER = '#C97A00'
 export const SOFT = '#6B7299'
 export const CARD = '#FFFFFF'
 

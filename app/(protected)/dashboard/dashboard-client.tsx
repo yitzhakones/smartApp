@@ -16,8 +16,9 @@ import { EditChildScreen } from './components/edit-child-screen'
 import { NotificationsScreen } from './components/notifications-screen'
 import { AccountSettingsScreen } from './components/account-settings-screen'
 import { PresetsScreen } from './components/presets-screen'
+import { AddChildWizard } from './components/add-child-wizard'
 import { markNotificationsRead, type UpdateChildInput } from './actions'
-import { SHELL, INK, SOFT, ASSISTANT } from './theme'
+import { SHELL, INK, FUCHSIA, SOFT, ASSISTANT } from './theme'
 
 // One dashboard, one login. This client shell owns the active-tab state, the
 // per-child view-model (seeded from the server, then patched in place as
@@ -48,7 +49,7 @@ export interface DashboardChild {
 }
 
 type Preset = Pick<Tables<'reward_presets'>, 'id' | 'kind' | 'label' | 'amount_nis'>
-type Screen = 'dashboard' | SettingsScreen
+type Screen = 'dashboard' | SettingsScreen | 'add-child'
 
 export function DashboardClient({
   initialChildren,
@@ -102,15 +103,29 @@ export function DashboardClient({
     }))
   }
 
+  // Checked before the empty-children guard below: the wizard doesn't depend
+  // on any existing child, and the empty state's own "הוסף ילד/ה" button needs
+  // this to actually navigate somewhere.
+  if (screen === 'add-child') {
+    return <AddChildWizard onBack={() => setScreen('dashboard')} />
+  }
+
   if (items.length === 0) {
     return (
       <div dir="rtl" style={SHELL} className="flex flex-col items-center justify-center gap-3 px-8">
         <p style={{ color: INK }} className="text-xl font-black text-center">
           עדיין אין ילדים בחשבון
         </p>
-        <p style={{ color: SOFT, fontFamily: ASSISTANT }} className="text-sm text-center">
+        <p style={{ color: SOFT, fontFamily: ASSISTANT }} className="text-sm text-center mb-2">
           לאחר הוספת ילד/ה, הלוח יציג כאן את ההתקדמות, התגמולים והפעילות.
         </p>
+        <button
+          onClick={() => setScreen('add-child')}
+          className="px-8 py-3.5 rounded-full font-black text-base"
+          style={{ background: FUCHSIA, color: 'white' }}
+        >
+          הוסף ילד/ה
+        </button>
       </div>
     )
   }
