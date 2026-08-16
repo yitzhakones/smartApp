@@ -10,9 +10,21 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import type { PaymentMethod, RewardKind, SubmissionStatus } from '@/types/database'
+import type {
+  AccessMode,
+  Category,
+  Gender,
+  Locale,
+  PaymentMethod,
+  RewardKind,
+  SubmissionStatus,
+} from '@/types/database'
 
-export type ActionResult<T = void> =
+// T defaults to `unknown`, not `void`: `{ ok: true } & void` collapses to
+// `never` in TS (a known intersection gotcha), which only broke once
+// deletePreset became the first caller relying on the no-extra-fields default.
+// `unknown` intersects away cleanly, leaving exactly `{ ok: true }`.
+export type ActionResult<T = unknown> =
   | ({ ok: true } & T)
   | { ok: false; error: string }
 
@@ -37,6 +49,16 @@ async function requireOwnedChild(
     .maybeSingle()
   if (!child) return { error: 'הילד/ה לא נמצא/ה' }
 
+  return { parentId: user.id }
+}
+
+/** Confirm there's a logged-in parent, for actions that don't target a specific child. */
+async function requireParent(): Promise<{ parentId: string } | { error: string }> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  if (!user) return { error: 'לא מחוברים' }
   return { parentId: user.id }
 }
 
@@ -134,4 +156,231 @@ export async function sendBonus(input: {
 
   revalidatePath('/dashboard')
   return { ok: true, balance: Number(newBalance) }
+}
+
+// -----------------------------------------------------------------------------
+// Settings — EditChildScreen / NotificationsScreen / AccountSettingsScreen /
+// PresetsScreen. None of these touch reward_ledger/child_stats, so — unlike the
+// three actions above — they write directly through the parent's own RLS
+// session (children, parents, and reward_presets all already grant the owning
+// parent full CRUD via RLS; no service role, no RPC needed). The one exception
+// is markNotificationsRead: notifications has SELECT-only RLS for parents, so
+// that one write goes through the service role after an ownership check, same
+// as the money actions — but as a single plain UPDATE, not an RPC, since it
+// touches only one table and needs no cross-table atomicity.
+// -----------------------------------------------------------------------------
+
+export interface UpdateChildInput {
+  childId: string
+  displayName: string
+  gender: Gender
+  locale: Locale
+  enabledCategories: Category[]
+  shekelPerStar: number
+  weeklyImprovementBonus: number
+  accessMode: AccessMode
+  accessPin: string | null
+}
+
+/**
+ * Save an edited child profile. RLS-scoped directly (children.parent_id =
+ * auth.uid()) — no service role. access_pin is forced to null unless
+ * accessMode is 'pin' (the DB's own pin_requires_pin_mode CHECK would reject
+ * an inconsistent combination anyway; validating here gives a clean message
+ * instead of a raw constraint-violation error).
+ */
+export async function updateChild(
+  input: UpdateChildInput
+): Promise<ActionResult<{ child: UpdateChildInput }>> {
+  const displayName = input.displayName.trim()
+  if (!displayName) return { ok: false, error: 'חסר שם' }
+  if (input.enabledCategories.length === 0) return { ok: false, error: 'יש לבחור לפחות קטגוריה אחת' }
+  if (!Number.isFinite(input.shekelPerStar) || input.shekelPerStar <= 0) {
+    return { ok: false, error: '₪ לכוכב חייב להיות מספר חיובי' }
+  }
+  if (!Number.isFinite(input.weeklyImprovementBonus) || input.weeklyImprovementBonus < 0) {
+    return { ok: false, error: 'בונוס שבועי לא תקין' }
+  }
+  const accessPin = input.accessMode === 'pin' ? input.accessPin : null
+  if (input.accessMode === 'pin' && !/^\d{4}$/.test(accessPin ?? '')) {
+    return { ok: false, error: 'קוד PIN חייב להיות בן 4 ספרות' }
+  }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('children')
+    .update({
+      display_name: displayName,
+      gender: input.gender,
+      locale: input.locale,
+      enabled_categories: input.enabledCategories,
+      shekel_per_star: input.shekelPerStar,
+      weekly_improvement_bonus: input.weeklyImprovementBonus,
+      access_mode: input.accessMode,
+      access_pin: accessPin,
+    })
+    .eq('id', input.childId)
+    .select(
+      'id, display_name, gender, locale, enabled_categories, shekel_per_star, weekly_improvement_bonus, access_mode, access_pin'
+    )
+    .single()
+  if (error || !data) return { ok: false, error: 'שמירת הפרופיל נכשלה' }
+
+  revalidatePath('/dashboard')
+  return {
+    ok: true,
+    child: {
+      childId: data.id,
+      displayName: data.display_name,
+      gender: data.gender,
+      locale: data.locale,
+      enabledCategories: data.enabled_categories,
+      shekelPerStar: Number(data.shekel_per_star),
+      weeklyImprovementBonus: Number(data.weekly_improvement_bonus),
+      accessMode: data.access_mode,
+      accessPin: data.access_pin,
+    },
+  }
+}
+
+/** Mark every unread in-app notification, across all of this parent's children, as read. */
+export async function markNotificationsRead(): Promise<ActionResult<{ readAt: string }>> {
+  const owned = await requireParent()
+  if ('error' in owned) return { ok: false, error: owned.error }
+
+  const supabase = await createClient()
+  // RLS ("Parent manages own children") already scopes this to the parent's own rows.
+  const { data: children } = await supabase.from('children').select('id')
+  const childIds = (children ?? []).map((c) => c.id)
+  const readAt = new Date().toISOString()
+  if (childIds.length === 0) return { ok: true, readAt }
+
+  const db = createServiceClient()
+  const { error } = await db
+    .from('notifications')
+    .update({ read_at: readAt })
+    .in('child_id', childIds)
+    .is('read_at', null)
+  if (error) return { ok: false, error: 'סימון ההתראות נכשל' }
+
+  revalidatePath('/dashboard')
+  return { ok: true, readAt }
+}
+
+export interface UpdateAccountInput {
+  locale: Locale
+  whatsappNumber: string
+  emailNotifications: boolean
+}
+
+/**
+ * Save account settings. RLS-scoped directly (parents.id = auth.uid()) — no
+ * service role. in_app is always forced true and whatsapp always false,
+ * regardless of any client input, matching the doc ("in_app: always on",
+ * "whatsapp: off — not built yet") — this UI doesn't even expose controls for
+ * either, but the server enforces it too rather than trusting the client.
+ */
+export async function updateAccountSettings(
+  input: UpdateAccountInput
+): Promise<ActionResult<{ whatsappNumber: string | null }>> {
+  const owned = await requireParent()
+  if ('error' in owned) return { ok: false, error: owned.error }
+
+  const whatsappNumber = input.whatsappNumber.trim() || null
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('parents')
+    .update({
+      locale: input.locale,
+      whatsapp_number: whatsappNumber,
+      notification_prefs: { in_app: true, email: input.emailNotifications, whatsapp: false },
+    })
+    .eq('id', owned.parentId)
+  if (error) return { ok: false, error: 'שמירת ההגדרות נכשלה' }
+
+  revalidatePath('/dashboard')
+  return { ok: true, whatsappNumber }
+}
+
+export interface PresetInput {
+  kind: RewardKind
+  label: string
+  amountNis: number | null
+}
+
+function validatePreset(input: PresetInput): string | null {
+  if (!input.label.trim()) return 'חסר תיאור לתגמול'
+  if (input.kind === 'money' && (!input.amountNis || input.amountNis <= 0)) {
+    return 'סכום לא תקין'
+  }
+  if (input.kind === 'privilege' && input.amountNis !== null) {
+    return 'לפינוק אין סכום'
+  }
+  return null
+}
+
+/** Add a new reward preset. RLS-scoped directly (reward_presets.parent_id = auth.uid()). */
+export async function createPreset(
+  input: PresetInput
+): Promise<ActionResult<{ preset: { id: string; kind: RewardKind; label: string; amount_nis: number | null } }>> {
+  const owned = await requireParent()
+  if ('error' in owned) return { ok: false, error: owned.error }
+  const validationError = validatePreset(input)
+  if (validationError) return { ok: false, error: validationError }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('reward_presets')
+    .insert({
+      parent_id: owned.parentId,
+      kind: input.kind,
+      label: input.label.trim(),
+      amount_nis: input.kind === 'money' ? input.amountNis : null,
+    })
+    .select('id, kind, label, amount_nis')
+    .single()
+  if (error || !data) return { ok: false, error: 'הוספת הצ׳יפ נכשלה' }
+
+  revalidatePath('/dashboard')
+  return { ok: true, preset: data }
+}
+
+/** Edit an existing reward preset. RLS-scoped directly. */
+export async function updatePreset(
+  id: string,
+  input: PresetInput
+): Promise<ActionResult<{ preset: { id: string; kind: RewardKind; label: string; amount_nis: number | null } }>> {
+  const owned = await requireParent()
+  if ('error' in owned) return { ok: false, error: owned.error }
+  const validationError = validatePreset(input)
+  if (validationError) return { ok: false, error: validationError }
+
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('reward_presets')
+    .update({
+      kind: input.kind,
+      label: input.label.trim(),
+      amount_nis: input.kind === 'money' ? input.amountNis : null,
+    })
+    .eq('id', id)
+    .select('id, kind, label, amount_nis')
+    .single()
+  if (error || !data) return { ok: false, error: 'עדכון הצ׳יפ נכשל' }
+
+  revalidatePath('/dashboard')
+  return { ok: true, preset: data }
+}
+
+/** Delete a reward preset. RLS-scoped directly. */
+export async function deletePreset(id: string): Promise<ActionResult> {
+  const owned = await requireParent()
+  if ('error' in owned) return { ok: false, error: owned.error }
+
+  const supabase = await createClient()
+  const { error } = await supabase.from('reward_presets').delete().eq('id', id)
+  if (error) return { ok: false, error: 'מחיקת הצ׳יפ נכשלה' }
+
+  revalidatePath('/dashboard')
+  return { ok: true }
 }

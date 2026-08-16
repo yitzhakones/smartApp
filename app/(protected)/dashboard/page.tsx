@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
-import { signOutAction } from '@/app/(auth)/actions'
 import { getChildTrend } from '@/lib/dashboard/trend-service'
 import { getOrSeedPresets } from '@/lib/dashboard/presets-service'
 import { getRecentActivity } from '@/lib/dashboard/activity-service'
+import { getAllNotifications } from '@/lib/dashboard/notifications-service'
+import { getParentAccount } from '@/lib/dashboard/account-service'
 import { DashboardClient, type DashboardChild } from './dashboard-client'
 
 export const metadata: Metadata = {
@@ -25,17 +26,24 @@ export default async function DashboardPage() {
 
   // RLS scopes this to the logged-in parent (children.parent_id = auth.uid()),
   // and the embedded child_stats read is allowed by the "reads own children
-  // stats" policy — no explicit parent filter needed here.
+  // stats" policy — no explicit parent filter needed here. Includes every
+  // field EditChildScreen edits, not just the summary-card fields.
   const { data: rows } = await supabase
     .from('children')
     .select(
-      'id, display_name, gender, locale, enabled_categories, child_stats ( total_stars, total_money_owed_nis, streak )'
+      `id, display_name, gender, locale, enabled_categories,
+       shekel_per_star, weekly_improvement_bonus, access_mode, access_pin,
+       child_stats ( total_stars, total_money_owed_nis, streak )`
     )
     .order('created_at')
 
-  // Reward presets are parent-level (shared across all their children), so
-  // fetched once rather than per child.
-  const presets = await getOrSeedPresets(supabase, parentId)
+  // Parent-level data (shared across all children, or not child-scoped at
+  // all), so each is fetched once rather than per child.
+  const [presets, notifications, account] = await Promise.all([
+    getOrSeedPresets(supabase, parentId),
+    getAllNotifications(supabase),
+    getParentAccount(supabase, parentId),
+  ])
 
   // The trend chart and activity feed each need a further per-child query; run
   // every child's fetches concurrently rather than serially.
@@ -52,6 +60,11 @@ export default async function DashboardPage() {
         name: c.display_name,
         gender: c.gender,
         locale: c.locale,
+        enabledCategories: c.enabled_categories,
+        shekelPerStar: Number(c.shekel_per_star),
+        weeklyImprovementBonus: Number(c.weekly_improvement_bonus),
+        accessMode: c.access_mode,
+        accessPin: c.access_pin,
         stars: stats?.total_stars ?? 0,
         money: Number(stats?.total_money_owed_nis ?? 0),
         streak: stats?.streak ?? 0,
@@ -62,15 +75,11 @@ export default async function DashboardPage() {
   )
 
   return (
-    <>
-      <DashboardClient initialChildren={children} presets={presets} />
-      {/* Temporary sign-out affordance: it will move under the settings gear once
-          the settings screens (separate task) are built. */}
-      <form action={signOutAction} className="mx-auto max-w-[440px] px-4 pb-8">
-        <button type="submit" className="text-xs font-bold opacity-50 underline">
-          התנתקות
-        </button>
-      </form>
-    </>
+    <DashboardClient
+      initialChildren={children}
+      initialPresets={presets}
+      initialNotifications={notifications}
+      initialAccount={account}
+    />
   )
 }

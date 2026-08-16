@@ -1,31 +1,43 @@
 'use client'
 
 import { useState } from 'react'
-import type { Gender, Locale, Tables } from '@/types/database'
+import type { AccessMode, Category, Gender, Locale, Tables } from '@/types/database'
 import type { TrendData } from '@/lib/dashboard/trend'
 import type { ActivityItem } from '@/lib/dashboard/activity-service'
+import type { NotificationItem } from '@/lib/dashboard/notifications-service'
+import type { ParentAccount } from '@/lib/dashboard/account-service'
 import { TabSwitcher } from './components/tab-switcher'
 import { SummaryCard } from './components/summary-card'
 import { TrendCard } from './components/trend-card'
 import { BonusPanel } from './components/bonus-panel'
 import { ActivityFeed } from './components/activity-feed'
+import { SettingsMenu, type SettingsScreen } from './components/settings-menu'
+import { EditChildScreen } from './components/edit-child-screen'
+import { NotificationsScreen } from './components/notifications-screen'
+import { AccountSettingsScreen } from './components/account-settings-screen'
+import { PresetsScreen } from './components/presets-screen'
+import { markNotificationsRead, type UpdateChildInput } from './actions'
 import { SHELL, INK, SOFT, ASSISTANT } from './theme'
 
-// One dashboard, one login. This client shell owns the active-tab state and the
+// One dashboard, one login. This client shell owns the active-tab state, the
 // per-child view-model (seeded from the server, then patched in place as
-// mutations return authoritative values — e.g. the balance after a withdrawal,
-// bonus, or override), so switching tabs or recording any of them never needs a
-// full reload.
-//
-// Renders the tab switcher, summary card, trend chart, bonus panel, and
-// activity feed (with the manual-override control). The benchmark card slots
-// into the same per-child column next.
+// mutations return authoritative values), and — for the settings area — the
+// current screen plus three more pieces of LIFTED state (presets,
+// notifications, account). Lifting presets here specifically is what makes
+// PresetsScreen and BonusPanel share one source of truth: both read the same
+// array, so an edit made in settings shows up in the bonus panel the instant
+// the parent navigates back — no page reload, no separate copy to go stale.
 
 export interface DashboardChild {
   id: string
   name: string
   gender: Gender
   locale: Locale
+  enabledCategories: Category[]
+  shekelPerStar: number
+  weeklyImprovementBonus: number
+  accessMode: AccessMode
+  accessPin: string | null
   stars: number
   money: number
   streak: number
@@ -34,20 +46,58 @@ export interface DashboardChild {
 }
 
 type Preset = Pick<Tables<'reward_presets'>, 'id' | 'kind' | 'label' | 'amount_nis'>
+type Screen = 'dashboard' | SettingsScreen
 
 export function DashboardClient({
   initialChildren,
-  presets,
+  initialPresets,
+  initialNotifications,
+  initialAccount,
 }: {
   initialChildren: DashboardChild[]
-  presets: Preset[]
+  initialPresets: Preset[]
+  initialNotifications: NotificationItem[]
+  initialAccount: ParentAccount
 }) {
   const [items, setItems] = useState(initialChildren)
   const [activeId, setActiveId] = useState(initialChildren[0]?.id ?? '')
+  const [screen, setScreen] = useState<Screen>('dashboard')
+  const [presets, setPresets] = useState(initialPresets)
+  const [notifications, setNotifications] = useState(initialNotifications)
+  const [account, setAccount] = useState(initialAccount)
+
   const active = items.find((c) => c.id === activeId)
 
   function patchActive(patch: Partial<DashboardChild>) {
     setItems((prev) => prev.map((c) => (c.id === activeId ? { ...c, ...patch } : c)))
+  }
+
+  async function handleMarkAllRead() {
+    const res = await markNotificationsRead()
+    if (res.ok) {
+      setNotifications((prev) => prev.map((n) => (n.readAt ? n : { ...n, readAt: res.readAt })))
+    }
+  }
+
+  function handleChildSaved(patch: UpdateChildInput) {
+    patchActive({
+      name: patch.displayName,
+      gender: patch.gender,
+      locale: patch.locale,
+      enabledCategories: patch.enabledCategories,
+      shekelPerStar: patch.shekelPerStar,
+      weeklyImprovementBonus: patch.weeklyImprovementBonus,
+      accessMode: patch.accessMode,
+      accessPin: patch.accessPin,
+    })
+  }
+
+  function handleAccountSaved(patch: { locale: Locale; whatsappNumber: string | null; email: boolean }) {
+    setAccount((prev) => ({
+      locale: patch.locale,
+      whatsappNumber: patch.whatsappNumber,
+      notificationPrefs: { ...prev.notificationPrefs, email: patch.email },
+    }))
   }
 
   if (items.length === 0) {
@@ -63,19 +113,68 @@ export function DashboardClient({
     )
   }
 
+  // active is always defined past this point: items is non-empty (checked
+  // above) and activeId always starts as / is set to one of items' own ids.
+  const currentChild = active!
+
+  if (screen === 'settings') {
+    return <SettingsMenu onBack={() => setScreen('dashboard')} onNavigate={setScreen} />
+  }
+  if (screen === 'edit-child') {
+    const editable: UpdateChildInput = {
+      childId: currentChild.id,
+      displayName: currentChild.name,
+      gender: currentChild.gender,
+      locale: currentChild.locale,
+      enabledCategories: currentChild.enabledCategories,
+      shekelPerStar: currentChild.shekelPerStar,
+      weeklyImprovementBonus: currentChild.weeklyImprovementBonus,
+      accessMode: currentChild.accessMode,
+      accessPin: currentChild.accessPin,
+    }
+    return (
+      <EditChildScreen
+        child={editable}
+        onBack={() => setScreen('settings')}
+        onSaved={handleChildSaved}
+      />
+    )
+  }
+  if (screen === 'notifications') {
+    return (
+      <NotificationsScreen
+        notifications={notifications}
+        onBack={() => setScreen('settings')}
+        onMarkAllRead={handleMarkAllRead}
+      />
+    )
+  }
+  if (screen === 'account') {
+    return (
+      <AccountSettingsScreen account={account} onBack={() => setScreen('settings')} onSaved={handleAccountSaved} />
+    )
+  }
+  if (screen === 'presets') {
+    return <PresetsScreen presets={presets} setPresets={setPresets} onBack={() => setScreen('settings')} />
+  }
+
   return (
     <div dir="rtl" style={SHELL}>
-      <TabSwitcher items={items} activeId={activeId} onSelect={setActiveId} />
+      <TabSwitcher
+        items={items}
+        activeId={activeId}
+        onSelect={setActiveId}
+        onOpenSettings={() => setScreen('settings')}
+        hasUnreadNotifications={notifications.some((n) => !n.readAt)}
+      />
 
-      {active && (
-        <div className="px-4 pb-24 flex flex-col gap-3 pt-2">
-          <SummaryCard child={active} onBalanceChange={(money) => patchActive({ money })} />
-          <TrendCard data={active.trend} />
-          <BonusPanel child={active} presets={presets} onBalanceChange={(money) => patchActive({ money })} />
-          <ActivityFeed childId={active.id} items={active.activity} onStatsChange={patchActive} />
-          {/* Stage 5: benchmark card. */}
-        </div>
-      )}
+      <div className="px-4 pb-24 flex flex-col gap-3 pt-2">
+        <SummaryCard child={currentChild} onBalanceChange={(money) => patchActive({ money })} />
+        <TrendCard data={currentChild.trend} />
+        <BonusPanel child={currentChild} presets={presets} onBalanceChange={(money) => patchActive({ money })} />
+        <ActivityFeed childId={currentChild.id} items={currentChild.activity} onStatsChange={patchActive} />
+        {/* Anonymous-comparison benchmark card: separate follow-up. */}
+      </div>
     </div>
   )
 }

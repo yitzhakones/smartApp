@@ -4,20 +4,20 @@ import { Settings } from 'lucide-react'
 import { INK, SOFT, CARD } from '../theme'
 
 // Top bar: one pill per child (lightweight switcher, one login — never a
-// re-login per child) plus the settings gear. The gear's target screens
-// (SettingsMenu / EditChild / …) are a separate follow-up task, so it's rendered
-// for design parity but intentionally inert here — `onOpenSettings` is optional
-// and left unwired until that task lands.
+// re-login per child) plus the settings gear, which opens SettingsMenu. The
+// small fuchsia dot mirrors the mockup's unread-notifications indicator.
 export function TabSwitcher({
   items,
   activeId,
   onSelect,
   onOpenSettings,
+  hasUnreadNotifications,
 }: {
   items: { id: string; name: string }[]
   activeId: string
   onSelect: (id: string) => void
-  onOpenSettings?: () => void
+  onOpenSettings: () => void
+  hasUnreadNotifications: boolean
 }) {
   return (
     <div className="px-4 pt-5 pb-2 flex gap-2 items-center">
@@ -42,6 +42,9 @@ export function TabSwitcher({
         aria-label="הגדרות"
       >
         <Settings size={16} color={SOFT} />
+        {hasUnreadNotifications && (
+          <div className="absolute top-1.5 left-1.5 w-2 h-2 rounded-full" style={{ background: '#D6127A' }} />
+        )}
       </button>
     </div>
   )
