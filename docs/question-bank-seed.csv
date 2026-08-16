@@ -1,0 +1,73 @@
+category,difficulty_tier,text_he,text_en,answer_key_he,answer_key_en
+math,easy,כמה זה 25 ועוד 48?,What is 25 plus 48?,73,73
+math,easy,כמה זה 9 כפול 6?,What is 9 times 6?,54,54
+math,easy,כמה זה 100 פחות 37?,What is 100 minus 37?,63,63
+math,easy,כמה חצאים יש בשלם אחד?,How many halves make one whole?,2,2
+math,easy,כמה זה חצי מ-50?,What is half of 50?,25,25
+math,easy,כמה צלעות יש למשולש?,How many sides does a triangle have?,3,3
+math,medium,כמה זה 15% מ-80?,What is 15% of 80?,12,12
+math,medium,פתרי: 2x + 5 = 17. מה x?,Solve: 2x + 5 = 17. What is x?,6,6
+math,medium,"מה שטח ריבוע שאורך צלעו 7 ס""מ?",What is the area of a square with a 7cm side?,49,49
+math,medium,כמה זה 144 חלקי 12?,What is 144 divided by 12?,12,12
+math,medium,כמה זה 3 בחזקת 3?,What is 3 to the power of 3?,27,27
+math,medium,מה ההיקף של מלבן שאורכו 10 ורוחבו 4?,What is the perimeter of a rectangle with length 10 and width 4?,28,28
+math,hard,פתרי: 3x - 7 = 2x + 5. מה x?,Solve: 3x - 7 = 2x + 5. What is x?,12,12
+math,hard,מה שטח משולש שבסיסו 10 וגובהו 6?,What is the area of a triangle with base 10 and height 6?,30,30
+math,hard,כמה זה השורש הריבועי של 169?,What is the square root of 169?,13,13
+math,hard,"אם מכונית נוסעת 60 קמ""ש, כמה ק""מ תעבור ב-2.5 שעות?","If a car travels at 60 km/h, how many km will it cover in 2.5 hours?",150,150
+math,hard,"מה הממוצע של 4, 9, 14, 21?","What is the average of 4, 9, 14, 21?",12,12
+math,hard,כמה זה 2/3 פחות 1/6?,What is 2/3 minus 1/6?,1/2,1/2
+science,easy,כמה רגליים יש לעכביש?,How many legs does a spider have?,8,8
+science,easy,מה האיבר שאנחנו נושמים מהאוויר?,What element do we breathe in from the air?,חמצן,Oxygen
+science,easy,איזה כוכב לכת הכי קרוב לשמש?,Which planet is closest to the sun?,כוכב חמה,Mercury
+science,easy,כמה עונות יש בשנה?,How many seasons are there in a year?,4,4
+science,easy,מה שם התהליך שבו מים הופכים לאדים?,What is the process called where water turns into vapor?,אידוי,Evaporation
+science,easy,איזה איבר בגוף שואב דם?,Which organ in the body pumps blood?,הלב,The heart
+science,medium,מהו הסמל הכימי של מים?,What is the chemical symbol for water?,H2O,H2O
+science,medium,"כמה עצמות יש בגוף אדם בוגר, בערך?","How many bones does an adult human body have, approximately?",206,206
+science,medium,מה שם הכוח שמושך עצמים לכדור הארץ?,What is the force that pulls objects toward Earth called?,כוח המשיכה,Gravity
+science,medium,איזה גז פולטים צמחים ביום?,What gas do plants release during the day?,חמצן,Oxygen
+science,medium,כמה חדרים יש בלב האדם?,How many chambers does the human heart have?,4,4
+science,medium,מה שם היחידה הבסיסית של כל יצור חי?,What is the basic unit of all living things called?,תא,Cell
+science,hard,מה שם התהליך שבו תא מתחלק לשני תאים זהים?,What is the process called where a cell divides into two identical cells?,מיטוזה,Mitosis
+science,hard,איזה כוכב לכת הכי גדול במערכת השמש?,Which is the largest planet in the solar system?,צדק,Jupiter
+science,hard,מהו הסמל הכימי של ברזל?,What is the chemical symbol for iron?,Fe,Fe
+science,hard,"כמה זמן לוקח לאור מהשמש להגיע לכדור הארץ, בערך?",About how long does it take sunlight to reach Earth?,כ-8 דקות,About 8 minutes
+science,hard,מה שם המולקולה שנושאת מידע גנטי?,What is the molecule that carries genetic information called?,DNA,DNA
+science,hard,מהי היחידה למדידת כוח?,What is the unit for measuring force?,ניוטון,Newton
+israeli_history,easy,באיזו שנה הוכרזה מדינת ישראל?,In what year was the State of Israel declared?,1948,1948
+israeli_history,easy,מה שם עיר הבירה של ישראל?,What is Israel's capital city?,ירושלים,Jerusalem
+israeli_history,easy,מה שם ההמנון הלאומי של ישראל?,What is Israel's national anthem called?,התקווה,Hatikvah
+israeli_history,easy,באיזו יבשת נמצאת ישראל?,Which continent is Israel located in?,אסיה,Asia
+israeli_history,easy,מה הצבעים שבדגל ישראל?,What colors are on Israel's flag?,כחול ולבן,Blue and white
+israeli_history,easy,באיזה יום בשבוע חל השבת?,On which day of the week is Shabbat?,שבת,Saturday
+israeli_history,medium,מי היה ראש הממשלה הראשון של ישראל?,Who was Israel's first Prime Minister?,דוד בן-גוריון,David Ben-Gurion
+israeli_history,medium,באיזו עיר הוכרזה העצמאות?,In which city was independence declared?,תל אביב,Tel Aviv
+israeli_history,medium,מה שם המלחמה שפרצה ב-1967?,What was the war that broke out in 1967 called?,מלחמת ששת הימים,The Six-Day War
+israeli_history,medium,מי הייתה ראשת הממשלה היחידה של ישראל עד היום?,Who is Israel's only female Prime Minister to date?,גולדה מאיר,Golda Meir
+israeli_history,medium,מה שם בית המחוקקים של ישראל?,What is Israel's legislative body called?,הכנסת,The Knesset
+israeli_history,medium,באיזה חודש עברי חוגגים את יום העצמאות?,In which Hebrew month is Independence Day celebrated?,אייר,Iyar
+israeli_history,hard,"מי כתב את ""מדינת היהודים"" והקים את התנועה הציונית?","Who wrote ""The Jewish State"" and founded the Zionist movement?",תאודור הרצל,Theodor Herzl
+israeli_history,hard,"באיזו מלחמה, ב-1973, הותקפה ישראל ביום כיפור?",What was the 1973 war in which Israel was attacked on Yom Kippur called?,מלחמת יום כיפור,The Yom Kippur War
+israeli_history,hard,מה שם ההסכם שנחתם עם מצרים ב-1979?,What was the agreement signed with Egypt in 1979 called?,הסכם השלום עם מצרים,The Egypt-Israel peace treaty
+israeli_history,hard,באיזו שנה אוחדה ירושלים?,In what year was Jerusalem reunified?,1967,1967
+israeli_history,hard,מה שם המסמך שבו הוכרזה הקמת המדינה?,What is the document declaring the state's establishment called?,מגילת העצמאות,The Declaration of Independence
+israeli_history,hard,מי היה נשיא המדינה הראשון?,Who was Israel's first president?,חיים ויצמן,Chaim Weizmann
+general_knowledge,easy,כמה ימים יש בשבוע?,How many days are there in a week?,7,7
+general_knowledge,easy,מה צבע השמיים ביום בהיר?,What color is the sky on a clear day?,כחול,Blue
+general_knowledge,easy,"איזו חיה נחשבת ל""מלך החיות""?","Which animal is called the ""king of the animals""?",אריה,Lion
+general_knowledge,easy,כמה חודשים יש בשנה?,How many months are there in a year?,12,12
+general_knowledge,easy,באיזו יבשת נמצאת מצרים?,Which continent is Egypt located in?,אפריקה,Africa
+general_knowledge,easy,איזו שפה מדברים בצרפת?,What language is spoken in France?,צרפתית,French
+general_knowledge,medium,מה שם האוקיינוס הגדול בעולם?,What is the largest ocean in the world called?,האוקיינוס השקט,The Pacific Ocean
+general_knowledge,medium,כמה יבשות יש בעולם?,How many continents are there in the world?,7,7
+general_knowledge,medium,מי צייר את המונה ליזה?,Who painted the Mona Lisa?,לאונרדו דה וינצ'י,Leonardo da Vinci
+general_knowledge,medium,מהי בירת יפן?,What is the capital of Japan?,טוקיו,Tokyo
+general_knowledge,medium,איזו מתכת נוזלית בטמפרטורת החדר?,Which metal is liquid at room temperature?,כספית,Mercury
+general_knowledge,medium,כמה שחקנים יש בקבוצת כדורגל על המגרש?,How many players does a soccer team have on the field?,11,11
+general_knowledge,hard,"מי כתב את ""רומיאו ויוליה""?","Who wrote ""Romeo and Juliet""?",וויליאם שייקספיר,William Shakespeare
+general_knowledge,hard,מהו ההר הגבוה בעולם?,What is the highest mountain in the world?,הר האוורסט,Mount Everest
+general_knowledge,hard,באיזו שנה נחת האדם הראשון על הירח?,In what year did humans first land on the moon?,1969,1969
+general_knowledge,hard,מהי בירת אוסטרליה?,What is the capital of Australia?,קנברה,Canberra
+general_knowledge,hard,מי המציא את הטלפון?,Who invented the telephone?,אלכסנדר גרהם בל,Alexander Graham Bell
+general_knowledge,hard,מהי המדינה הגדולה בעולם משטח?,What is the largest country in the world by area?,רוסיה,Russia
