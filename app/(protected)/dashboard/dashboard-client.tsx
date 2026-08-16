@@ -38,6 +38,8 @@ export interface DashboardChild {
   weeklyImprovementBonus: number
   accessMode: AccessMode
   accessPin: string | null
+  /** app.com/p/{access_token} — the child's one-time shareable link. */
+  shareUrl: string
   stars: number
   money: number
   streak: number
@@ -135,6 +137,7 @@ export function DashboardClient({
     return (
       <EditChildScreen
         child={editable}
+        shareUrl={currentChild.shareUrl}
         onBack={() => setScreen('settings')}
         onSaved={handleChildSaved}
       />

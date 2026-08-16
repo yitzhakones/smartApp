@@ -5,6 +5,7 @@ import { getOrSeedPresets } from '@/lib/dashboard/presets-service'
 import { getRecentActivity } from '@/lib/dashboard/activity-service'
 import { getAllNotifications } from '@/lib/dashboard/notifications-service'
 import { getParentAccount } from '@/lib/dashboard/account-service'
+import { buildChildShareLink, getAppOrigin } from '@/lib/dashboard/share-link'
 import { DashboardClient, type DashboardChild } from './dashboard-client'
 
 export const metadata: Metadata = {
@@ -32,17 +33,19 @@ export default async function DashboardPage() {
     .from('children')
     .select(
       `id, display_name, gender, locale, enabled_categories,
-       shekel_per_star, weekly_improvement_bonus, access_mode, access_pin,
+       shekel_per_star, weekly_improvement_bonus, access_mode, access_pin, access_token,
        child_stats ( total_stars, total_money_owed_nis, streak )`
     )
     .order('created_at')
 
   // Parent-level data (shared across all children, or not child-scoped at
-  // all), so each is fetched once rather than per child.
-  const [presets, notifications, account] = await Promise.all([
+  // all), so each is fetched once rather than per child. The origin is the
+  // same for every child's share link, so it's resolved once too.
+  const [presets, notifications, account, origin] = await Promise.all([
     getOrSeedPresets(supabase, parentId),
     getAllNotifications(supabase),
     getParentAccount(supabase, parentId),
+    getAppOrigin(),
   ])
 
   // The trend chart and activity feed each need a further per-child query; run
@@ -65,6 +68,7 @@ export default async function DashboardPage() {
         weeklyImprovementBonus: Number(c.weekly_improvement_bonus),
         accessMode: c.access_mode,
         accessPin: c.access_pin,
+        shareUrl: buildChildShareLink(origin, c.access_token),
         stars: stats?.total_stars ?? 0,
         money: Number(stats?.total_money_owed_nis ?? 0),
         streak: stats?.streak ?? 0,

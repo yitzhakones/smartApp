@@ -6,16 +6,21 @@ import type { Category } from '@/types/database'
 import { CATEGORY_LABEL_HE, CATEGORY_ORDER } from '@/lib/categories'
 import { updateChild, type UpdateChildInput } from '../actions'
 import { ScreenHeader } from './screen-header'
+import { ShareLinkCard } from './share-link-card'
 import { SHELL, INK, PAPER, CARD, FUCHSIA, SOFT, ASSISTANT, SETTINGS_TEXT, SETTINGS_TAP } from '../theme'
 
 // Real fields only — age_group/region aren't part of this screen (not asked
 // for, and not otherwise editable anywhere in this dashboard yet).
 export function EditChildScreen({
   child,
+  shareUrl,
   onBack,
   onSaved,
 }: {
   child: UpdateChildInput
+  /** The child's one-time access link (app.com/p/{access_token}) — read-only,
+   *  never part of the editable/savable fields above. */
+  shareUrl: string
   onBack: () => void
   onSaved: (patch: UpdateChildInput) => void
 }) {
@@ -240,6 +245,8 @@ export function EditChildScreen({
             />
           )}
         </div>
+
+        <ShareLinkCard url={shareUrl} childName={child.displayName} />
       </div>
 
       <div
