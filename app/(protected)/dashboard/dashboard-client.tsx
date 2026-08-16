@@ -65,6 +65,11 @@ export function DashboardClient({
   const [items, setItems] = useState(initialChildren)
   const [activeId, setActiveId] = useState(initialChildren[0]?.id ?? '')
   const [screen, setScreen] = useState<Screen>('dashboard')
+  // Where "cancel"/step-0-back in AddChildWizard should return to — it's
+  // reachable from two different places (the empty-dashboard state and
+  // SettingsMenu), and each needs to land back where it was opened from, not
+  // always the same screen.
+  const [addChildReturnTo, setAddChildReturnTo] = useState<'dashboard' | 'settings'>('dashboard')
   const [presets, setPresets] = useState(initialPresets)
   const [notifications, setNotifications] = useState(initialNotifications)
   const [account, setAccount] = useState(initialAccount)
@@ -107,7 +112,7 @@ export function DashboardClient({
   // on any existing child, and the empty state's own "הוסף ילד/ה" button needs
   // this to actually navigate somewhere.
   if (screen === 'add-child') {
-    return <AddChildWizard onBack={() => setScreen('dashboard')} />
+    return <AddChildWizard onBack={() => setScreen(addChildReturnTo)} />
   }
 
   if (items.length === 0) {
@@ -120,7 +125,10 @@ export function DashboardClient({
           לאחר הוספת ילד/ה, הלוח יציג כאן את ההתקדמות, התגמולים והפעילות.
         </p>
         <button
-          onClick={() => setScreen('add-child')}
+          onClick={() => {
+            setAddChildReturnTo('dashboard')
+            setScreen('add-child')
+          }}
           className="px-8 py-3.5 rounded-full font-black text-base"
           style={{ background: FUCHSIA, color: 'white' }}
         >
@@ -135,7 +143,16 @@ export function DashboardClient({
   const currentChild = active!
 
   if (screen === 'settings') {
-    return <SettingsMenu onBack={() => setScreen('dashboard')} onNavigate={setScreen} />
+    return (
+      <SettingsMenu
+        onBack={() => setScreen('dashboard')}
+        onNavigate={setScreen}
+        onAddChild={() => {
+          setAddChildReturnTo('settings')
+          setScreen('add-child')
+        }}
+      />
+    )
   }
   if (screen === 'edit-child') {
     const editable: UpdateChildInput = {

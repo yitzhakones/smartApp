@@ -18,10 +18,12 @@ import { INK, PAPER, CARD, LIME, FUCHSIA, AMBER, SOFT, RUBIK, ASSISTANT } from '
 //      exit path, so the back button is always visible, reading "ביטול" on
 //      step 0 (cancels the wizard) and "חזרה" after that (goes back a step).
 //
-// One likely mockup typo ported verbatim rather than silently fixed: step 2's
-// label reads "...תתרגל/תתרגל?" — the same word on both sides of the slash,
-// where a real male/female pair ("תתרגל"/"יתרגל") was presumably intended
-// given `gender` is already known at that point. Flagging, not guessing.
+// Fixed (confirmed, not guessed): step 2's mockup label read "...תתרגל/תתרגל?"
+// — the same word on both sides of the slash. `gender` is already known at
+// that point, so it now picks the real 3rd-person future pair — "תתרגל" (she
+// will practice) / "יתרגל" (he will practice) — and the "היא"/"הוא" fallback
+// (shown before a name is typed) agrees with whichever verb form is picked,
+// since a mismatched pronoun+verb would be its own new grammar error.
 //
 // age_group is deliberately never asked here, matching the mock's own note in
 // step 0 — it's collected later (not yet built) for anonymous peer comparison
@@ -196,7 +198,8 @@ export function AddChildWizard({ onBack }: { onBack: () => void }) {
         {step === 1 && (
           <div>
             <p style={{ color: SOFT, fontFamily: ASSISTANT }} className="text-xs font-bold mb-3">
-              באילו נושאים {name || 'היא'} תתרגל/תתרגל? אפשר לבחור כמה
+              באילו נושאים {name || (gender === 'female' ? 'היא' : 'הוא')}{' '}
+              {gender === 'female' ? 'תתרגל' : 'יתרגל'}? אפשר לבחור כמה
             </p>
             <div className="flex flex-col gap-2.5">
               {CATEGORY_ORDER.map((key) => {

@@ -1,7 +1,7 @@
-import { Bell, ChevronDown, Globe, Sparkles, User } from 'lucide-react'
+import { Bell, ChevronDown, Globe, Sparkles, User, UserPlus } from 'lucide-react'
 import { Card } from './card'
 import { ScreenHeader } from './screen-header'
-import { SHELL, INK, SOFT, PAPER, FUCHSIA, ASSISTANT, SETTINGS_TEXT } from '../theme'
+import { SHELL, INK, SOFT, PAPER, FUCHSIA, ASSISTANT, SETTINGS_TEXT, SETTINGS_TAP } from '../theme'
 
 export type SettingsScreen = 'settings' | 'edit-child' | 'notifications' | 'account' | 'presets'
 
@@ -15,9 +15,17 @@ const ITEMS: { key: SettingsScreen; icon: typeof Sparkles; label: string; desc: 
 export function SettingsMenu({
   onBack,
   onNavigate,
+  onAddChild,
 }: {
   onBack: () => void
   onNavigate: (screen: SettingsScreen) => void
+  /** Launches the same AddChildWizard the empty-dashboard state uses — a
+   *  parent who already has a child needs a way to add another one too. Kept
+   *  as its own prop rather than folded into SettingsScreen/onNavigate: it's
+   *  a one-shot creation flow, not a persistent config screen like the four
+   *  items above, so it's styled as a distinct action instead of a 5th
+   *  identical row. */
+  onAddChild: () => void
 }) {
   return (
     <div dir="rtl" style={SHELL}>
@@ -45,6 +53,14 @@ export function SettingsMenu({
             </Card>
           </button>
         ))}
+
+        <button
+          onClick={onAddChild}
+          className={`w-full flex items-center justify-center gap-2 ${SETTINGS_TAP.buttonPadY} rounded-2xl font-black ${SETTINGS_TEXT.button} mt-2`}
+          style={{ background: FUCHSIA, color: 'white' }}
+        >
+          <UserPlus size={20} /> הוספת ילד/ה נוסף/ת
+        </button>
       </div>
     </div>
   )
