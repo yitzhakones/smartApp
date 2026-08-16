@@ -445,6 +445,13 @@ export type Database = {
           trigger_type: NotificationTrigger
           sent_at: string | null
           status: string
+          // Nullable (migration 012): NULL = unread, timestamp = when the
+          // parent marked it read. Distinct from `status` (delivery status).
+          read_at: string | null
+          // Migration 012: the table had no timestamp at all before this (see
+          // migration comment — existing rows backfill to the migration's
+          // apply-time, not their true original moment).
+          created_at: string
         }
         Insert: {
           id?: string
@@ -453,6 +460,8 @@ export type Database = {
           trigger_type: NotificationTrigger
           sent_at?: string | null
           status?: string
+          read_at?: string | null
+          created_at?: string
         }
         Update: {
           id?: string
@@ -461,6 +470,8 @@ export type Database = {
           trigger_type?: NotificationTrigger
           sent_at?: string | null
           status?: string
+          read_at?: string | null
+          created_at?: string
         }
         Relationships: [
           {
