@@ -56,7 +56,16 @@ export default async function ChildPlayPage({
   // categories but no category_levels yet, run the placement quiz first. It sets
   // category_levels, then the child lands in the daily game on reload.
   const levels = (child.category_levels ?? {}) as Record<string, DifficultyTier>
-  if (child.enabled_categories?.length && Object.keys(levels).length === 0) {
+  const goesToPlacement = !!child.enabled_categories?.length && Object.keys(levels).length === 0
+  // TEMPORARY DIAGNOSTIC LOGGING — remove once the "בואו נתחיל" intermittent-
+  // failure investigation is closed. This is a fresh createServiceClient() +
+  // .select() on every request (force-dynamic, no fetch cache) — logs exactly
+  // what this specific read saw, for correlation against the WRITE CONFIRMED
+  // log in lib/placement/service.ts.
+  console.log(
+    `[child app] ROUTING READ child=${child.id} levels=${JSON.stringify(levels)} decision=${goesToPlacement ? 'placement' : 'game'} at=${new Date().toISOString()}`
+  )
+  if (goesToPlacement) {
     return (
       <PlacementQuiz accessToken={params.token} childName={child.display_name} />
     )

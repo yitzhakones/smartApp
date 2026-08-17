@@ -39,6 +39,7 @@ export function PlacementQuiz({
   const [answer, setAnswer] = useState('')
   const [transitionMsg, setTransitionMsg] = useState('')
   const [doneMsg, setDoneMsg] = useState('מעולה, מתחילים!')
+  const [confirming, setConfirming] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router = useRouter()
 
@@ -46,7 +47,49 @@ export function PlacementQuiz({
   // (router.refresh re-reads category_levels → renders the game, unmounting this
   // screen). NOT window.location.reload(): a full reload can be served a stale
   // cached placement page, which — combined with the alreadyDone guard — loops.
-  const goToGame = () => router.refresh()
+  //
+  // Doesn't call router.refresh() blindly: first CONFIRMS category_levels is
+  // actually set, by calling the same 'start' action startPlacement already
+  // uses for this exact check — when levels are set it throws
+  // PlacementAlreadyCompletedError server-side, which the route turns into
+  // {alreadyDone:true} (see app/api/placement/route.ts). That's a pure read +
+  // conditional throw with no side effects either way, so it's safe to call
+  // repeatedly. Retries briefly (server-side timing shows the write is always
+  // committed long before this tap is even possible — see finalizePlacement's
+  // log — so this is defense-in-depth against whatever the real cause turns
+  // out to be, not a fix aimed at a specific proven race) before refreshing
+  // regardless — if levels genuinely aren't set, the page correctly shows
+  // placement again rather than silently doing nothing.
+  async function goToGame() {
+    console.log('[PlacementQuiz] tap "בואו נתחיל" →', new Date().toISOString())
+    setConfirming(true)
+    const MAX_ATTEMPTS = 5
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+      try {
+        const res = await fetch('/api/placement', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ action: 'start', accessToken }),
+        })
+        const step = await res.json()
+        console.log(
+          `[PlacementQuiz] confirm attempt ${attempt}/${MAX_ATTEMPTS} →`,
+          step,
+          new Date().toISOString()
+        )
+        if (step.alreadyDone) {
+          router.refresh()
+          return
+        }
+      } catch {
+        // Network hiccup — fall through to retry.
+      }
+      if (attempt < MAX_ATTEMPTS) {
+        await new Promise((resolve) => setTimeout(resolve, 200 * attempt))
+      }
+    }
+    router.refresh()
+  }
 
   useEffect(() => {
     // INSTRUMENTATION: logs once per MOUNT. If this repeats every ~600ms in the
@@ -174,10 +217,11 @@ export function PlacementQuiz({
         </p>
         <button
           onClick={goToGame}
-          className="px-10 py-4 rounded-full font-black text-lg"
+          disabled={confirming}
+          className="px-10 py-4 rounded-full font-black text-lg disabled:opacity-60"
           style={{ background: ACCENT, color: BASE }}
         >
-          בואו נתחיל
+          {confirming ? 'רגע…' : 'בואו נתחיל'}
         </button>
       </div>
     )

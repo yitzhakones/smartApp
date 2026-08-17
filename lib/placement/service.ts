@@ -274,5 +274,13 @@ export async function finalizePlacement(
     .eq('id', session.childId)
 
   if (error) throw error
+  // TEMPORARY DIAGNOSTIC LOGGING — remove once the "בואו נתחיל" intermittent-
+  // failure investigation is closed. Marks the exact moment the write is
+  // confirmed committed (the update() promise only resolves after Postgres
+  // commits), for correlation against the routing-check read log in
+  // app/p/[token]/page.tsx and the client-side tap log in placement-quiz.tsx.
+  console.log(
+    `[placement] WRITE CONFIRMED child=${session.childId} levels=${JSON.stringify(levels)} at=${new Date().toISOString()}`
+  )
   return levels
 }
