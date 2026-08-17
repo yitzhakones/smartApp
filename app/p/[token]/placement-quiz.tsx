@@ -40,7 +40,9 @@ export function PlacementQuiz({
   const [transitionMsg, setTransitionMsg] = useState('')
   const [doneMsg, setDoneMsg] = useState('מעולה, מתחילים!')
   const [confirming, setConfirming] = useState(false)
+  const [confirmError, setConfirmError] = useState<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const watchdog = useRef<ReturnType<typeof setTimeout> | null>(null)
   const router = useRouter()
 
   // Transition to the daily game by re-running the server component in place
@@ -54,16 +56,27 @@ export function PlacementQuiz({
   // PlacementAlreadyCompletedError server-side, which the route turns into
   // {alreadyDone:true} (see app/api/placement/route.ts). That's a pure read +
   // conditional throw with no side effects either way, so it's safe to call
-  // repeatedly. Retries briefly (server-side timing shows the write is always
-  // committed long before this tap is even possible — see finalizePlacement's
-  // log — so this is defense-in-depth against whatever the real cause turns
-  // out to be, not a fix aimed at a specific proven race) before refreshing
-  // regardless — if levels genuinely aren't set, the page correctly shows
-  // placement again rather than silently doing nothing.
+  // repeatedly.
+  //
+  // BOTH exits are terminal and visible — this used to have neither:
+  //   - never confirmed after retries → confirming resets to false and
+  //     confirmError shows a manual-retry button. Does NOT call refresh() in
+  //     this case: refreshing while genuinely not done risks landing back on
+  //     a re-render of THIS SAME component (see below), not a fresh attempt.
+  //   - confirmed, but router.refresh() gives no callback/promise that tells
+  //     us it actually landed — and critically, if the server ever still
+  //     returns <PlacementQuiz> after a refresh (same component type at the
+  //     same position, no key), React updates this instance in place rather
+  //     than remounting it: state isn't reset and the mount effect (keyed on
+  //     accessToken, unchanged) never re-fires. Nothing would ever move
+  //     again. A watchdog timeout means this screen can never stay frozen on
+  //     "רגע…" no matter what refresh() does or doesn't do underneath.
   async function goToGame() {
     console.log('[PlacementQuiz] tap "בואו נתחיל" →', new Date().toISOString())
     setConfirming(true)
+    setConfirmError(null)
     const MAX_ATTEMPTS = 5
+    let confirmed = false
     for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
       try {
         const res = await fetch('/api/placement', {
@@ -78,8 +91,8 @@ export function PlacementQuiz({
           new Date().toISOString()
         )
         if (step.alreadyDone) {
-          router.refresh()
-          return
+          confirmed = true
+          break
         }
       } catch {
         // Network hiccup — fall through to retry.
@@ -88,7 +101,18 @@ export function PlacementQuiz({
         await new Promise((resolve) => setTimeout(resolve, 200 * attempt))
       }
     }
+
+    if (!confirmed) {
+      setConfirming(false)
+      setConfirmError('לא הצלחנו לוודא שהכיול הושלם. אפשר לנסות שוב.')
+      return
+    }
+
     router.refresh()
+    watchdog.current = setTimeout(() => {
+      setConfirming(false)
+      setConfirmError('משהו נתקע בדרך למשחק. אפשר לנסות שוב.')
+    }, 6000)
   }
 
   useEffect(() => {
@@ -126,6 +150,7 @@ export function PlacementQuiz({
     return () => {
       cancelled = true
       if (timer.current) clearTimeout(timer.current)
+      if (watchdog.current) clearTimeout(watchdog.current)
     }
   }, [accessToken])
 
@@ -221,8 +246,13 @@ export function PlacementQuiz({
           className="px-10 py-4 rounded-full font-black text-lg disabled:opacity-60"
           style={{ background: ACCENT, color: BASE }}
         >
-          {confirming ? 'רגע…' : 'בואו נתחיל'}
+          {confirming ? 'רגע…' : confirmError ? 'לנסות שוב' : 'בואו נתחיל'}
         </button>
+        {confirmError && (
+          <p style={{ color: '#FF9DA6', fontFamily: ASSISTANT }} className="text-sm text-center">
+            {confirmError}
+          </p>
+        )}
       </div>
     )
   }
