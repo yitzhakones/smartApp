@@ -109,10 +109,17 @@ export function PlacementQuiz({
     }
 
     router.refresh()
+    // 6s was tuned against localhost (near-zero latency) and was very likely
+    // too aggressive for a real device: a cold serverless function + real
+    // mobile network can easily take longer than that for the /p/[token]
+    // RSC fetch refresh() triggers, especially if that route hasn't been hit
+    // recently. 14s gives real-world conditions room without going back to
+    // "no terminal state" — still bounded, still shows the same visible
+    // error + manual retry if truly stuck past that.
     watchdog.current = setTimeout(() => {
       setConfirming(false)
       setConfirmError('משהו נתקע בדרך למשחק. אפשר לנסות שוב.')
-    }, 6000)
+    }, 14000)
   }
 
   useEffect(() => {
