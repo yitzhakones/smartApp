@@ -42,13 +42,21 @@ export default async function ChildPlayPage({
 }) {
   const db = createServiceClient()
 
-  const { data: child } = await db
+  const { data: child, error: childQueryError } = await db
     .from('children')
     .select(
       'id, display_name, locale, enabled_categories, category_levels, shekel_per_star'
     )
     .eq('access_token', params.token)
     .maybeSingle()
+
+  // TEMPORARY DIAGNOSTIC LOGGING — completely raw and unprocessed: both `data`
+  // and `error` exactly as Supabase returned them, and the exact filter value
+  // with visible quotes/length so whitespace or encoding issues are visible.
+  // Logged before any `?? {}` fallback or other processing runs.
+  console.log(
+    `[child app] RAW QUERY filter=access_token="${params.token}" (len=${params.token.length}) data=${JSON.stringify(child)} error=${JSON.stringify(childQueryError)}`
+  )
 
   if (!child) notFound()
 
