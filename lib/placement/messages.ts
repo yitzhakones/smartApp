@@ -23,7 +23,7 @@ interface PlacementCopy {
 
 const COPY: Record<Locale, PlacementCopy> = {
   he: {
-    betweenQuestions: 'תודה! הבאה',
+    betweenQuestions: 'תודה, לשאלה הבאה',
     completed: 'מעולה, מתחילים!',
   },
   en: {

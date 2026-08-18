@@ -3,7 +3,7 @@
 // Placement quiz — runs once at child setup to calibrate category_levels via the
 // adaptive 2-question ladder (lib/placement). Per the doc this is DELIBERATELY
 // neutral: no confetti, no color flash, no correct/incorrect indicator, and no
-// score or number ever shown. Just calm questions, a "תודה! הבאה" beat between
+// score or number ever shown. Just calm questions, a "תודה, לשאלה הבאה" beat between
 // them, and "מעולה, מתחילים!" at the end. All grading happens server-side via
 // /api/placement; this screen never learns whether an answer was right.
 
@@ -104,7 +104,7 @@ export function PlacementQuiz({
 
     if (!confirmed) {
       setConfirming(false)
-      setConfirmError('לא הצלחנו לוודא שהכיול הושלם. אפשר לנסות שוב.')
+      setConfirmError('לא הצלחנו לוודא ששאלון ההיכרות להתאמת השאלות הושלם. אפשר לנסות שוב.')
       return
     }
 
@@ -182,8 +182,8 @@ export function PlacementQuiz({
         return
       }
 
-      // Neutral beat between questions ("תודה! הבאה"), then the next question.
-      setTransitionMsg(step.message ?? 'תודה! הבאה')
+      // Neutral beat between questions ("תודה, לשאלה הבאה"), then the next question.
+      setTransitionMsg(step.message ?? 'תודה, לשאלה הבאה')
       setPhase('transition')
       timer.current = setTimeout(() => {
         setQuestion(step.question)

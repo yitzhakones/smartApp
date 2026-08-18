@@ -16,7 +16,11 @@ export const metadata: Metadata = {
 // records withdrawals, so this page must never be statically cached.
 export const dynamic = 'force-dynamic'
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: { newChild?: string }
+}) {
   const supabase = await createClient()
   const {
     data: { user },
@@ -84,6 +88,7 @@ export default async function DashboardPage() {
       initialPresets={presets}
       initialNotifications={notifications}
       initialAccount={account}
+      justCreatedChildId={searchParams.newChild ?? null}
     />
   )
 }

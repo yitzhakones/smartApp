@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { AccessMode, Category, Gender, Locale, Tables } from '@/types/database'
 import type { TrendData } from '@/lib/dashboard/trend'
 import type { ActivityItem } from '@/lib/dashboard/activity-service'
@@ -17,6 +18,7 @@ import { NotificationsScreen } from './components/notifications-screen'
 import { AccountSettingsScreen } from './components/account-settings-screen'
 import { PresetsScreen } from './components/presets-screen'
 import { AddChildWizard } from './components/add-child-wizard'
+import { NewChildBanner } from './components/new-child-banner'
 import { markNotificationsRead, type UpdateChildInput } from './actions'
 import { SHELL, INK, FUCHSIA, SOFT, ASSISTANT } from './theme'
 
@@ -56,14 +58,23 @@ export function DashboardClient({
   initialPresets,
   initialNotifications,
   initialAccount,
+  justCreatedChildId,
 }: {
   initialChildren: DashboardChild[]
   initialPresets: Preset[]
   initialNotifications: NotificationItem[]
   initialAccount: ParentAccount
+  /** Set right after createChild's redirect (?newChild={id}) — shows the
+   *  share-link banner once and selects that child's tab. Read into state
+   *  once on mount only; later prop changes (e.g. once the URL is stripped
+   *  below) don't re-trigger it, which is exactly the one-shot "flash
+   *  message" behavior wanted here. */
+  justCreatedChildId: string | null
 }) {
+  const router = useRouter()
   const [items, setItems] = useState(initialChildren)
-  const [activeId, setActiveId] = useState(initialChildren[0]?.id ?? '')
+  const [activeId, setActiveId] = useState(justCreatedChildId ?? initialChildren[0]?.id ?? '')
+  const [bannerChildId, setBannerChildId] = useState(justCreatedChildId)
   const [screen, setScreen] = useState<Screen>('dashboard')
   // Where "cancel"/step-0-back in AddChildWizard should return to — it's
   // reachable from two different places (the empty-dashboard state and
@@ -73,6 +84,13 @@ export function DashboardClient({
   const [presets, setPresets] = useState(initialPresets)
   const [notifications, setNotifications] = useState(initialNotifications)
   const [account, setAccount] = useState(initialAccount)
+
+  useEffect(() => {
+    // Strip ?newChild= so a later reload of this same URL doesn't re-show the
+    // banner — bannerChildId already captured the value into local state above.
+    if (justCreatedChildId) router.replace('/dashboard')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const active = items.find((c) => c.id === activeId)
 
@@ -204,6 +222,17 @@ export function DashboardClient({
       />
 
       <div className="px-4 pb-24 flex flex-col gap-3 pt-2">
+        {bannerChildId &&
+          (() => {
+            const newChild = items.find((c) => c.id === bannerChildId)
+            return newChild ? (
+              <NewChildBanner
+                childName={newChild.name}
+                shareUrl={newChild.shareUrl}
+                onDismiss={() => setBannerChildId(null)}
+              />
+            ) : null
+          })()}
         <SummaryCard child={currentChild} onBalanceChange={(money) => patchActive({ money })} />
         <TrendCard data={currentChild.trend} />
         <BonusPanel child={currentChild} presets={presets} onBalanceChange={(money) => patchActive({ money })} />

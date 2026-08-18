@@ -210,12 +210,17 @@ function validateChildProfile(input: ChildProfileInput): string | null {
  * than generated here — one less thing that could drift from the DB's own
  * definition of "unguessable."
  *
- * On success this redirects straight into the new child's placement quiz
- * (app/p/[token]/page.tsx already routes there on its own — a fresh child has
- * enabled_categories set and category_levels empty, which is exactly the
- * condition that page checks) rather than returning to the caller, matching
- * the wizard's own "צור פרופיל והתחל כיול" framing. Only the failure path
- * returns a value.
+ * On success this redirects to the PARENT's own dashboard (?newChild={id}
+ * flags it so DashboardClient shows a prominent share-link banner for the new
+ * child) — NOT into the child's own /p/[token] screens. This used to redirect
+ * straight into the placement quiz, which meant the parent's own browser
+ * session got dropped into a flow meant for the child's device, and made this
+ * action depend on the same router.refresh()-across-a-fresh-navigation
+ * mechanics that caused the whole placement-completion saga. There is only
+ * one createChild call site in the app (app/(protected)/dashboard/components/
+ * add-child-wizard.tsx), reached from both the empty-dashboard state and
+ * SettingsMenu's "add another child" — so this one redirect covers both
+ * entry points, verified by grep, not assumed.
  */
 export async function createChild(input: ChildProfileInput): Promise<ActionResult<never>> {
   const validationError = validateChildProfile(input)
@@ -239,11 +244,11 @@ export async function createChild(input: ChildProfileInput): Promise<ActionResul
       access_mode: input.accessMode,
       access_pin: accessPin,
     })
-    .select('access_token')
+    .select('id')
     .single()
   if (error || !data) return { ok: false, error: 'יצירת הפרופיל נכשלה' }
 
-  redirect(`/p/${data.access_token}`)
+  redirect(`/dashboard?newChild=${data.id}`)
 }
 
 /**
