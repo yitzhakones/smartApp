@@ -38,73 +38,20 @@ export function PlacementQuiz({
   const [answer, setAnswer] = useState('')
   const [transitionMsg, setTransitionMsg] = useState('')
   const [doneMsg, setDoneMsg] = useState('מעולה, מתחילים!')
-  const [confirming, setConfirming] = useState(false)
-  const [confirmError, setConfirmError] = useState<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  // Transition to the daily game with a HARD navigation (window.location.href
-  // to the same pathname), not router.refresh(). router.refresh() gave no
-  // reliable signal that it had actually landed — through several rounds of
-  // investigation (timing, caching, a watchdog fallback) the transition kept
-  // failing with no conclusive single cause, so this replaces it outright: a
-  // real browser navigation guarantees a fresh server request with zero
-  // dependency on the Next.js router/RSC-cache layer, at the cost of a small
-  // page flash. This supersedes the earlier "not window.location.reload()"
-  // concern from this file's history (a stale cached placement page could
-  // loop with the alreadyDone guard) — that was about the service worker's
-  // caching, which next.config.mjs now pins to NetworkOnly for every /p/*
-  // request, and this page is force-dynamic besides. Using href reassignment
-  // rather than .reload() as a further margin against any reload-specific
-  // browser cache quirks (e.g. Safari's bfcache).
-  //
-  // Still CONFIRMS category_levels is actually set before navigating, by
-  // calling the same 'start' action startPlacement already uses for this
-  // exact check — when levels are set it throws PlacementAlreadyCompletedError
-  // server-side, which the route turns into {alreadyDone:true} (see
-  // app/api/placement/route.ts). That's a pure read + conditional throw with
-  // no side effects either way, so it's safe to call repeatedly. Never
-  // confirmed after retries → confirming resets to false and confirmError
-  // shows a manual-retry button, rather than navigating while genuinely not
-  // done (which would just land back on a re-render of this same screen).
-  async function goToGame() {
-    console.log('[PlacementQuiz] tap "בואו נתחיל" →', new Date().toISOString())
-    setConfirming(true)
-    setConfirmError(null)
-    const MAX_ATTEMPTS = 5
-    let confirmed = false
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-      try {
-        const res = await fetch('/api/placement', {
-          method: 'POST',
-          headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ action: 'start', accessToken }),
-        })
-        const step = await res.json()
-        console.log(
-          `[PlacementQuiz] confirm attempt ${attempt}/${MAX_ATTEMPTS} →`,
-          step,
-          new Date().toISOString()
-        )
-        if (step.alreadyDone) {
-          confirmed = true
-          break
-        }
-      } catch {
-        // Network hiccup — fall through to retry.
-      }
-      if (attempt < MAX_ATTEMPTS) {
-        await new Promise((resolve) => setTimeout(resolve, 200 * attempt))
-      }
-    }
-
-    if (!confirmed) {
-      setConfirming(false)
-      setConfirmError('לא הצלחנו לוודא ששאלון ההיכרות להתאמת השאלות הושלם. אפשר לנסות שוב.')
-      return
-    }
-
-    window.location.href = window.location.pathname
-  }
+  // TEMPORARY BYPASS — the "בואו נתחיל" button used to be a JS confirm-then-
+  // navigate handler (goToGame: POST /api/placement 'start' up to 5x to
+  // confirm category_levels was actually set, then window.location.href).
+  // That whole mechanism is one of the suspects in the still-open "בואו
+  // נתחיל" loop investigation, so it's removed here rather than debugged
+  // further: the 'done' phase below now renders a plain <a href> with no
+  // onClick at all, identical to typing the URL and pressing enter. Combined
+  // with page.tsx's routing bypass (every /p/[token] request renders the
+  // game regardless of category_levels), this removes every piece of custom
+  // JS from the transition.
+  // REVERT: restore goToGame (see git history) and the onClick button once
+  // the underlying bug is found and fixed.
 
   useEffect(() => {
     // INSTRUMENTATION: logs once per MOUNT. If this repeats every ~600ms in the
@@ -230,19 +177,16 @@ export function PlacementQuiz({
         <p style={{ color: 'white', fontFamily: RUBIK }} className="text-3xl font-black text-center">
           {doneMsg}
         </p>
-        <button
-          onClick={goToGame}
-          disabled={confirming}
-          className="px-10 py-4 rounded-full font-black text-lg disabled:opacity-60"
-          style={{ background: ACCENT, color: BASE }}
+        {/* TEMPORARY BYPASS: plain anchor, zero JS — see comment above goToGame's
+            old location. REVERT: restore the onClick button once the "בואו
+            נתחיל" loop bug is found and fixed. */}
+        <a
+          href={`/p/${accessToken}`}
+          className="px-10 py-4 rounded-full font-black text-lg"
+          style={{ background: ACCENT, color: BASE, textDecoration: 'none', display: 'inline-block' }}
         >
-          {confirming ? 'רגע…' : confirmError ? 'לנסות שוב' : 'בואו נתחיל'}
-        </button>
-        {confirmError && (
-          <p style={{ color: '#FF9DA6', fontFamily: ASSISTANT }} className="text-sm text-center">
-            {confirmError}
-          </p>
-        )}
+          בואו נתחיל
+        </a>
       </div>
     )
   }
