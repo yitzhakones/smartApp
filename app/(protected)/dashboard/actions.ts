@@ -14,6 +14,7 @@ import { createServiceClient } from '@/lib/supabase/service'
 import type {
   AccessMode,
   Category,
+  DifficultyTier,
   Gender,
   Locale,
   PaymentMethod,
@@ -222,6 +223,46 @@ function validateChildProfile(input: ChildProfileInput): string | null {
  * SettingsMenu's "add another child" — so this one redirect covers both
  * entry points, verified by grep, not assumed.
  */
+// TEMPORARY BYPASS — placement quiz has an unresolved bug (children stuck
+// looping on "מעולה, מתחילים!"); root cause needs controlled local debugging,
+// not more live-production log rounds while real signups wait. Until that's
+// fixed, every new child is seeded with a "medium" level for each of their
+// enabled_categories at creation time (instead of leaving category_levels
+// empty), so app/p/[token]/page.tsx's goesToPlacement check
+// (Object.keys(levels).length === 0) is never true for them and they skip
+// placement entirely, straight to the daily game at their default difficulty.
+// The real per-category calibration placement provides is simply not applied
+// for children created while this is in effect. REVERT: once the placement
+// bug is actually fixed, remove categoryLevels below and let category_levels
+// default to '{}' again (migration 001's column default) so new children go
+// through real placement as designed.
+function defaultCategoryLevels(categories: Category[]): Record<Category, DifficultyTier> {
+  return Object.fromEntries(categories.map((category) => [category, 'medium'])) as Record<
+    Category,
+    DifficultyTier
+  >
+}
+
+/**
+ * Create a brand-new child profile. RLS-scoped directly (children.parent_id =
+ * auth.uid(), enforced by the "Parent manages own children" policy's own
+ * WITH CHECK) — no service role needed. access_token is left for the column's
+ * own DB default (two concatenated gen_random_uuid()s, migration 001) rather
+ * than generated here — one less thing that could drift from the DB's own
+ * definition of "unguessable."
+ *
+ * On success this redirects to the PARENT's own dashboard (?newChild={id}
+ * flags it so DashboardClient shows a prominent share-link banner for the new
+ * child) — NOT into the child's own /p/[token] screens. This used to redirect
+ * straight into the placement quiz, which meant the parent's own browser
+ * session got dropped into a flow meant for the child's device, and made this
+ * action depend on the same router.refresh()-across-a-fresh-navigation
+ * mechanics that caused the whole placement-completion saga. There is only
+ * one createChild call site in the app (app/(protected)/dashboard/components/
+ * add-child-wizard.tsx), reached from both the empty-dashboard state and
+ * SettingsMenu's "add another child" — so this one redirect covers both
+ * entry points, verified by grep, not assumed.
+ */
 export async function createChild(input: ChildProfileInput): Promise<ActionResult<never>> {
   const validationError = validateChildProfile(input)
   if (validationError) return { ok: false, error: validationError }
@@ -239,6 +280,7 @@ export async function createChild(input: ChildProfileInput): Promise<ActionResul
       gender: input.gender,
       locale: input.locale,
       enabled_categories: input.enabledCategories,
+      category_levels: defaultCategoryLevels(input.enabledCategories), // TEMPORARY BYPASS, see above
       shekel_per_star: input.shekelPerStar,
       weekly_improvement_bonus: input.weeklyImprovementBonus,
       access_mode: input.accessMode,
