@@ -8,7 +8,6 @@
 // /api/placement; this screen never learns whether an answer was right.
 
 import { useEffect, useRef, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Send, Sparkles } from 'lucide-react'
 import type { PlacementSession } from '@/lib/placement/session'
 
@@ -42,35 +41,31 @@ export function PlacementQuiz({
   const [confirming, setConfirming] = useState(false)
   const [confirmError, setConfirmError] = useState<string | null>(null)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const watchdog = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const router = useRouter()
 
-  // Transition to the daily game by re-running the server component in place
-  // (router.refresh re-reads category_levels → renders the game, unmounting this
-  // screen). NOT window.location.reload(): a full reload can be served a stale
-  // cached placement page, which — combined with the alreadyDone guard — loops.
+  // Transition to the daily game with a HARD navigation (window.location.href
+  // to the same pathname), not router.refresh(). router.refresh() gave no
+  // reliable signal that it had actually landed — through several rounds of
+  // investigation (timing, caching, a watchdog fallback) the transition kept
+  // failing with no conclusive single cause, so this replaces it outright: a
+  // real browser navigation guarantees a fresh server request with zero
+  // dependency on the Next.js router/RSC-cache layer, at the cost of a small
+  // page flash. This supersedes the earlier "not window.location.reload()"
+  // concern from this file's history (a stale cached placement page could
+  // loop with the alreadyDone guard) — that was about the service worker's
+  // caching, which next.config.mjs now pins to NetworkOnly for every /p/*
+  // request, and this page is force-dynamic besides. Using href reassignment
+  // rather than .reload() as a further margin against any reload-specific
+  // browser cache quirks (e.g. Safari's bfcache).
   //
-  // Doesn't call router.refresh() blindly: first CONFIRMS category_levels is
-  // actually set, by calling the same 'start' action startPlacement already
-  // uses for this exact check — when levels are set it throws
-  // PlacementAlreadyCompletedError server-side, which the route turns into
-  // {alreadyDone:true} (see app/api/placement/route.ts). That's a pure read +
-  // conditional throw with no side effects either way, so it's safe to call
-  // repeatedly.
-  //
-  // BOTH exits are terminal and visible — this used to have neither:
-  //   - never confirmed after retries → confirming resets to false and
-  //     confirmError shows a manual-retry button. Does NOT call refresh() in
-  //     this case: refreshing while genuinely not done risks landing back on
-  //     a re-render of THIS SAME component (see below), not a fresh attempt.
-  //   - confirmed, but router.refresh() gives no callback/promise that tells
-  //     us it actually landed — and critically, if the server ever still
-  //     returns <PlacementQuiz> after a refresh (same component type at the
-  //     same position, no key), React updates this instance in place rather
-  //     than remounting it: state isn't reset and the mount effect (keyed on
-  //     accessToken, unchanged) never re-fires. Nothing would ever move
-  //     again. A watchdog timeout means this screen can never stay frozen on
-  //     "רגע…" no matter what refresh() does or doesn't do underneath.
+  // Still CONFIRMS category_levels is actually set before navigating, by
+  // calling the same 'start' action startPlacement already uses for this
+  // exact check — when levels are set it throws PlacementAlreadyCompletedError
+  // server-side, which the route turns into {alreadyDone:true} (see
+  // app/api/placement/route.ts). That's a pure read + conditional throw with
+  // no side effects either way, so it's safe to call repeatedly. Never
+  // confirmed after retries → confirming resets to false and confirmError
+  // shows a manual-retry button, rather than navigating while genuinely not
+  // done (which would just land back on a re-render of this same screen).
   async function goToGame() {
     console.log('[PlacementQuiz] tap "בואו נתחיל" →', new Date().toISOString())
     setConfirming(true)
@@ -108,18 +103,7 @@ export function PlacementQuiz({
       return
     }
 
-    router.refresh()
-    // 6s was tuned against localhost (near-zero latency) and was very likely
-    // too aggressive for a real device: a cold serverless function + real
-    // mobile network can easily take longer than that for the /p/[token]
-    // RSC fetch refresh() triggers, especially if that route hasn't been hit
-    // recently. 14s gives real-world conditions room without going back to
-    // "no terminal state" — still bounded, still shows the same visible
-    // error + manual retry if truly stuck past that.
-    watchdog.current = setTimeout(() => {
-      setConfirming(false)
-      setConfirmError('משהו נתקע בדרך למשחק. אפשר לנסות שוב.')
-    }, 14000)
+    window.location.href = window.location.pathname
   }
 
   useEffect(() => {
@@ -157,7 +141,6 @@ export function PlacementQuiz({
     return () => {
       cancelled = true
       if (timer.current) clearTimeout(timer.current)
-      if (watchdog.current) clearTimeout(watchdog.current)
     }
   }, [accessToken])
 
