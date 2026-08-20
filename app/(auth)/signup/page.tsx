@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { SignupForm } from './signup-form'
+import { INK, RUBIK } from '../theme'
 
 export const metadata: Metadata = {
   title: 'הרשמה — חידון יומי',
@@ -8,7 +9,9 @@ export const metadata: Metadata = {
 export default function SignupPage() {
   return (
     <>
-      <h2 className="mb-4 text-center text-lg font-bold">יצירת חשבון הורה</h2>
+      <h2 style={{ color: INK, fontFamily: RUBIK }} className="mb-5 text-center text-xl font-black">
+        יצירת חשבון הורה
+      </h2>
       <SignupForm />
     </>
   )
