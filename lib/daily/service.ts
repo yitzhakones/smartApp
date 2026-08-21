@@ -170,10 +170,47 @@ function pickDailySet(
   // read-only simulation against the live bank before this fix: a fresh
   // pick for an existing child produced the exact same all-legacy result
   // already stored, proving this was a selection bug, not stale data.
-  const pickForCategory = (cat: Category, tier: DifficultyTier) =>
-    pick(avail((q) => q.category === cat && isMultipleChoice(q))) ??
-    pick(avail((q) => q.category === cat && q.difficulty_tier === tier)) ??
-    pick(avail((q) => q.category === cat))
+  // TEMPORARY DIAGNOSTIC LOGGING — fires on every real pickForCategory call in
+  // a live request (never from a simulation script). Restructured from the
+  // original `pick(avail(...)) ?? pick(avail(...)) ?? pick(avail(...))` chain
+  // into an explicit if/else so exactly one branch's pool is ever passed to
+  // pick() — same as before (pick() only calls rng() when its array is
+  // non-empty, and only one array is ever handed to it here), so this is
+  // instrumentation only, not a behavior change; the actual selection logic
+  // is unchanged from the previous commit. REVERT: once the "MC not showing
+  // up for real requests" investigation is closed, restore the single `??`
+  // chain above and delete this console.log.
+  const pickForCategory = (cat: Category, tier: DifficultyTier) => {
+    const mcPool = avail((q) => q.category === cat && isMultipleChoice(q))
+    const legacyTierPool = avail((q) => q.category === cat && q.difficulty_tier === tier)
+    const legacyAnyPool = avail((q) => q.category === cat)
+    const legacyCount = legacyAnyPool.filter((q) => !isMultipleChoice(q)).length
+
+    let branch: string
+    let result: BankRow | null
+    if (mcPool.length > 0) {
+      branch = 'MC-match'
+      result = pick(mcPool)
+    } else if (legacyTierPool.length > 0) {
+      branch = 'legacy-tier-fallback'
+      result = pick(legacyTierPool)
+    } else if (legacyAnyPool.length > 0) {
+      branch = 'legacy-any-tier-fallback'
+      result = pick(legacyAnyPool)
+    } else {
+      branch = 'none-found'
+      result = null
+    }
+
+    console.log(
+      `[daily][pickForCategory] category=${cat} age_band=${childBand} tier=${tier} ` +
+        `mcCount=${mcPool.length} legacyTierCount=${legacyTierPool.length} legacyAnyCount=${legacyCount} ` +
+        `branch=${branch} picked=${result?.id ?? 'NONE'} pickedIsMC=${result ? isMultipleChoice(result) : 'n/a'} ` +
+        `bankSize=${bank.length}`
+    )
+
+    return result
+  }
 
   const five: string[] = []
   for (let i = 0; i < 5; i++) {
@@ -261,6 +298,14 @@ export async function getOrCreateTodaysGame(
   }
 
   if (existing && existingValid) {
+    // TEMPORARY DIAGNOSTIC LOGGING — REVERT with the block below. If this
+    // fires, pickForCategory is NEVER called for this request at all — the
+    // existing daily_sets row is reused verbatim regardless of what's in the
+    // bank now. Distinguishes "stale cached set" from "fresh pick chose
+    // legacy" without guessing.
+    console.log(
+      `[daily][getOrCreateTodaysGame] REUSING existing daily_set id=${existing.id} for child=${child.id} date=${date} — pickForCategory will NOT run`
+    )
     dailySetId = existing.id
     fiveIds = existing.question_ids
     bonusId = await ensureBonus(db, dailySetId, child, fiveIds, date)
@@ -270,6 +315,14 @@ export async function getOrCreateTodaysGame(
       .select(BANK_COLUMNS)
     if (bankErr) throw bankErr
     if (!bank || bank.length === 0) throw new EmptyBankError()
+
+    // TEMPORARY DIAGNOSTIC LOGGING — REVERT with the block above, and the
+    // instrumented pickForCategory in pickDailySet. Request-level context so
+    // the per-category [daily][pickForCategory] lines below it can be
+    // attributed to this exact request.
+    console.log(
+      `[daily][getOrCreateTodaysGame] GENERATING fresh daily_set for child=${child.id} date=${date} age=${child.age} age_band=${deriveAgeBand(child.age)} enabled_categories=${JSON.stringify(child.enabled_categories)} bankSize=${bank.length}`
+    )
 
     const picked = pickDailySet(
       bank as BankRow[],
