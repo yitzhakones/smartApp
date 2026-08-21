@@ -130,6 +130,15 @@ function matchesAgeBand(q: BankRow, childBand: AgeBand): boolean {
   return q.age_band === null || q.age_band === childBand
 }
 
+/** A row is multiple-choice iff correct_index is set (migration 013) —
+ *  never a separate type column. Every MC row has difficulty_tier = NULL by
+ *  design (age_band drives its selection instead, not a tier), which is
+ *  exactly why a tier-matching filter can never select one — see the bug fix
+ *  in pickForCategory below. */
+function isMultipleChoice(q: BankRow): boolean {
+  return q.correct_index !== null
+}
+
 /** Deterministically pick 5 regular question ids + 1 bonus id from the bank. */
 function pickDailySet(
   bank: BankRow[],
@@ -145,7 +154,24 @@ function pickDailySet(
   const pick = (arr: BankRow[]) =>
     arr.length ? arr[Math.floor(rng() * arr.length)] : null
 
+  // MC rows take priority over legacy free-text once a category+age_band has
+  // any — legacy tier-matching is a fallback for when it doesn't (either the
+  // category has no MC content yet, or none in this exact age_band).
+  //
+  // BUG FIXED HERE: this used to try tier-matching FIRST
+  // (q.difficulty_tier === tier), which structurally can never match an MC
+  // row — every MC row has difficulty_tier = NULL, and NULL === tier is
+  // never true. Since the legacy bank still has full tier coverage for
+  // math/science/israeli_history/general_knowledge, that branch almost
+  // always found a legacy match and the `??` never even reached the (also
+  // tier-blind) fallback where MC rows were reachable — MC content was
+  // selected only for a category with zero legacy rows in ANY tier
+  // (english_vocabulary, being new, was the sole example). Confirmed via a
+  // read-only simulation against the live bank before this fix: a fresh
+  // pick for an existing child produced the exact same all-legacy result
+  // already stored, proving this was a selection bug, not stale data.
   const pickForCategory = (cat: Category, tier: DifficultyTier) =>
+    pick(avail((q) => q.category === cat && isMultipleChoice(q))) ??
     pick(avail((q) => q.category === cat && q.difficulty_tier === tier)) ??
     pick(avail((q) => q.category === cat))
 
@@ -165,6 +191,12 @@ function pickDailySet(
   // enabled category; fall back to any hard question so the bonus stays hard even
   // if the child's categories have none left; only if the bank has no hard tier
   // at all do we take anything, so the game never breaks.
+  //
+  // NOT given the same MC-priority fix as pickForCategory above, deliberately
+  // out of scope here: MC rows have no difficulty_tier at all, so there's no
+  // existing concept of an "MC hard question" to select — the bonus slot
+  // stays legacy-only until that's a real product decision, not something to
+  // improvise while fixing the regular-5 selection bug.
   let bonus =
     pick(
       avail(
