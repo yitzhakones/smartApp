@@ -1,0 +1,661 @@
+category,age_band,text_he,text_en,option1,option2,option3,option1_en,option2_en,option3_en,correct_index
+math,10-11,כמה זה 25 ועוד 48?,What is 25 plus 48?,73,63,83,73,63,83,0
+math,10-11,כמה זה 9 כפול 6?,What is 9 times 6?,54,45,63,54,45,63,0
+math,10-11,כמה זה 100 פחות 37?,What is 100 minus 37?,63,53,73,63,53,73,0
+math,10-11,כמה חצאים יש בשלם אחד?,How many halves make one whole?,2,3,4,2,3,4,0
+math,10-11,כמה זה חצי מ-50?,What is half of 50?,25,20,30,25,20,30,0
+math,10-11,כמה צלעות יש למשולש?,How many sides does a triangle have?,3,4,5,3,4,5,0
+math,12-13,כמה זה 15% מ-80?,What is 15% of 80?,12,10,15,12,10,15,0
+math,12-13,מהו הערך של x במשוואה: 2x + 5 = 17. מה x?,Solve: 2x + 5 = 17. What is x?,6,5,7,6,5,7,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 7 ס""מ?",What is the area of a square with a 7cm side?,49,36,64,49,36,64,0
+math,12-13,כמה זה 144 חלקי 12?,What is 144 divided by 12?,12,10,15,12,10,15,0
+math,12-13,כמה זה 3 בחזקת 3?,What is 3 to the power of 3?,27,24,30,27,24,30,0
+math,12-13,מה ההיקף של מלבן שאורכו 10 ורוחבו 4?,What is the perimeter of a rectangle with length 10 and width 4?,28,24,32,28,24,32,0
+math,14-16,מהו הערך של x במשוואה: 3x - 7 = 2x + 5. מה x?,Solve: 3x - 7 = 2x + 5. What is x?,12,10,15,12,10,15,0
+math,14-16,מה שטח משולש שבסיסו 10 וגובהו 6?,What is the area of a triangle with base 10 and height 6?,30,24,36,30,24,36,0
+math,14-16,כמה זה השורש הריבועי של 169?,What is the square root of 169?,13,12,14,13,12,14,0
+math,14-16,"אם מכונית נוסעת 60 קמ""ש, כמה ק""מ תעבור ב-2.5 שעות?","If a car travels at 60 km/h, how many km will it cover in 2.5 hours?",150,120,180,150,120,180,0
+math,14-16,"מה הממוצע של 4, 9, 14, 21?","What is the average of 4, 9, 14, 21?",12,10,15,12,10,15,0
+math,14-16,כמה זה 2/3 פחות 1/6?,What is 2/3 minus 1/6?,1/2,1/3,2/3,1/2,1/3,2/3,0
+science,10-11,כמה רגליים יש לעכביש?,How many legs does a spider have?,8,6,10,8,6,10,0
+science,10-11,איזה גז אנחנו נושמים מהאוויר?,Which gas do we breathe in from the air?,חמצן,פחמן,מימן,Oxygen,Carbon,Hydrogen,0
+science,10-11,איזה כוכב לכת הכי קרוב לשמש?,Which planet is closest to the sun?,כוכב חמה,נוגה,מאדים,Mercury,Venus,Mars,0
+science,10-11,כמה עונות יש בשנה?,How many seasons are there in a year?,4,3,5,4,3,5,0
+science,10-11,מה שם התהליך שבו מים הופכים לאדים?,What is the process called where water turns into vapor?,אידוי,המסה,עיבוי,Evaporation,Melting,Condensation,0
+science,10-11,איזה איבר בגוף שואב דם?,Which organ in the body pumps blood?,הלב,הכבד,הריאה,The heart,The liver,The lung,0
+science,12-13,מהו הסמל הכימי של מים?,What is the chemical symbol for water?,H2O,CO2,O2,H2O,CO2,O2,0
+science,12-13,"כמה עצמות יש בגוף אדם בוגר, בערך?","How many bones does an adult human body have, approximately?",206,186,226,206,186,226,0
+science,12-13,מה שם הכוח שמושך עצמים לכדור הארץ?,What is the force that pulls objects toward Earth called?,כוח המשיכה,חיכוך,לחץ אוויר,Gravity,Friction,Air pressure,0
+science,12-13,איזה גז פולטים צמחים ביום?,What gas do plants release during the day?,חמצן,פחמן,מימן,Oxygen,Carbon,Hydrogen,0
+science,12-13,כמה חדרים יש בלב האדם?,How many chambers does the human heart have?,4,3,5,4,3,5,0
+science,12-13,מה שם היחידה הבסיסית של כל יצור חי?,What is the basic unit of all living things called?,תא,רקמה,איבר,Cell,Tissue,Organ,0
+science,14-16,מה שם התהליך שבו תא מתחלק לשני תאים זהים?,What is the process called where a cell divides into two identical cells?,מיטוזה,מיוזה,פוטוסינתזה,Mitosis,Meiosis,Photosynthesis,0
+science,14-16,איזה כוכב לכת הכי גדול במערכת השמש?,Which is the largest planet in the solar system?,צדק,שבתאי,אורנוס,Jupiter,Saturn,Uranus,0
+science,14-16,מהו הסמל הכימי של ברזל?,What is the chemical symbol for iron?,Fe,Cu,Zn,Fe,Cu,Zn,0
+science,14-16,"כמה זמן לוקח לאור מהשמש להגיע לכדור הארץ, בערך?",About how long does it take sunlight to reach Earth?,כ-8 דקות,כ-2 דקות,כ-20 דקות,About 8 minutes,About 2 minutes,About 20 minutes,0
+science,14-16,מה שם המולקולה שנושאת מידע גנטי?,What is the molecule that carries genetic information called?,DNA,RNA,ATP,DNA,RNA,ATP,0
+science,14-16,מהי היחידה למדידת כוח?,What is the unit for measuring force?,ניוטון,ג'אול,וואט,Newton,Joule,Watt,0
+israeli_history,10-11,באיזו שנה הוכרזה מדינת ישראל?,In what year was the State of Israel declared?,1948,1947,1949,1948,1947,1949,0
+israeli_history,10-11,מה שם עיר הבירה של ישראל?,What is Israel's capital city?,ירושלים,תל אביב,חיפה,Jerusalem,Tel Aviv,Haifa,0
+israeli_history,10-11,מה שם ההמנון הלאומי של ישראל?,What is Israel's national anthem called?,התקווה,ירושלים של זהב,הבה נגילה,Hatikvah,Jerusalem of Gold,Hava Nagila,0
+israeli_history,10-11,באיזו יבשת נמצאת ישראל?,Which continent is Israel located in?,אסיה,אירופה,אפריקה,Asia,Europe,Africa,0
+israeli_history,10-11,מה הצבעים שבדגל ישראל?,What colors are on Israel's flag?,כחול ולבן,כחול ולבן ואדום,ירוק ולבן,Blue and white,"Blue, white and red",Green and white,0
+israeli_history,10-11,באיזה יום בשבוע חל השבת?,On which day of the week is Shabbat?,שבת,ראשון,שישי,Saturday,Sunday,Friday,0
+israeli_history,12-13,מי היה ראש הממשלה הראשון של ישראל?,Who was Israel's first Prime Minister?,דוד בן-גוריון,משה שרת,לוי אשכול,David Ben-Gurion,Moshe Sharett,Levi Eshkol,0
+israeli_history,12-13,באיזו עיר הוכרזה העצמאות?,In which city was independence declared?,תל אביב,ירושלים,חיפה,Tel Aviv,Jerusalem,Haifa,0
+israeli_history,12-13,מה שם המלחמה שפרצה ב-1967?,What was the war that broke out in 1967 called?,מלחמת ששת הימים,מלחמת יום כיפור,מבצע קדש,The Six-Day War,The Yom Kippur War,Operation Kadesh,0
+israeli_history,12-13,מי הייתה ראשת הממשלה היחידה של ישראל עד היום?,Who is Israel's only female Prime Minister to date?,גולדה מאיר,שרה נתניהו,צביה שפירא,Golda Meir,Sarah Netanyahu,Tzvia Shapira,0
+israeli_history,12-13,מה שם בית המחוקקים של ישראל?,What is Israel's legislative body called?,הכנסת,הממשלה,בית המשפט העליון,The Knesset,The Government,The Supreme Court,0
+israeli_history,12-13,באיזה חודש עברי חוגגים את יום העצמאות?,In which Hebrew month is Independence Day celebrated?,אייר,ניסן,תשרי,Iyar,Nisan,Tishrei,0
+israeli_history,14-16,"מי כתב את ""מדינת היהודים"" והקים את התנועה הציונית?","Who wrote ""The Jewish State"" and founded the Zionist movement?",תאודור הרצל,חיים ויצמן,זאב ז'בוטינסקי,Theodor Herzl,Chaim Weizmann,Ze'ev Jabotinsky,0
+israeli_history,14-16,"באיזו מלחמה, ב-1973, הותקפה ישראל ביום כיפור?",What was the 1973 war in which Israel was attacked on Yom Kippur called?,מלחמת יום כיפור,מלחמת ששת הימים,מלחמת לבנון הראשונה,The Yom Kippur War,The Six-Day War,The First Lebanon War,0
+israeli_history,14-16,מה שם ההסכם שנחתם עם מצרים ב-1979?,What was the agreement signed with Egypt in 1979 called?,הסכם השלום עם מצרים,הסכם אוסלו,הסכם וואי פלנטיישן,The Egypt-Israel peace treaty,The Oslo Accords,The Wye River Memorandum,0
+israeli_history,14-16,באיזו שנה אוחדה ירושלים?,In what year was Jerusalem reunified?,1967,1956,1973,1967,1956,1973,0
+israeli_history,14-16,מה שם המסמך שבו הוכרזה הקמת המדינה?,What is the document declaring the state's establishment called?,מגילת העצמאות,חוק השבות,חוק יסוד: כבוד האדם,The Declaration of Independence,The Law of Return,Basic Law: Human Dignity,0
+israeli_history,14-16,מי היה נשיא המדינה הראשון?,Who was Israel's first president?,חיים ויצמן,דוד בן-גוריון,יצחק בן-צבי,Chaim Weizmann,David Ben-Gurion,Yitzhak Ben-Zvi,0
+general_knowledge,10-11,כמה ימים יש בשבוע?,How many days are there in a week?,7,5,10,7,5,10,0
+general_knowledge,10-11,מה צבע השמיים ביום בהיר?,What color is the sky on a clear day?,כחול,ירוק,אפור,Blue,Green,Gray,0
+general_knowledge,10-11,"איזו חיה נחשבת ל""מלך החיות""?","Which animal is called the ""king of the animals""?",אריה,נמר,דוב,Lion,Tiger,Bear,0
+general_knowledge,10-11,כמה חודשים יש בשנה?,How many months are there in a year?,12,10,14,12,10,14,0
+general_knowledge,10-11,באיזו יבשת נמצאת מצרים?,Which continent is Egypt located in?,אפריקה,אירופה,אסיה,Africa,Europe,Asia,0
+general_knowledge,10-11,איזו שפה מדברים בצרפת?,What language is spoken in France?,צרפתית,איטלקית,ספרדית,French,Italian,Spanish,0
+general_knowledge,12-13,מה שם האוקיינוס הגדול בעולם?,What is the largest ocean in the world called?,האוקיינוס השקט,האוקיינוס האטלנטי,האוקיינוס ההודי,The Pacific Ocean,The Atlantic Ocean,The Indian Ocean,0
+general_knowledge,12-13,כמה יבשות יש בעולם?,How many continents are there in the world?,7,5,10,7,5,10,0
+general_knowledge,12-13,מי צייר את המונה ליזה?,Who painted the Mona Lisa?,לאונרדו דה וינצ'י,פיקאסו,ואן גוך,Leonardo da Vinci,Picasso,Van Gogh,0
+general_knowledge,12-13,מהי בירת יפן?,What is the capital of Japan?,טוקיו,אוסקה,קיוטו,Tokyo,Osaka,Kyoto,0
+general_knowledge,12-13,איזו מתכת נוזלית בטמפרטורת החדר?,Which metal is liquid at room temperature?,כספית,ברזל,עופרת,Mercury,Iron,Lead,0
+general_knowledge,12-13,כמה שחקנים יש בקבוצת כדורגל על המגרש?,How many players does a soccer team have on the field?,11,9,12,11,9,12,0
+general_knowledge,14-16,"מי כתב את ""רומיאו ויוליה""?","Who wrote ""Romeo and Juliet""?",וויליאם שייקספיר,צ'ארלס דיקנס,מארק טוויין,William Shakespeare,Charles Dickens,Mark Twain,0
+general_knowledge,14-16,מהו ההר הגבוה בעולם?,What is the highest mountain in the world?,הר האוורסט,הר קילימנג'רו,הר פוג'י,Mount Everest,Mount Kilimanjaro,Mount Fuji,0
+general_knowledge,14-16,באיזו שנה נחת האדם הראשון על הירח?,In what year did humans first land on the moon?,1969,1965,1972,1969,1965,1972,0
+general_knowledge,14-16,מהי בירת אוסטרליה?,What is the capital of Australia?,קנברה,סידני,מלבורן,Canberra,Sydney,Melbourne,0
+general_knowledge,14-16,מי המציא את הטלפון?,Who invented the telephone?,אלכסנדר גרהם בל,תומאס אדיסון,ניקולה טסלה,Alexander Graham Bell,Thomas Edison,Nikola Tesla,0
+general_knowledge,14-16,מהי המדינה הגדולה בעולם משטח?,What is the largest country in the world by area?,רוסיה,קנדה,סין,Russia,Canada,China,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""כלב""?","What is the correct English translation of the Hebrew word ""כלב""?",Dog,Cat,Bird,Dog,Cat,Bird,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""בית""?","What is the correct English translation of the Hebrew word ""בית""?",House,Car,Tree,House,Car,Tree,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""שמש""?","What is the correct English translation of the Hebrew word ""שמש""?",Sun,Moon,Star,Sun,Moon,Star,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""מים""?","What is the correct English translation of the Hebrew word ""מים""?",Water,Fire,Sand,Water,Fire,Sand,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""ספר""?","What is the correct English translation of the Hebrew word ""ספר""?",Book,Pen,Bag,Book,Pen,Bag,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""חתול""?","What is the correct English translation of the Hebrew word ""חתול""?",Cat,Dog,Mouse,Cat,Dog,Mouse,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""אכל""?","What is the correct English translation of the Hebrew word ""אכל""?",Ate,Ran,Slept,Ate,Ran,Slept,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""גדול""?","What is the correct English translation of the Hebrew word ""גדול""?",Big,Small,Fast,Big,Small,Fast,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להתחיל""?","What is the correct English translation of the Hebrew word ""להתחיל""?",To begin,To finish,To wait,To begin,To finish,To wait,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""חכם""?","What is the correct English translation of the Hebrew word ""חכם""?",Smart,Tired,Angry,Smart,Tired,Angry,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להסביר""?","What is the correct English translation of the Hebrew word ""להסביר""?",To explain,To hide,To forget,To explain,To hide,To forget,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""חופשה""?","What is the correct English translation of the Hebrew word ""חופשה""?",Vacation,Homework,Meeting,Vacation,Homework,Meeting,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להצליח""?","What is the correct English translation of the Hebrew word ""להצליח""?",To succeed,To fail,To stop,To succeed,To fail,To stop,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""מסוכן""?","What is the correct English translation of the Hebrew word ""מסוכן""?",Dangerous,Boring,Cheap,Dangerous,Boring,Cheap,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להשוות""?","What is the correct English translation of the Hebrew word ""להשוות""?",To compare,To copy,To sell,To compare,To copy,To sell,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""אחראי""?","What is the correct English translation of the Hebrew word ""אחראי""?",Responsible,Lazy,Shy,Responsible,Lazy,Shy,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להשיג""?","What is the correct English translation of the Hebrew word ""להשיג""?",To achieve,To avoid,To delay,To achieve,To avoid,To delay,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""משמעותי""?","What is the correct English translation of the Hebrew word ""משמעותי""?",Significant,Random,Temporary,Significant,Random,Temporary,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להתמודד""?","What is the correct English translation of the Hebrew word ""להתמודד""?",To cope,To ignore,To celebrate,To cope,To ignore,To celebrate,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""עקבי""?","What is the correct English translation of the Hebrew word ""עקבי""?",Consistent,Occasional,Reluctant,Consistent,Occasional,Reluctant,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""יעיל""?","What is the correct English translation of the Hebrew word ""יעיל""?",Efficient,Wasteful,Fragile,Efficient,Wasteful,Fragile,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להניח""?","What is the correct English translation of the Hebrew word ""להניח""?",To assume,To prove,To deny,To assume,To prove,To deny,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""מורכב""?","What is the correct English translation of the Hebrew word ""מורכב""?",Complex,Simple,Obvious,Complex,Simple,Obvious,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להשפיע""?","What is the correct English translation of the Hebrew word ""להשפיע""?",To influence,To observe,To measure,To influence,To observe,To measure,0
+math,10-11,כמה זה 24 פחות 13?,What is 24 minus 13?,11,8,17,11,8,17,0
+math,10-11,כמה זה 41 ועוד 38?,What is 41 plus 38?,79,75,70,79,75,70,0
+math,10-11,כמה זה 85 ועוד 64?,What is 85 plus 64?,149,145,140,149,145,140,0
+math,10-11,כמה זה 37 ועוד 39?,What is 37 plus 39?,76,73,85,76,73,85,0
+math,10-11,כמה זה 67 פחות 38?,What is 67 minus 38?,29,26,35,29,26,35,0
+math,10-11,כמה זה 30 פחות 10?,What is 30 minus 10?,20,17,26,20,17,26,0
+math,10-11,כמה זה 53 ועוד 45?,What is 53 plus 45?,98,95,105,98,95,105,0
+math,10-11,כמה זה 23 פחות 21?,What is 23 minus 21?,2,1,8,2,1,8,0
+math,10-11,כמה זה 55 פחות 22?,What is 55 minus 22?,33,30,39,33,30,39,0
+math,10-11,כמה זה 87 ועוד 43?,What is 87 plus 43?,130,134,121,130,134,121,0
+math,10-11,כמה זה 58 פחות 20?,What is 58 minus 20?,38,35,44,38,35,44,0
+math,10-11,כמה זה 83 ועוד 34?,What is 83 plus 34?,117,113,110,117,113,110,0
+math,10-11,כמה זה 47 ועוד 20?,What is 47 plus 20?,67,63,76,67,63,76,0
+math,10-11,כמה זה 68 פחות 45?,What is 68 minus 45?,23,20,29,23,20,29,0
+math,10-11,כמה זה 57 פחות 30?,What is 57 minus 30?,27,24,33,27,24,33,0
+math,10-11,כמה זה 36 ועוד 44?,What is 36 plus 44?,80,77,73,80,77,73,0
+math,10-11,כמה זה 69 פחות 30?,What is 69 minus 30?,39,36,45,39,36,45,0
+math,10-11,כמה זה 44 ועוד 81?,What is 44 plus 81?,125,128,116,125,128,116,0
+math,10-11,כמה זה 39 פחות 14?,What is 39 minus 14?,25,22,31,25,22,31,0
+math,10-11,כמה זה 61 ועוד 44?,What is 61 plus 44?,105,102,112,105,102,112,0
+math,10-11,כמה זה 73 פחות 37?,What is 73 minus 37?,36,33,42,36,33,42,0
+math,10-11,כמה זה 68 פחות 28?,What is 68 minus 28?,40,37,46,40,37,46,0
+math,10-11,כמה זה 41 פחות 27?,What is 41 minus 27?,14,11,20,14,11,20,0
+math,10-11,כמה זה 84 פחות 64?,What is 84 minus 64?,20,17,26,20,17,26,0
+math,10-11,כמה זה 56 ועוד 38?,What is 56 plus 38?,94,98,85,94,98,85,0
+math,10-11,כמה זה 16 ועוד 24?,What is 16 plus 24?,40,37,49,40,37,49,0
+math,10-11,כמה זה 86 פחות 18?,What is 86 minus 18?,68,65,74,68,65,74,0
+math,10-11,כמה זה 86 פחות 58?,What is 86 minus 58?,28,25,34,28,25,34,0
+math,10-11,כמה זה 77 ועוד 42?,What is 77 plus 42?,119,115,126,119,115,126,0
+math,10-11,כמה זה 53 פחות 24?,What is 53 minus 24?,29,26,35,29,26,35,0
+math,10-11,כמה זה 65 פחות 30?,What is 65 minus 30?,35,32,41,35,32,41,0
+math,10-11,כמה זה 10 ועוד 43?,What is 10 plus 43?,53,49,60,53,49,60,0
+math,10-11,כמה זה 74 ועוד 87?,What is 74 plus 87?,161,158,168,161,158,168,0
+math,10-11,כמה זה 30 ועוד 79?,What is 30 plus 79?,109,112,118,109,112,118,0
+math,10-11,כמה זה 24 פחות 12?,What is 24 minus 12?,12,9,18,12,9,18,0
+math,10-11,כמה זה 49 ועוד 40?,What is 49 plus 40?,89,86,80,89,86,80,0
+math,10-11,כמה זה 20 ועוד 72?,What is 20 plus 72?,92,89,85,92,89,85,0
+math,10-11,כמה זה 70 ועוד 80?,What is 70 plus 80?,150,153,159,150,153,159,0
+math,10-11,כמה זה 37 ועוד 79?,What is 37 plus 79?,116,119,125,116,119,125,0
+math,10-11,כמה זה 66 פחות 57?,What is 66 minus 57?,9,6,15,9,6,15,0
+math,10-11,כמה זה 25 ועוד 41?,What is 25 plus 41?,66,62,73,66,62,73,0
+math,10-11,כמה זה 12 ועוד 85?,What is 12 plus 85?,97,94,88,97,94,88,0
+math,10-11,כמה זה 19 ועוד 90?,What is 19 plus 90?,109,106,100,109,106,100,0
+math,10-11,כמה זה 14 ועוד 52?,What is 14 plus 52?,66,63,73,66,63,73,0
+math,10-11,כמה זה 72 ועוד 37?,What is 72 plus 37?,109,113,102,109,113,102,0
+math,10-11,כמה זה 70 ועוד 62?,What is 70 plus 62?,132,128,123,132,128,123,0
+math,10-11,כמה זה 65 פחות 55?,What is 65 minus 55?,10,7,16,10,7,16,0
+math,10-11,כמה זה 62 ועוד 69?,What is 62 plus 69?,131,127,122,131,127,122,0
+math,10-11,כמה זה 61 ועוד 53?,What is 61 plus 53?,114,111,107,114,111,107,0
+math,10-11,כמה זה 5 כפול 10?,What is 5 times 10?,50,55,40,50,55,40,0
+math,10-11,כמה זה 9 כפול 4?,What is 9 times 4?,36,45,32,36,45,32,0
+math,10-11,כמה זה 8 כפול 4?,What is 8 times 4?,32,40,28,32,40,28,0
+math,10-11,כמה זה 6 כפול 9?,What is 6 times 9?,54,60,45,54,60,45,0
+math,10-11,כמה זה 5 כפול 3?,What is 5 times 3?,15,20,12,15,20,12,0
+math,10-11,כמה זה 9 כפול 10?,What is 9 times 10?,90,99,80,90,99,80,0
+math,10-11,כמה זה 3 כפול 2?,What is 3 times 2?,6,9,4,6,9,4,0
+math,10-11,כמה זה 12 כפול 10?,What is 12 times 10?,120,132,110,120,132,110,0
+math,10-11,כמה זה 2 כפול 3?,What is 2 times 3?,6,8,3,6,8,3,0
+math,10-11,כמה זה 5 כפול 4?,What is 5 times 4?,20,25,16,20,25,16,0
+math,10-11,כמה זה 8 כפול 9?,What is 8 times 9?,72,80,63,72,80,63,0
+math,10-11,כמה זה 9 כפול 5?,What is 9 times 5?,45,54,40,45,54,40,0
+math,10-11,כמה זה 8 כפול 2?,What is 8 times 2?,16,24,14,16,24,14,0
+math,10-11,כמה זה 4 כפול 8?,What is 4 times 8?,32,36,24,32,36,24,0
+math,10-11,כמה זה 2 כפול 8?,What is 2 times 8?,16,18,8,16,18,8,0
+math,10-11,כמה זה 6 כפול 8?,What is 6 times 8?,48,54,40,48,54,40,0
+math,10-11,כמה זה 10 כפול 12?,What is 10 times 12?,120,130,108,120,130,108,0
+math,10-11,כמה זה 5 כפול 6?,What is 5 times 6?,30,35,24,30,35,24,0
+math,10-11,כמה זה 5 כפול 2?,What is 5 times 2?,10,15,8,10,15,8,0
+math,10-11,כמה זה 11 כפול 10?,What is 11 times 10?,110,121,100,110,121,100,0
+math,10-11,כמה זה 2 כפול 7?,What is 2 times 7?,14,16,7,14,16,7,0
+math,10-11,כמה זה 2 כפול 2?,What is 2 times 2?,4,6,2,4,6,2,0
+math,10-11,כמה זה 11 כפול 9?,What is 11 times 9?,99,110,90,99,110,90,0
+math,10-11,כמה זה 10 כפול 10?,What is 10 times 10?,100,110,90,100,110,90,0
+math,10-11,כמה זה 4 כפול 2?,What is 4 times 2?,8,12,6,8,12,6,0
+math,10-11,כמה זה 10 כפול 3?,What is 10 times 3?,30,40,27,30,40,27,0
+math,10-11,כמה זה 12 חלקי 4?,What is 12 divided by 4?,3,4,2,3,4,2,0
+math,10-11,כמה זה 36 חלקי 3?,What is 36 divided by 3?,12,13,11,12,13,11,0
+math,10-11,כמה זה 40 חלקי 5?,What is 40 divided by 5?,8,9,7,8,9,7,0
+math,10-11,כמה זה 33 חלקי 3?,What is 33 divided by 3?,11,12,10,11,12,10,0
+math,10-11,כמה זה 55 חלקי 5?,What is 55 divided by 5?,11,12,10,11,12,10,0
+math,10-11,כמה זה 22 חלקי 2?,What is 22 divided by 2?,11,12,10,11,12,10,0
+math,10-11,כמה זה 24 חלקי 3?,What is 24 divided by 3?,8,9,7,8,9,7,0
+math,10-11,כמה זה 70 חלקי 10?,What is 70 divided by 10?,7,8,6,7,8,6,0
+math,10-11,כמה זה 30 חלקי 6?,What is 30 divided by 6?,5,6,4,5,6,4,0
+math,10-11,כמה זה 35 חלקי 7?,What is 35 divided by 7?,5,6,4,5,6,4,0
+math,10-11,כמה זה 48 חלקי 6?,What is 48 divided by 6?,8,9,7,8,9,7,0
+math,10-11,כמה זה 48 חלקי 4?,What is 48 divided by 4?,12,13,11,12,13,11,0
+math,10-11,כמה זה 54 חלקי 6?,What is 54 divided by 6?,9,10,8,9,10,8,0
+math,10-11,כמה זה 21 חלקי 7?,What is 21 divided by 7?,3,4,2,3,4,2,0
+math,10-11,כמה זה 18 חלקי 2?,What is 18 divided by 2?,9,10,8,9,10,8,0
+math,10-11,כמה זה 9 חלקי 3?,What is 9 divided by 3?,3,4,2,3,4,2,0
+math,10-11,כמה זה 50 חלקי 10?,What is 50 divided by 10?,5,6,4,5,6,4,0
+math,10-11,כמה זה 60 חלקי 10?,What is 60 divided by 10?,6,7,5,6,7,5,0
+math,12-13,כמה זה 20% מ-50?,What is 20% of 50?,10,12,6,10,12,6,0
+math,12-13,כמה זה 15% מ-40?,What is 15% of 40?,6,8,2,6,8,2,0
+math,12-13,כמה זה 20% מ-100?,What is 20% of 100?,20,25,10,20,25,10,0
+math,12-13,כמה זה 25% מ-52?,What is 25% of 52?,13,15,9,13,15,9,0
+math,12-13,כמה זה 75% מ-200?,What is 75% of 200?,150,160,130,150,160,130,0
+math,12-13,כמה זה 50% מ-80?,What is 50% of 80?,40,44,32,40,44,32,0
+math,12-13,כמה זה 10% מ-200?,What is 10% of 200?,20,30,0,20,30,0,0
+math,12-13,כמה זה 20% מ-200?,What is 20% of 200?,40,50,20,40,50,20,0
+math,12-13,כמה זה 10% מ-80?,What is 10% of 80?,8,12,0,8,12,0,0
+math,12-13,כמה זה 75% מ-40?,What is 75% of 40?,30,32,26,30,32,26,0
+math,12-13,כמה זה 15% מ-200?,What is 15% of 200?,30,40,10,30,40,10,0
+math,12-13,כמה זה 20% מ-80?,What is 20% of 80?,16,20,8,16,20,8,0
+math,12-13,כמה זה 75% מ-60?,What is 75% of 60?,45,48,39,45,48,39,0
+math,12-13,כמה זה 15% מ-100?,What is 15% of 100?,15,20,5,15,20,5,0
+math,12-13,כמה זה 20% מ-150?,What is 20% of 150?,30,37,16,30,37,16,0
+math,12-13,כמה זה 10% מ-20?,What is 10% of 20?,2,3,0,2,3,0,0
+math,12-13,כמה זה 20% מ-120?,What is 20% of 120?,24,30,12,24,30,12,0
+math,12-13,מהו הערך של x במשוואה: 4x + 3 = 31. מה x?,Solve: 4x + 3 = 31. What is x?,7,8,5,7,8,5,0
+math,12-13,מהו הערך של x במשוואה: 5x + 8 = 28. מה x?,Solve: 5x + 8 = 28. What is x?,4,5,2,4,5,2,0
+math,12-13,מהו הערך של x במשוואה: 2x + 1 = 21. מה x?,Solve: 2x + 1 = 21. What is x?,10,11,8,10,11,8,0
+math,12-13,מהו הערך של x במשוואה: 2x + 3 = 9. מה x?,Solve: 2x + 3 = 9. What is x?,3,4,1,3,4,1,0
+math,12-13,מהו הערך של x במשוואה: 3x + 6 = 51. מה x?,Solve: 3x + 6 = 51. What is x?,15,16,13,15,16,13,0
+math,12-13,מהו הערך של x במשוואה: 2x + 3 = 19. מה x?,Solve: 2x + 3 = 19. What is x?,8,9,6,8,9,6,0
+math,12-13,מהו הערך של x במשוואה: 2x + 6 = 18. מה x?,Solve: 2x + 6 = 18. What is x?,6,7,4,6,7,4,0
+math,12-13,מהו הערך של x במשוואה: 3x + 4 = 25. מה x?,Solve: 3x + 4 = 25. What is x?,7,8,5,7,8,5,0
+math,12-13,מהו הערך של x במשוואה: 4x + 2 = 50. מה x?,Solve: 4x + 2 = 50. What is x?,12,13,10,12,13,10,0
+math,12-13,מהו הערך של x במשוואה: 5x + 9 = 79. מה x?,Solve: 5x + 9 = 79. What is x?,14,15,12,14,15,12,0
+math,12-13,מהו הערך של x במשוואה: 3x + 3 = 36. מה x?,Solve: 3x + 3 = 36. What is x?,11,12,9,11,12,9,0
+math,12-13,מהו הערך של x במשוואה: 3x + 3 = 48. מה x?,Solve: 3x + 3 = 48. What is x?,15,16,13,15,16,13,0
+math,12-13,מהו הערך של x במשוואה: 3x + 1 = 25. מה x?,Solve: 3x + 1 = 25. What is x?,8,9,6,8,9,6,0
+math,12-13,מהו הערך של x במשוואה: 5x + 6 = 71. מה x?,Solve: 5x + 6 = 71. What is x?,13,14,11,13,14,11,0
+math,12-13,מהו הערך של x במשוואה: 4x + 4 = 60. מה x?,Solve: 4x + 4 = 60. What is x?,14,15,12,14,15,12,0
+math,12-13,מהו הערך של x במשוואה: 5x + 2 = 22. מה x?,Solve: 5x + 2 = 22. What is x?,4,5,2,4,5,2,0
+math,12-13,מהו הערך של x במשוואה: 5x + 1 = 76. מה x?,Solve: 5x + 1 = 76. What is x?,15,16,13,15,16,13,0
+math,12-13,מהו הערך של x במשוואה: 5x + 4 = 29. מה x?,Solve: 5x + 4 = 29. What is x?,5,6,3,5,6,3,0
+math,12-13,מהו הערך של x במשוואה: 3x + 5 = 26. מה x?,Solve: 3x + 5 = 26. What is x?,7,8,5,7,8,5,0
+math,12-13,מהו הערך של x במשוואה: 3x + 1 = 16. מה x?,Solve: 3x + 1 = 16. What is x?,5,6,3,5,6,3,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 5 ס""מ?",What is the area of a square with a 5cm side?,25,20,30,25,20,30,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 6 ס""מ?",What is the area of a square with a 6cm side?,36,24,42,36,24,42,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 8 ס""מ?",What is the area of a square with a 8cm side?,64,32,72,64,32,72,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 9 ס""מ?",What is the area of a square with a 9cm side?,81,36,90,81,36,90,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 10 ס""מ?",What is the area of a square with a 10cm side?,100,40,110,100,40,110,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 11 ס""מ?",What is the area of a square with a 11cm side?,121,44,132,121,44,132,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 12 ס""מ?",What is the area of a square with a 12cm side?,144,48,156,144,48,156,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 13 ס""מ?",What is the area of a square with a 13cm side?,169,52,182,169,52,182,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 14 ס""מ?",What is the area of a square with a 14cm side?,196,56,210,196,56,210,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 15 ס""מ?",What is the area of a square with a 15cm side?,225,60,240,225,60,240,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 16 ס""מ?",What is the area of a square with a 16cm side?,256,64,272,256,64,272,0
+math,12-13,"מה שטח ריבוע שאורך צלעו 17 ס""מ?",What is the area of a square with a 17cm side?,289,68,306,289,68,306,0
+math,12-13,מה ההיקף של מלבן שאורכו 16 ורוחבו 7?,What is the perimeter of a rectangle with length 16 and width 7?,46,112,23,46,112,23,0
+math,12-13,מה ההיקף של מלבן שאורכו 12 ורוחבו 15?,What is the perimeter of a rectangle with length 12 and width 15?,54,180,27,54,180,27,0
+math,12-13,מה ההיקף של מלבן שאורכו 6 ורוחבו 14?,What is the perimeter of a rectangle with length 6 and width 14?,40,84,20,40,84,20,0
+math,12-13,מה ההיקף של מלבן שאורכו 12 ורוחבו 7?,What is the perimeter of a rectangle with length 12 and width 7?,38,84,19,38,84,19,0
+math,12-13,מה ההיקף של מלבן שאורכו 20 ורוחבו 8?,What is the perimeter of a rectangle with length 20 and width 8?,56,160,28,56,160,28,0
+math,12-13,מה ההיקף של מלבן שאורכו 14 ורוחבו 2?,What is the perimeter of a rectangle with length 14 and width 2?,32,28,16,32,28,16,0
+math,12-13,מה ההיקף של מלבן שאורכו 7 ורוחבו 6?,What is the perimeter of a rectangle with length 7 and width 6?,26,42,13,26,42,13,0
+math,12-13,מה ההיקף של מלבן שאורכו 9 ורוחבו 11?,What is the perimeter of a rectangle with length 9 and width 11?,40,99,20,40,99,20,0
+math,12-13,מה ההיקף של מלבן שאורכו 12 ורוחבו 2?,What is the perimeter of a rectangle with length 12 and width 2?,28,24,14,28,24,14,0
+math,12-13,מה ההיקף של מלבן שאורכו 7 ורוחבו 11?,What is the perimeter of a rectangle with length 7 and width 11?,36,77,18,36,77,18,0
+math,12-13,מה ההיקף של מלבן שאורכו 17 ורוחבו 7?,What is the perimeter of a rectangle with length 17 and width 7?,48,119,24,48,119,24,0
+math,12-13,מה ההיקף של מלבן שאורכו 14 ורוחבו 8?,What is the perimeter of a rectangle with length 14 and width 8?,44,112,22,44,112,22,0
+math,12-13,מה ההיקף של מלבן שאורכו 20 ורוחבו 3?,What is the perimeter of a rectangle with length 20 and width 3?,46,60,23,46,60,23,0
+math,12-13,מה ההיקף של מלבן שאורכו 16 ורוחבו 11?,What is the perimeter of a rectangle with length 16 and width 11?,54,176,27,54,176,27,0
+math,12-13,מה ההיקף של מלבן שאורכו 10 ורוחבו 6?,What is the perimeter of a rectangle with length 10 and width 6?,32,60,16,32,60,16,0
+math,12-13,כמה זה 3 בריבוע?,What is 3 squared?,9,6,12,9,6,12,0
+math,12-13,כמה זה 4 בריבוע?,What is 4 squared?,16,8,20,16,8,20,0
+math,12-13,כמה זה 5 בריבוע?,What is 5 squared?,25,10,30,25,10,30,0
+math,12-13,כמה זה 6 בריבוע?,What is 6 squared?,36,12,42,36,12,42,0
+math,12-13,כמה זה 7 בריבוע?,What is 7 squared?,49,14,56,49,14,56,0
+math,12-13,כמה זה 8 בריבוע?,What is 8 squared?,64,16,72,64,16,72,0
+math,12-13,כמה זה 9 בריבוע?,What is 9 squared?,81,18,90,81,18,90,0
+math,12-13,כמה זה 10 בריבוע?,What is 10 squared?,100,20,110,100,20,110,0
+math,14-16,מהו הערך של x במשוואה: 5x + 9 = 1x - 19. מה x?,Solve: 5x + 9 = 1x - 19. What is x?,-7,-5,-10,-7,-5,-10,0
+math,14-16,מהו הערך של x במשוואה: 2x + 10 = 3x + 5. מה x?,Solve: 2x + 10 = 3x + 5. What is x?,5,7,2,5,7,2,0
+math,14-16,מהו הערך של x במשוואה: 2x + 9 = 3x + 7. מה x?,Solve: 2x + 9 = 3x + 7. What is x?,2,4,-1,2,4,-1,0
+math,14-16,מהו הערך של x במשוואה: 5x + 7 = 3x + 9. מה x?,Solve: 5x + 7 = 3x + 9. What is x?,1,3,-2,1,3,-2,0
+math,14-16,מהו הערך של x במשוואה: 4x + 3 = 5x - 11. מה x?,Solve: 4x + 3 = 5x - 11. What is x?,14,16,11,14,16,11,0
+math,14-16,מהו הערך של x במשוואה: 5x + 3 = 4x + 1. מה x?,Solve: 5x + 3 = 4x + 1. What is x?,-2,0,-5,-2,0,-5,0
+math,14-16,מהו הערך של x במשוואה: 6x + 7 = 3x + 40. מה x?,Solve: 6x + 7 = 3x + 40. What is x?,11,13,8,11,13,8,0
+math,14-16,מהו הערך של x במשוואה: 2x + 5 = 3x - 4. מה x?,Solve: 2x + 5 = 3x - 4. What is x?,9,11,6,9,11,6,0
+math,14-16,מהו הערך של x במשוואה: 5x + 9 = 2x + 27. מה x?,Solve: 5x + 9 = 2x + 27. What is x?,6,8,3,6,8,3,0
+math,14-16,מהו הערך של x במשוואה: 3x + 5 = 1x + 19. מה x?,Solve: 3x + 5 = 1x + 19. What is x?,7,9,4,7,9,4,0
+math,14-16,מהו הערך של x במשוואה: 6x + 2 = 3x + 26. מה x?,Solve: 6x + 2 = 3x + 26. What is x?,8,10,5,8,10,5,0
+math,14-16,מהו הערך של x במשוואה: 4x + 4 = 2x + 2. מה x?,Solve: 4x + 4 = 2x + 2. What is x?,-1,1,-4,-1,1,-4,0
+math,14-16,מהו הערך של x במשוואה: 2x + 4 = 1x + 0. מה x?,Solve: 2x + 4 = 1x + 0. What is x?,-4,-2,-7,-4,-2,-7,0
+math,14-16,מהו הערך של x במשוואה: 6x + 8 = 1x + 43. מה x?,Solve: 6x + 8 = 1x + 43. What is x?,7,9,4,7,9,4,0
+math,14-16,מהו הערך של x במשוואה: 6x + 7 = 2x + 27. מה x?,Solve: 6x + 7 = 2x + 27. What is x?,5,7,2,5,7,2,0
+math,14-16,מהו הערך של x במשוואה: 5x + 3 = 2x + 24. מה x?,Solve: 5x + 3 = 2x + 24. What is x?,7,9,4,7,9,4,0
+math,14-16,מהו הערך של x במשוואה: 2x + 7 = 1x + 19. מה x?,Solve: 2x + 7 = 1x + 19. What is x?,12,14,9,12,14,9,0
+math,14-16,מהו הערך של x במשוואה: 3x + 8 = 5x + 10. מה x?,Solve: 3x + 8 = 5x + 10. What is x?,-1,1,-4,-1,1,-4,0
+math,14-16,מהו הערך של x במשוואה: 6x + 2 = 2x - 26. מה x?,Solve: 6x + 2 = 2x - 26. What is x?,-7,-5,-10,-7,-5,-10,0
+math,14-16,מהו הערך של x במשוואה: 3x + 9 = 4x + 3. מה x?,Solve: 3x + 9 = 4x + 3. What is x?,6,8,3,6,8,3,0
+math,14-16,מהו הערך של x במשוואה: 6x + 8 = 3x + 35. מה x?,Solve: 6x + 8 = 3x + 35. What is x?,9,11,6,9,11,6,0
+math,14-16,מהו הערך של x במשוואה: 6x + 9 = 4x + 31. מה x?,Solve: 6x + 9 = 4x + 31. What is x?,11,13,8,11,13,8,0
+math,14-16,מהו הערך של x במשוואה: 3x + 8 = 4x + 2. מה x?,Solve: 3x + 8 = 4x + 2. What is x?,6,8,3,6,8,3,0
+math,14-16,מהו הערך של x במשוואה: 5x + 5 = 2x + 29. מה x?,Solve: 5x + 5 = 2x + 29. What is x?,8,10,5,8,10,5,0
+math,14-16,מהו הערך של x במשוואה: 2x + 4 = 3x - 2. מה x?,Solve: 2x + 4 = 3x - 2. What is x?,6,8,3,6,8,3,0
+math,14-16,"מה הממוצע של 9, 11, 11, 29?","What is the average of 9, 11, 11, 29?",15,17,12,15,17,12,0
+math,14-16,"מה הממוצע של 19, 3, 5, 5?","What is the average of 19, 3, 5, 5?",8,10,5,8,10,5,0
+math,14-16,"מה הממוצע של 11, 13, 23, 5?","What is the average of 11, 13, 23, 5?",13,15,10,13,15,10,0
+math,14-16,"מה הממוצע של 24, 7, 3, 14?","What is the average of 24, 7, 3, 14?",12,14,9,12,14,9,0
+math,14-16,"מה הממוצע של 16, 11, 18, 15?","What is the average of 16, 11, 18, 15?",15,17,12,15,17,12,0
+math,14-16,"מה הממוצע של 16, 2, 7, 27?","What is the average of 16, 2, 7, 27?",13,15,10,13,15,10,0
+math,14-16,"מה הממוצע של 17, 13, 29, 25?","What is the average of 17, 13, 29, 25?",21,23,18,21,23,18,0
+math,14-16,"מה הממוצע של 20, 23, 1, 28?","What is the average of 20, 23, 1, 28?",18,20,15,18,20,15,0
+math,14-16,"מה הממוצע של 31, 25, 19, 13?","What is the average of 31, 25, 19, 13?",22,24,19,22,24,19,0
+math,14-16,"מה הממוצע של 17, 1, 12, 10?","What is the average of 17, 1, 12, 10?",10,12,7,10,12,7,0
+math,14-16,"מה הממוצע של 26, 13, 28, 29?","What is the average of 26, 13, 28, 29?",24,26,21,24,26,21,0
+math,14-16,"מה הממוצע של 28, 14, 18, 24?","What is the average of 28, 14, 18, 24?",21,23,18,21,23,18,0
+math,14-16,"מה הממוצע של 24, 18, 26, 20?","What is the average of 24, 18, 26, 20?",22,24,19,22,24,19,0
+math,14-16,"מה הממוצע של 32, 8, 16, 8?","What is the average of 32, 8, 16, 8?",16,18,13,16,18,13,0
+math,14-16,"מה הממוצע של 9, 14, 16, 1?","What is the average of 9, 14, 16, 1?",10,12,7,10,12,7,0
+math,14-16,כמה זה השורש הריבועי של 121?,What is the square root of 121?,11,12,10,11,12,10,0
+math,14-16,כמה זה השורש הריבועי של 144?,What is the square root of 144?,12,13,11,12,13,11,0
+math,14-16,כמה זה השורש הריבועי של 196?,What is the square root of 196?,14,15,13,14,15,13,0
+math,14-16,כמה זה השורש הריבועי של 225?,What is the square root of 225?,15,16,14,15,16,14,0
+math,14-16,כמה זה השורש הריבועי של 256?,What is the square root of 256?,16,17,15,16,17,15,0
+math,14-16,כמה זה השורש הריבועי של 289?,What is the square root of 289?,17,18,16,17,18,16,0
+math,14-16,כמה זה השורש הריבועי של 324?,What is the square root of 324?,18,19,17,18,19,17,0
+math,14-16,כמה זה השורש הריבועי של 361?,What is the square root of 361?,19,20,18,19,20,18,0
+math,14-16,כמה זה השורש הריבועי של 400?,What is the square root of 400?,20,21,19,20,21,19,0
+math,14-16,כמה זה השורש הריבועי של 441?,What is the square root of 441?,21,22,20,21,22,20,0
+math,14-16,כמה זה השורש הריבועי של 484?,What is the square root of 484?,22,23,21,22,23,21,0
+math,14-16,"אם מכונית נוסעת 70 קמ""ש, כמה ק""מ תעבור ב-2.5 שעות?","If a car travels at 70 km/h, how many km will it cover in 2.5 hours?",175,185,160,175,185,160,0
+math,14-16,"אם מכונית נוסעת 90 קמ""ש, כמה ק""מ תעבור ב-3 שעות?","If a car travels at 90 km/h, how many km will it cover in 3 hours?",270,280,255,270,280,255,0
+math,14-16,"אם מכונית נוסעת 90 קמ""ש, כמה ק""מ תעבור ב-2 שעות?","If a car travels at 90 km/h, how many km will it cover in 2 hours?",180,190,165,180,190,165,0
+math,14-16,"אם מכונית נוסעת 70 קמ""ש, כמה ק""מ תעבור ב-2 שעות?","If a car travels at 70 km/h, how many km will it cover in 2 hours?",140,150,125,140,150,125,0
+math,14-16,"אם מכונית נוסעת 80 קמ""ש, כמה ק""מ תעבור ב-4 שעות?","If a car travels at 80 km/h, how many km will it cover in 4 hours?",320,330,305,320,330,305,0
+math,14-16,"אם מכונית נוסעת 40 קמ""ש, כמה ק""מ תעבור ב-3 שעות?","If a car travels at 40 km/h, how many km will it cover in 3 hours?",120,130,105,120,130,105,0
+math,14-16,"אם מכונית נוסעת 90 קמ""ש, כמה ק""מ תעבור ב-1.5 שעות?","If a car travels at 90 km/h, how many km will it cover in 1.5 hours?",135,145,120,135,145,120,0
+math,14-16,"אם מכונית נוסעת 50 קמ""ש, כמה ק""מ תעבור ב-3 שעות?","If a car travels at 50 km/h, how many km will it cover in 3 hours?",150,160,135,150,160,135,0
+math,14-16,"אם מכונית נוסעת 50 קמ""ש, כמה ק""מ תעבור ב-1.5 שעות?","If a car travels at 50 km/h, how many km will it cover in 1.5 hours?",75,85,60,75,85,60,0
+math,14-16,"אם מכונית נוסעת 60 קמ""ש, כמה ק""מ תעבור ב-3 שעות?","If a car travels at 60 km/h, how many km will it cover in 3 hours?",180,190,165,180,190,165,0
+math,14-16,"אם מכונית נוסעת 60 קמ""ש, כמה ק""מ תעבור ב-2 שעות?","If a car travels at 60 km/h, how many km will it cover in 2 hours?",120,130,105,120,130,105,0
+math,14-16,מה שטח משולש שבסיסו 8 וגובהו 5?,What is the area of a triangle with base 8 and height 5?,20,40,13,20,40,13,0
+math,14-16,מה שטח משולש שבסיסו 12 וגובהו 7?,What is the area of a triangle with base 12 and height 7?,42,84,19,42,84,19,0
+math,14-16,מה שטח משולש שבסיסו 14 וגובהו 8?,What is the area of a triangle with base 14 and height 8?,56,112,22,56,112,22,0
+math,14-16,מה שטח משולש שבסיסו 16 וגובהו 9?,What is the area of a triangle with base 16 and height 9?,72,144,25,72,144,25,0
+math,14-16,מה שטח משולש שבסיסו 6 וגובהו 4?,What is the area of a triangle with base 6 and height 4?,12,24,10,12,24,10,0
+math,14-16,מה שטח משולש שבסיסו 20 וגובהו 10?,What is the area of a triangle with base 20 and height 10?,100,200,30,100,200,30,0
+math,14-16,מה שטח משולש שבסיסו 18 וגובהו 11?,What is the area of a triangle with base 18 and height 11?,99,198,29,99,198,29,0
+math,14-16,מה שטח משולש שבסיסו 9 וגובהו 6?,What is the area of a triangle with base 9 and height 6?,27,54,15,27,54,15,0
+math,14-16,מה שטח משולש שבסיסו 22 וגובהו 12?,What is the area of a triangle with base 22 and height 12?,132,264,34,132,264,34,0
+science,10-11,כמה עיניים יש לרוב החרקים?,How many eyes do most insects have?,2,4,6,2,4,6,0
+science,10-11,מה שם הכוכב שאנחנו חיים עליו?,What is the name of the planet we live on?,כדור הארץ,מאדים,נוגה,כדור הארץ,מאדים,נוגה,0
+science,10-11,איזו עונה הכי חמה בישראל?,Which season is hottest in Israel?,קיץ,חורף,סתיו,קיץ,חורף,סתיו,0
+science,10-11,מאיזה חלק בגוף אנחנו רואים?,Which body part do we see with?,עיניים,אוזניים,אף,עיניים,אוזניים,אף,0
+science,10-11,איזה בעל חיים ידוע כ'ספינת המדבר'?,Which animal is known as the 'ship of the desert'?,גמל,סוס,פיל,גמל,סוס,פיל,0
+science,10-11,מה קורה למים כשהם קופאים?,What happens to water when it freezes?,הופך לקרח,הופך לאדים,נעלם,הופך לקרח,הופך לאדים,נעלם,0
+science,10-11,כמה כנפיים יש לרוב הציפורים?,How many wings do most birds have?,2,4,1,2,4,1,0
+science,10-11,איזה איבר בגוף עוזר לנו לנשום?,Which organ helps us breathe?,הריאות,הכבד,הכליות,הריאות,הכבד,הכליות,0
+science,10-11,מה צבעו של עלה בריא ברוב הצמחים?,What color is a healthy leaf in most plants?,ירוק,כחול,סגול,ירוק,כחול,סגול,0
+science,10-11,איזה כוכב לכת נקרא 'כוכב הלכת האדום'?,Which planet is called the 'Red Planet'?,מאדים,נוגה,צדק,מאדים,נוגה,צדק,0
+science,10-11,כמה רגליים יש לכלב?,How many legs does a dog have?,4,2,6,4,2,6,0
+science,10-11,מאיפה מגיע החלב שאנחנו שותים בדרך כלל?,Where does the milk we usually drink come from?,פרה,עץ,דבורה,פרה,עץ,דבורה,0
+science,12-13,מהו היסוד הכימי שסימנו Na?,What is the chemical element symbol Na for?,נתרן,חנקן,ניקל,נתרן,חנקן,ניקל,0
+science,12-13,כמה חושים בסיסיים יש לאדם?,How many basic human senses are there?,5,4,6,5,4,6,0
+science,12-13,מה שם הגז שממלא את רוב האטמוספרה שלנו?,What gas makes up most of our atmosphere?,חנקן,חמצן,פחמן דו-חמצני,חנקן,חמצן,פחמן דו-חמצני,0
+science,12-13,איזה מכשיר מודד טמפרטורה?,Which instrument measures temperature?,מדחום,ברומטר,מד לחץ דם,מדחום,ברומטר,מד לחץ דם,0
+science,12-13,מה שם התהליך שבו צמח סופג מים דרך השורשים?,What is the process by which a plant absorbs water through its roots?,ספיגה,נשימה,פוטוסינתזה,ספיגה,נשימה,פוטוסינתזה,0
+science,12-13,איזו מערכת בגוף אחראית על עיכול מזון?,Which body system is responsible for digesting food?,מערכת העיכול,מערכת הנשימה,מערכת העצבים,מערכת העיכול,מערכת הנשימה,מערכת העצבים,0
+science,12-13,מהי היחידה למדידת מסה?,What is the unit for measuring mass?,קילוגרם,מטר,שנייה,קילוגרם,מטר,שנייה,0
+science,12-13,כמה אחוז בערך מגוף האדם הוא מים?,About what percent of the human body is water?,60%,20%,90%,60%,20%,90%,0
+science,12-13,איזה כוכב לכת ידוע בטבעותיו?,Which planet is known for its rings?,שבתאי,מאדים,כוכב חמה,שבתאי,מאדים,כוכב חמה,0
+science,12-13,מה שם הגז שצמחים סופגים לצורך פוטוסינתזה?,What gas do plants absorb for photosynthesis?,פחמן דו-חמצני,חנקן,הליום,פחמן דו-חמצני,חנקן,הליום,0
+science,14-16,איזה איבר בגוף מייצר אינסולין?,Which organ produces insulin?,הלבלב,הכבד,הטחול,הלבלב,הכבד,הטחול,0
+science,14-16,מה שם החוק הפיזיקלי שקובע שלכל פעולה יש תגובה שווה ומנוגדת?,What is the physical law stating every action has an equal and opposite reaction?,החוק השלישי של ניוטון,חוק המשיכה,חוק שימור האנרגיה,החוק השלישי של ניוטון,חוק המשיכה,חוק שימור האנרגיה,0
+science,14-16,כמה כרומוזומים יש בתא אדם רגיל?,How many chromosomes are in a normal human cell?,46,23,64,46,23,64,0
+science,14-16,מהו הסמל הכימי של זהב?,What is the chemical symbol for gold?,Au,Ag,Gd,Au,Ag,Gd,0
+science,14-16,מה שם התהליך שבו אנרגיה עוברת מגוף חם לגוף קר?,What is the process where energy transfers from a hot body to a cold one?,מוליכות חום,קרינה,קיבוע חנקן,מוליכות חום,קרינה,קיבוע חנקן,0
+science,14-16,איזו מולקולה אחראית להעברת חמצן בדם?,Which molecule is responsible for carrying oxygen in the blood?,המוגלובין,גלוקוז,אינסולין,המוגלובין,גלוקוז,אינסולין,0
+science,14-16,מהי היחידה למדידת אנרגיה?,What is the unit for measuring energy?,ג'אול,ניוטון,וואט,ג'אול,ניוטון,וואט,0
+science,14-16,מה שם התהליך שבו יצורים מתפתחים לאורך דורות?,What is the process by which organisms change over generations called?,אבולוציה,מוטציה,מיטוזה,אבולוציה,מוטציה,מיטוזה,0
+science,14-16,איזה כוכב לכת קרוב ביותר לשמש?,Which planet is closest to the sun?,כוכב חמה,נוגה,כדור הארץ,כוכב חמה,נוגה,כדור הארץ,0
+israeli_history,10-11,איך קוראים לדגל של ישראל?,What is Israel's flag called?,דגל ישראל,דגל דוד,אין לו שם מיוחד,דגל ישראל,דגל דוד,אין לו שם מיוחד,0
+israeli_history,10-11,מה שם הים שנמצא ליד תל אביב?,What is the name of the sea near Tel Aviv?,הים התיכון,ים סוף,הים האדום,הים התיכון,ים סוף,הים האדום,0
+israeli_history,10-11,באיזה יום בשבוע חוגגים את השבת?,On which day of the week is Shabbat celebrated?,שבת,שישי,ראשון,שבת,שישי,ראשון,0
+israeli_history,10-11,מה שם העיר שבה נמצא הכותל המערבי?,What city is the Western Wall located in?,ירושלים,תל אביב,אילת,ירושלים,תל אביב,אילת,0
+israeli_history,10-11,איזה חג חוגגים לזכר יציאת מצרים?,Which holiday is celebrated to commemorate the Exodus from Egypt?,פסח,סוכות,שבועות,פסח,סוכות,שבועות,0
+israeli_history,10-11,מה שם הצמח שמככב בסמל מדינת ישראל?,What plant appears on Israel's national emblem?,זית,תפוח,ורד,זית,תפוח,ורד,0
+israeli_history,10-11,באיזו עיר נמצא הכנסת?,In which city is the Knesset located?,ירושלים,תל אביב,חיפה,ירושלים,תל אביב,חיפה,0
+israeli_history,12-13,מי היה ראש עיריית תל אביב הראשון?,Who was Tel Aviv's first mayor?,מאיר דיזנגוף,דוד בן-גוריון,חיים ויצמן,מאיר דיזנגוף,דוד בן-גוריון,חיים ויצמן,0
+israeli_history,12-13,מהי לשון הרשמית העיקרית של מדינת ישראל?,What is the main official language of the State of Israel?,עברית,ערבית,אנגלית,עברית,ערבית,אנגלית,0
+israeli_history,12-13,"מה שם ארגון ההגנה היהודי שקדם לצה""ל?",What was the name of the Jewish defense organization that preceded the IDF?,ההגנה,"האצ""ל","לח""י",ההגנה,"האצ""ל","לח""י",0
+israeli_history,12-13,מה שם המבצע שהעלה לישראל אלפי יהודים מאתיופיה בשנת 1991?,What was the name of the 1991 operation that brought thousands of Ethiopian Jews to Israel?,מבצע שלמה,מבצע משה,מבצע יונתן,מבצע שלמה,מבצע משה,מבצע יונתן,0
+israeli_history,12-13,מהו שמו העברי של הכותל המערבי המוכר גם כ'כותל הבכי'?,What is the Western Wall also historically known as?,הכותל,כיפת הסלע,מגדל דוד,הכותל,כיפת הסלע,מגדל דוד,0
+israeli_history,12-13,איזה נהר הכי ארוך בישראל?,Which is the longest river in Israel?,הירדן,הירקון,הקישון,הירדן,הירקון,הקישון,0
+israeli_history,12-13,מהי הגבעה שעליה נבנתה ירושלים העתיקה?,Which hill was ancient Jerusalem built on?,הר ציון,הר הכרמל,הר גריזים,הר ציון,הר הכרמל,הר גריזים,0
+israeli_history,14-16,מי היה שר החוץ הראשון של מדינת ישראל?,Who was Israel's first Foreign Minister?,משה שרת,אבא אבן,יגאל אלון,משה שרת,אבא אבן,יגאל אלון,0
+israeli_history,14-16,מה שם ההסכם שהביא לשלום בין ישראל לירדן ב-1994?,What was the agreement that led to peace between Israel and Jordan in 1994 called?,הסכם השלום עם ירדן,הסכמי אוסלו,הסכם קמפ דייויד,הסכם השלום עם ירדן,הסכמי אוסלו,הסכם קמפ דייויד,0
+israeli_history,14-16,"באיזו שנה הצטרפה ישראל לאו""ם?",In what year did Israel join the UN?,1949,1948,1956,1949,1948,1956,0
+israeli_history,14-16,"מי היה מפקד הפלמ""ח האחרון?",Who was the last commander of the Palmach?,יצחק רבין,משה דיין,יגאל אלון,יצחק רבין,משה דיין,יגאל אלון,0
+israeli_history,14-16,מה שם מבצע החילוץ המפורסם באנטבה ב-1976?,What was the name of the famous 1976 Entebbe rescue operation?,מבצע יונתן,מבצע קדש,מבצע חומת מגן,מבצע יונתן,מבצע קדש,מבצע חומת מגן,0
+israeli_history,14-16,מי חתם בשם ישראל על הסכם השלום עם מצרים ב-1979?,Who signed the 1979 peace treaty with Egypt on Israel's behalf?,מנחם בגין,יצחק שמיר,גולדה מאיר,מנחם בגין,יצחק שמיר,גולדה מאיר,0
+israeli_history,14-16,מה שם קו ההגנה שנבנה על ידי ישראל לאורך תעלת סואץ אחרי 1967?,What was the name of the defense line Israel built along the Suez Canal after 1967?,קו בר-לב,קו מגינו,החומה הירוקה,קו בר-לב,קו מגינו,החומה הירוקה,0
+general_knowledge,10-11,כמה שעות יש ביממה?,How many hours are there in a day?,24,12,48,24,12,48,0
+general_knowledge,10-11,איזו חיה הכי גדולה בעולם?,Which is the largest animal in the world?,לוויתן כחול,פיל,ג'ירפה,לוויתן כחול,פיל,ג'ירפה,0
+general_knowledge,10-11,מה הצבע שמתקבל מערבוב כחול וצהוב?,What color do you get by mixing blue and yellow?,ירוק,סגול,כתום,ירוק,סגול,כתום,0
+general_knowledge,10-11,כמה רגליים יש לעכביש?,How many legs does a spider have?,8,6,10,8,6,10,0
+general_knowledge,10-11,איזה כלי נגינה יש לו מיתרים ומנגנים עליו בקשת?,Which instrument has strings and is played with a bow?,כינור,חליל,תופים,כינור,חליל,תופים,0
+general_knowledge,10-11,מה שם הצורה שיש לה שלוש צלעות?,What is the shape with three sides called?,משולש,מרובע,מעגל,משולש,מרובע,מעגל,0
+general_knowledge,10-11,באיזו עונה נופלים עלים מהעצים בדרך כלל?,In which season do leaves usually fall from trees?,סתיו,אביב,קיץ,סתיו,אביב,קיץ,0
+general_knowledge,10-11,איזה ספורט משחקים עם מחבט וכדור קטן מעל רשת?,Which sport is played with a racket and small ball over a net?,טניס,כדורגל,כדורסל,טניס,כדורגל,כדורסל,0
+general_knowledge,12-13,מי כתב את הסיפור 'עליזה בארץ הפלאות'?,Who wrote 'Alice in Wonderland'?,לואיס קרול,האנס כריסטיאן אנדרסן,האחים גרים,לואיס קרול,האנס כריסטיאן אנדרסן,האחים גרים,0
+general_knowledge,12-13,מהי בירת איטליה?,What is the capital of Italy?,רומא,מילאנו,ונציה,רומא,מילאנו,ונציה,0
+general_knowledge,12-13,איזה מתכת משמשת להכנת תכשיטים ומוליכה חשמל היטב?,Which metal is used for jewelry and conducts electricity well?,כסף,ברזל,עופרת,כסף,ברזל,עופרת,0
+general_knowledge,12-13,מה שם היבשת הקפואה בדרום כדור הארץ?,What is the name of the frozen continent in the south of the Earth?,אנטארקטיקה,גרינלנד,סיביר,אנטארקטיקה,גרינלנד,סיביר,0
+general_knowledge,12-13,איזה ענף ספורט מתקיים באולימפיאדת החורף ולא בקיץ?,Which sport takes place in the Winter Olympics and not the Summer?,סקי,שחייה,כדורסל,סקי,שחייה,כדורסל,0
+general_knowledge,12-13,מהי בירת ספרד?,What is the capital of Spain?,מדריד,ברצלונה,סביליה,מדריד,ברצלונה,סביליה,0
+general_knowledge,12-13,איזה כלי תחבורה טס בעזרת כנפיים מסתובבות?,Which vehicle flies using rotating blades?,מסוק,מטוס,רכבת,מסוק,מטוס,רכבת,0
+general_knowledge,14-16,מי כתב את הסימפוניה התשיעית המפורסמת?,Who composed the famous Ninth Symphony?,בטהובן,מוצרט,באך,בטהובן,מוצרט,באך,0
+general_knowledge,14-16,מהו הנהר הארוך בעולם?,What is the longest river in the world?,הנילוס,האמזונס,המיסיסיפי,הנילוס,האמזונס,המיסיסיפי,0
+general_knowledge,14-16,באיזו שנה נפלה חומת ברלין?,In what year did the Berlin Wall fall?,1989,1979,1999,1989,1979,1999,0
+general_knowledge,14-16,מי היה הנשיא הראשון של ארצות הברית?,Who was the first President of the United States?,ג'ורג' וושינגטון,אברהם לינקולן,תומאס ג'פרסון,ג'ורג' וושינגטון,אברהם לינקולן,תומאס ג'פרסון,0
+general_knowledge,14-16,מהי המדינה הקטנה ביותר בעולם?,What is the smallest country in the world?,הוותיקן,מונקו,סן מרינו,הוותיקן,מונקו,סן מרינו,0
+general_knowledge,14-16,מי צייר את התקרה של הקפלה הסיסטינית?,Who painted the ceiling of the Sistine Chapel?,מיכלאנג'לו,רפאל,דה וינצ'י,מיכלאנג'לו,רפאל,דה וינצ'י,0
+general_knowledge,14-16,מהי היבשת עם הכי הרבה מדינות?,Which continent has the most countries?,אפריקה,אסיה,אירופה,אפריקה,אסיה,אירופה,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""שולחן""?","What is the correct English translation of the Hebrew word ""שולחן""?",Table,Chair,Window,Table,Chair,Window,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""עץ""?","What is the correct English translation of the Hebrew word ""עץ""?",Tree,Flower,Grass,Tree,Flower,Grass,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""יד""?","What is the correct English translation of the Hebrew word ""יד""?",Hand,Leg,Head,Hand,Leg,Head,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""אדום""?","What is the correct English translation of the Hebrew word ""אדום""?",Red,Blue,Green,Red,Blue,Green,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""קטן""?","What is the correct English translation of the Hebrew word ""קטן""?",Small,Big,Tall,Small,Big,Tall,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""לרוץ""?","What is the correct English translation of the Hebrew word ""לרוץ""?",To run,To walk,To sit,To run,To walk,To sit,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""ילד""?","What is the correct English translation of the Hebrew word ""ילד""?",Boy,Girl,Baby,Boy,Girl,Baby,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""שמח""?","What is the correct English translation of the Hebrew word ""שמח""?",Happy,Sad,Angry,Happy,Sad,Angry,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להזמין""?","What is the correct English translation of the Hebrew word ""להזמין""?",To invite,To reject,To follow,To invite,To reject,To follow,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""קשה""?","What is the correct English translation of the Hebrew word ""קשה""?",Difficult,Easy,Soft,Difficult,Easy,Soft,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להבין""?","What is the correct English translation of the Hebrew word ""להבין""?",To understand,To forget,To draw,To understand,To forget,To draw,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""מהיר""?","What is the correct English translation of the Hebrew word ""מהיר""?",Fast,Slow,Quiet,Fast,Slow,Quiet,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לשאול""?","What is the correct English translation of the Hebrew word ""לשאול""?",To ask,To answer,To shout,To ask,To answer,To shout,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""נעים""?","What is the correct English translation of the Hebrew word ""נעים""?",Pleasant,Rude,Boring,Pleasant,Rude,Boring,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להזכיר""?","What is the correct English translation of the Hebrew word ""להזכיר""?",To remind,To hide,To break,To remind,To hide,To break,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""חשוב""?","What is the correct English translation of the Hebrew word ""חשוב""?",Important,Useless,Cheap,Important,Useless,Cheap,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""לשכנע""?","What is the correct English translation of the Hebrew word ""לשכנע""?",To persuade,To ignore,To repeat,To persuade,To ignore,To repeat,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""מפתיע""?","What is the correct English translation of the Hebrew word ""מפתיע""?",Surprising,Predictable,Ordinary,Surprising,Predictable,Ordinary,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להתעלם""?","What is the correct English translation of the Hebrew word ""להתעלם""?",To ignore,To notice,To greet,To ignore,To notice,To greet,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""איכותי""?","What is the correct English translation of the Hebrew word ""איכותי""?",High-quality,Defective,Average,High-quality,Defective,Average,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להסתגל""?","What is the correct English translation of the Hebrew word ""להסתגל""?",To adapt,To resist,To collapse,To adapt,To resist,To collapse,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""זהיר""?","What is the correct English translation of the Hebrew word ""זהיר""?",Cautious,Careless,Bold,Cautious,Careless,Bold,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להדגיש""?","What is the correct English translation of the Hebrew word ""להדגיש""?",To emphasize,To minimize,To conceal,To emphasize,To minimize,To conceal,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""נדיר""?","What is the correct English translation of the Hebrew word ""נדיר""?",Rare,Common,Cheap,Rare,Common,Cheap,0
+science,10-11,איזה חלק בגוף מזרים דם?,Which body part pumps blood?,הלב,הריאות,הכבד,הלב,הריאות,הכבד,0
+science,10-11,כמה אצבעות יש ביד אחת?,How many fingers does one hand have?,5,4,6,5,4,6,0
+science,10-11,מאיזה איבר יוצא הקול שלנו?,Which organ produces our voice?,מיתרי הקול,הריאות,האף,מיתרי הקול,הריאות,האף,0
+science,10-11,איזו עונה הכי קרה בישראל?,Which season is coldest in Israel?,חורף,קיץ,אביב,חורף,קיץ,אביב,0
+science,10-11,איזה כוכב לכת נראה בהיר מאוד בשמיים בלילה?,Which planet appears very bright in the night sky?,נוגה,מאדים,שבתאי,נוגה,מאדים,שבתאי,0
+science,10-11,איזו חיה יכולה לשנות את צבע עורה?,Which animal can change its skin color?,זיקית,חתול,כלב,זיקית,חתול,כלב,0
+science,10-11,מאיפה מגיע הדבש?,Where does honey come from?,דבורים,פרפרים,נמלים,דבורים,פרפרים,נמלים,0
+science,10-11,איזה חלק בצמח סופג אור שמש?,Which part of a plant absorbs sunlight?,העלים,השורשים,הפרחים,העלים,השורשים,הפרחים,0
+science,10-11,כמה רגליים יש לפרפר?,How many legs does a butterfly have?,6,4,8,6,4,8,0
+science,10-11,מה קורה כשמחממים קרח?,What happens when ice is heated?,נמס והופך למים,נעלם,הופך לאבן,נמס והופך למים,נעלם,הופך לאבן,0
+science,10-11,איזו חיה יודעת לעוף וגם לשחות?,Which animal can both fly and swim?,ברווז,כלב,חתול,ברווז,כלב,חתול,0
+science,10-11,מה שם השכבה שמגנה עלינו מקרינת השמש?,What is the layer that protects us from sun radiation called?,שכבת האוזון,שכבת הענן,שכבת החמצן,שכבת האוזון,שכבת הענן,שכבת החמצן,0
+science,10-11,איזה צבע יש לדם שלנו?,What color is our blood?,אדום,כחול,ירוק,אדום,כחול,ירוק,0
+science,10-11,מאיזה חומר עשוי רוב הזכוכית?,What is most glass made from?,חול,עץ,ברזל,חול,עץ,ברזל,0
+science,10-11,איזו חיה גדלה בתוך ביצה?,Which animal grows inside an egg?,תרנגולת,כלב,חתול,תרנגולת,כלב,חתול,0
+science,10-11,מה שם התהליך שבו זרעים הופכים לצמחים?,What is the process where seeds become plants called?,נביטה,אידוי,קיפאון,נביטה,אידוי,קיפאון,0
+science,10-11,איזה איבר מנקה את הדם בגוף?,Which organ cleans the blood?,הכליות,הריאות,העור,הכליות,הריאות,העור,0
+science,12-13,מהו הסמל הכימי של אשלגן?,What is the chemical symbol for potassium?,K,P,Ka,K,P,Ka,0
+science,12-13,מה שם התהליך שבו נוזל הופך לגז?,What is the process where liquid becomes gas called?,אידוי,התכה,קיפאון,אידוי,התכה,קיפאון,0
+science,12-13,איזו בלוטה בגוף מייצרת הורמוני גדילה?,Which gland produces growth hormones?,יותרת המוח,הלבלב,בלוטת התריס,יותרת המוח,הלבלב,בלוטת התריס,0
+science,12-13,איזה גז נדרש לבעירה (אש)?,Which gas is needed for combustion (fire)?,חמצן,חנקן,פחמן דו חמצני,חמצן,חנקן,פחמן דו חמצני,0
+science,12-13,מה שם התא שאחראי על העברת מסרים במערכת העצבים?,What is the cell responsible for transmitting nerve signals called?,נוירון,תא דם,תא שריר,נוירון,תא דם,תא שריר,0
+science,12-13,איזו קבוצת בעלי חיים כוללת נחשים ולטאות?,Which animal group includes snakes and lizards?,זוחלים,יונקים,דו-חיים,זוחלים,יונקים,דו-חיים,0
+science,12-13,איזה איבר בגוף מייצר מרה?,Which organ produces bile?,הכבד,הלבלב,הטחול,הכבד,הלבלב,הטחול,0
+science,12-13,איזו יבשת ידועה כבעלת המדבר הגדול בעולם?,Which continent is home to the world's largest desert?,אפריקה,אסיה,דרום אמריקה,אפריקה,אסיה,דרום אמריקה,0
+science,12-13,איזה סוג אנרגיה מאוחסן בסוללה?,What type of energy is stored in a battery?,אנרגיה כימית,אנרגיה גרעינית,אנרגיה קולית,אנרגיה כימית,אנרגיה גרעינית,אנרגיה קולית,0
+science,12-13,מה שם הגז שבלונים מתנפחים בו כדי לעוף למעלה?,What gas fills balloons so they float up?,הליום,חמצן,פחמן דו חמצני,הליום,חמצן,פחמן דו חמצני,0
+science,12-13,איזו שכבה בכדור הארץ הכי קרובה לפני השטח?,Which layer of Earth is closest to the surface?,קרום כדור הארץ,הגלימה,הליבה,קרום כדור הארץ,הגלימה,הליבה,0
+science,12-13,מהי תפקידה העיקרי של מערכת החיסון?,What is the main role of the immune system?,להגן מפני מחלות,לעכל מזון,להזרים דם,להגן מפני מחלות,לעכל מזון,להזרים דם,0
+science,12-13,איזה כוח גורם לחפצים לצוף על פני מים?,What force causes objects to float on water?,כוח ציפה,כוח משיכה,כוח חיכוך,כוח ציפה,כוח משיכה,כוח חיכוך,0
+science,12-13,מה שם התהליך שבו תאי גוף מתחלקים לצמיחה?,What is the process where body cells divide to grow called?,מיטוזה,פוטוסינתזה,אידוי,מיטוזה,פוטוסינתזה,אידוי,0
+science,12-13,מהי יחידת המידה לזרם חשמלי?,What is the unit for electric current?,אמפר,וולט,אוהם,אמפר,וולט,אוהם,0
+science,14-16,איזה איבר אחראי לסינון רעלים בגוף?,Which organ filters toxins from the body?,הכבד,הטחול,הלבלב,הכבד,הטחול,הלבלב,0
+science,14-16,מה שם התהליך שבו אנרגיית אור הופכת לאנרגיה כימית בצמחים?,What is the process converting light energy to chemical energy in plants called?,פוטוסינתזה,נשימה תאית,אידוי,פוטוסינתזה,נשימה תאית,אידוי,0
+science,14-16,מהי נוסחת המים הכימית?,What is the chemical formula for water?,H2O,CO2,NaCl,H2O,CO2,NaCl,0
+science,14-16,איזה חלקיק אטומי טעון בטעינה חיובית?,Which atomic particle carries a positive charge?,פרוטון,אלקטרון,נויטרון,פרוטון,אלקטרון,נויטרון,0
+science,14-16,מה שם מחלת חוסר באינסולין?,What is the disease caused by insulin deficiency called?,סוכרת,אנמיה,אסתמה,סוכרת,אנמיה,אסתמה,0
+science,14-16,איזו תופעה גורמת לגאות ושפל בים?,What phenomenon causes ocean tides?,משיכת הירח,רוח חזקה,התחממות המים,משיכת הירח,רוח חזקה,התחממות המים,0
+science,14-16,איזה סוג קרינה משמש לצילומי רנטגן?,What type of radiation is used for X-rays?,קרני X,אור אינפרא-אדום,גלי רדיו,קרני X,אור אינפרא-אדום,גלי רדיו,0
+science,14-16,איזה יסוד הוא הנפוץ ביותר ביקום?,What is the most abundant element in the universe?,מימן,חמצן,פחמן,מימן,חמצן,פחמן,0
+science,14-16,מהי יחידת המידה ללחץ?,What is the unit for pressure?,פסקל,ניוטון,ג'אול,פסקל,ניוטון,ג'אול,0
+science,14-16,איזה איבר בגוף אחראי על שיווי המשקל?,Which organ is responsible for balance?,האוזן הפנימית,העין,האף,האוזן הפנימית,העין,האף,0
+science,14-16,מה שם החומר התורשתי הנמצא בגרעין התא?,What is the hereditary material found in the cell nucleus called?,DNA,RNA,חלבון,DNA,RNA,חלבון,0
+science,14-16,מהו מספר האטומי (מספר הפרוטונים) של פחמן?,What is the atomic number of carbon?,6,8,12,6,8,12,0
+science,14-16,איזה איבר מווסת את טמפרטורת הגוף?,Which organ regulates body temperature?,העור,הכבד,הריאות,העור,הכבד,הריאות,0
+science,14-16,מה שם התהליך שבו מים עוברים דרך קרום חצי-חדיר?,What is the process of water passing through a semi-permeable membrane called?,אוסמוזה,דיפוזיה,סינון,אוסמוזה,דיפוזיה,סינון,0
+science,14-16,מהי היחידה למדידת הספק חשמלי?,What is the unit for electric power?,וואט,וולט,אמפר,וואט,וולט,אמפר,0
+israeli_history,10-11,באיזה חודש עברי בדרך כלל חוגגים את יום העצמאות?,In which Hebrew month is Independence Day usually celebrated?,אייר,תשרי,כסלו,אייר,תשרי,כסלו,0
+israeli_history,10-11,מה שם הפרח שנחשב לסמל ישראלי אהוב באביב?,What flower is a beloved Israeli spring symbol?,כלנית,ורד,חמנייה,כלנית,ורד,חמנייה,0
+israeli_history,10-11,איזה חג חוגגים בסוכה מחוץ לבית?,Which holiday is celebrated in a hut outside the house?,סוכות,פסח,חנוכה,סוכות,פסח,חנוכה,0
+israeli_history,10-11,איזו עיר נמצאת הכי דרומית בישראל וידועה כעיר נופש?,"Which city is Israel's southernmost, known as a resort town?",אילת,חיפה,נתניה,אילת,חיפה,נתניה,0
+israeli_history,10-11,מה שם החג שבו מדליקים נרות חנוכייה?,Which holiday involves lighting a menorah?,חנוכה,פורים,שבועות,חנוכה,פורים,שבועות,0
+israeli_history,10-11,איזה כלי נגינה מנגנים בו בטקסים צבאיים בישראל?,Which instrument is played at Israeli military ceremonies?,חצוצרה,כינור,תופים,חצוצרה,כינור,תופים,0
+israeli_history,10-11,איזה ים גובל בישראל ממערב?,Which sea borders Israel to the west?,הים התיכון,ים סוף,הים השחור,הים התיכון,ים סוף,הים השחור,0
+israeli_history,10-11,מה שם החג שבו קוראים במגילת אסתר?,Which holiday involves reading the Scroll of Esther?,פורים,חנוכה,שבועות,פורים,חנוכה,שבועות,0
+israeli_history,10-11,איזו עיר משמשת כבירת הצפון של ישראל?,Which city serves as Israel's northern capital?,חיפה,אילת,באר שבע,חיפה,אילת,באר שבע,0
+israeli_history,10-11,מה שם ההר שעליו נבנתה ירושלים העתיקה?,Which hill was ancient Jerusalem built on?,הר ציון,הר הכרמל,הר תבור,הר ציון,הר הכרמל,הר תבור,0
+israeli_history,10-11,מה שם הכיכר המרכזית בתל אביב הידועה כמקום התכנסות?,What is Tel Aviv's central gathering square called?,כיכר רבין,כיכר ציון,כיכר העצמאות,כיכר רבין,כיכר ציון,כיכר העצמאות,0
+israeli_history,10-11,איזה עץ נחשב לסמל השלום בתרבות הישראלית?,Which tree is a symbol of peace in Israeli culture?,עץ הזית,עץ התמר,עץ האורן,עץ הזית,עץ התמר,עץ האורן,0
+israeli_history,10-11,מה שם המדבר הגדול שנמצא בדרום ישראל?,What is the large desert in southern Israel called?,מדבר הנגב,מדבר סהרה,מדבר גובי,מדבר הנגב,מדבר סהרה,מדבר גובי,0
+israeli_history,10-11,איזו עיר עתיקה נמצאת ליד ים המלח וידועה בחפירות ארכיאולוגיות?,Which ancient site near the Dead Sea is known for archaeology?,מצדה,יפו,עכו,מצדה,יפו,עכו,0
+israeli_history,10-11,מה שם היום שבו נחגגת קבלת התורה?,Which holiday celebrates receiving the Torah?,שבועות,סוכות,פורים,שבועות,סוכות,פורים,0
+israeli_history,10-11,איזה נהר עובר דרך תל אביב?,Which river runs through Tel Aviv?,הירקון,הירדן,הקישון,הירקון,הירדן,הקישון,0
+israeli_history,12-13,מי חיבר את מילות ההמנון 'התקווה'?,Who wrote the lyrics to the anthem 'Hatikvah'?,נפתלי הרץ אימבר,חיים נחמן ביאליק,שאול טשרניחובסקי,נפתלי הרץ אימבר,חיים נחמן ביאליק,שאול טשרניחובסקי,0
+israeli_history,12-13,"מה שם הארגון שממנו התפתח צה""ל לאחר קום המדינה?",What organization did the IDF develop from after independence?,ההגנה,משטרת המנדט,הבריגדה היהודית,ההגנה,משטרת המנדט,הבריגדה היהודית,0
+israeli_history,12-13,מה שם התנועה שבראשה עמד זאב ז'בוטינסקי?,What movement did Ze'ev Jabotinsky lead?,התנועה הרוויזיוניסטית,"מפא""י",השומר הצעיר,התנועה הרוויזיוניסטית,"מפא""י",השומר הצעיר,0
+israeli_history,12-13,איזו עיר שימשה כבירת ישראל הזמנית לפני שירושלים הוכרזה כבירה?,Which city served as Israel's temporary capital before Jerusalem?,תל אביב,חיפה,רמת גן,תל אביב,חיפה,רמת גן,0
+israeli_history,12-13,איזה נשיא ישראלי כיהן הכי הרבה שנים?,Which Israeli president served the longest?,חיים הרצוג,עזר ויצמן,שמעון פרס,חיים הרצוג,עזר ויצמן,שמעון פרס,0
+israeli_history,12-13,מה שם המסמך שמעניק לכל יהודי זכות לעלות ולקבל אזרחות בישראל?,What law grants every Jew the right to immigrate and gain Israeli citizenship?,חוק השבות,חוק היסוד,חוק האזרחות,חוק השבות,חוק היסוד,חוק האזרחות,0
+israeli_history,12-13,איזו עיר נחשבת לעיר ההייטק המרכזית של ישראל?,Which city is considered Israel's main tech hub?,תל אביב,ירושלים,אשדוד,תל אביב,ירושלים,אשדוד,0
+israeli_history,12-13,איזה ראש ממשלה ישראלי נרצח בכיכר רבין ב-1995?,Which Israeli Prime Minister was assassinated at Rabin Square in 1995?,יצחק רבין,שמעון פרס,מנחם בגין,יצחק רבין,שמעון פרס,מנחם בגין,0
+israeli_history,12-13,מה שם המפלגה ששלטה בישראל ברציפות עד 1977?,What party ruled Israel continuously until 1977?,"מפא""י",הליכוד,מרצ,"מפא""י",הליכוד,מרצ,0
+israeli_history,12-13,איזו אוניברסיטה ישראלית היא הוותיקה ביותר?,Which is Israel's oldest university?,האוניברסיטה העברית בירושלים,אוניברסיטת תל אביב,הטכניון,האוניברסיטה העברית בירושלים,אוניברסיטת תל אביב,הטכניון,0
+israeli_history,12-13,מה שם המבצע הצבאי הידוע שהתרחש במלחמת סיני ב-1956?,What was the well-known military operation during the 1956 Sinai war?,מבצע קדש,מבצע יונתן,מבצע דין וחשבון,מבצע קדש,מבצע יונתן,מבצע דין וחשבון,0
+israeli_history,12-13,מה שם התנועה הציונית-דתית שהקימה התיישבות רבה בארץ ישראל?,What religious-Zionist movement founded much settlement in the land of Israel?,המזרחי,השומר הצעיר,"בית""ר",המזרחי,השומר הצעיר,"בית""ר",0
+israeli_history,12-13,איזו שנה מסמלת את תחילת העלייה הראשונה לארץ ישראל?,Which year marks the start of the First Aliyah?,1882,1917,1948,1882,1917,1948,0
+israeli_history,12-13,מה שם ההצהרה הבריטית מ-1917 שתמכה בבית לאומי יהודי בארץ ישראל?,What was the 1917 British declaration supporting a Jewish homeland called?,הצהרת בלפור,הסכם סייקס-פיקו,מגילת העצמאות,הצהרת בלפור,הסכם סייקס-פיקו,מגילת העצמאות,0
+israeli_history,12-13,איזה ארגון פעל במחתרת נגד השלטון הבריטי בראשות מנחם בגין?,"Which underground organization, led by Menachem Begin, fought British rule?","האצ""ל","הפלמ""ח",ההגנה,"האצ""ל","הפלמ""ח",ההגנה,0
+israeli_history,14-16,מי היה שר הביטחון בזמן מלחמת ששת הימים?,Who was Defense Minister during the Six-Day War?,משה דיין,יצחק רבין,עזר ויצמן,משה דיין,יצחק רבין,עזר ויצמן,0
+israeli_history,14-16,מה שם ועדת החקירה שבדקה את כשלי מלחמת יום כיפור?,What was the commission investigating the Yom Kippur War failures called?,ועדת אגרנט,ועדת כהן,ועדת וינוגרד,ועדת אגרנט,ועדת כהן,ועדת וינוגרד,0
+israeli_history,14-16,באיזו שנה נחתם הסכם השלום בין ישראל לירדן?,In what year was the Israel-Jordan peace treaty signed?,1994,1979,1993,1994,1979,1993,0
+israeli_history,14-16,מי היה ראש הממשלה שחתם על הסכמי אוסלו?,Who was the Prime Minister who signed the Oslo Accords?,יצחק רבין,מנחם בגין,אריאל שרון,יצחק רבין,מנחם בגין,אריאל שרון,0
+israeli_history,14-16,"מה שם מבצע צה""ל הגדול בלבנון ב-1982?",What was the name of the IDF's major 1982 Lebanon operation?,מבצע שלום הגליל,מבצע ליטני,מבצע דין וחשבון,מבצע שלום הגליל,מבצע ליטני,מבצע דין וחשבון,0
+israeli_history,14-16,איזה ראש ממשלה הוביל את הנסיגה מרצועת עזה ב-2005?,Which Prime Minister led the 2005 withdrawal from Gaza?,אריאל שרון,אהוד ברק,בנימין נתניהו,אריאל שרון,אהוד ברק,בנימין נתניהו,0
+israeli_history,14-16,איזו מלחמה ידועה גם בשם 'מלחמת ההתשה'?,Which conflict is also known as the 'War of Attrition'?,העימות עם מצרים 1967-1970,מלחמת לבנון הראשונה,מלחמת סיני,העימות עם מצרים 1967-1970,מלחמת לבנון הראשונה,מלחמת סיני,0
+israeli_history,14-16,מי היה נשיא מצרים שחתם על הסכם השלום עם ישראל ב-1979?,Who was Egypt's president who signed the 1979 peace treaty with Israel?,אנואר סאדאת,חוסני מובארכ,גמאל עבד אל-נאצר,אנואר סאדאת,חוסני מובארכ,גמאל עבד אל-נאצר,0
+israeli_history,14-16,איזה ארגון פלסטיני נחתם עמו הסכם אוסלו?,Which Palestinian organization was the Oslo Accords signed with?,"אש""ף",חמאס,הג'יהאד האסלאמי,"אש""ף",חמאס,הג'יהאד האסלאמי,0
+israeli_history,14-16,מה שם המבצע שבו שוחררו חטופים ישראלים בעוגנדה ב-1976?,What was the operation that freed Israeli hostages in Uganda in 1976 called?,מבצע יונתן,מבצע קדש,מבצע דין וחשבון,מבצע יונתן,מבצע קדש,מבצע דין וחשבון,0
+israeli_history,14-16,באיזו שנה פרצה האינתיפאדה הראשונה?,In what year did the First Intifada begin?,1987,1977,1993,1987,1977,1993,0
+israeli_history,14-16,מה שם ההסכם שהחזיר את חצי האי סיני למצרים?,What agreement returned the Sinai Peninsula to Egypt?,הסכם השלום עם מצרים,הסכמי אוסלו,הסכם רודוס,הסכם השלום עם מצרים,הסכמי אוסלו,הסכם רודוס,0
+israeli_history,14-16,איזו מדינה ערבית הכירה בישראל במסגרת הסכמי אברהם?,Which Arab country recognized Israel as part of the Abraham Accords?,איחוד האמירויות,סעודיה,עיראק,איחוד האמירויות,סעודיה,עיראק,0
+israeli_history,14-16,מה שם המלחמה שפרצה ב-2006 מול חיזבאללה בלבנון?,What was the 2006 war against Hezbollah in Lebanon called?,מלחמת לבנון השנייה,מלחמת לבנון הראשונה,מבצע ליטני,מלחמת לבנון השנייה,מלחמת לבנון הראשונה,מבצע ליטני,0
+israeli_history,14-16,איזו ממשלה ישראלית הייתה הראשונה שכללה מפלגה ערבית כחלק מהקואליציה?,Which Israeli government was the first to include an Arab party in its coalition?,ממשלת בנט-לפיד,ממשלת רבין,ממשלת בגין,ממשלת בנט-לפיד,ממשלת רבין,ממשלת בגין,0
+general_knowledge,10-11,איזו מדינה נמצאת מעבר לים מישראל וידועה בפירמידות?,Which country across the sea from Israel is known for pyramids?,מצרים,יוון,טורקיה,מצרים,יוון,טורקיה,0
+general_knowledge,10-11,כמה ימים יש בחודש פברואר בשנה רגילה?,How many days does February have in a regular year?,28,30,31,28,30,31,0
+general_knowledge,10-11,איזו חיה בונה כוורות?,Which animal builds hives?,דבורה,נמלה,פרפר,דבורה,נמלה,פרפר,0
+general_knowledge,10-11,מה שם הצורה שיש לה ארבע צלעות שוות?,What is the shape with four equal sides called?,ריבוע,משולש,מעגל,ריבוע,משולש,מעגל,0
+general_knowledge,10-11,איזה כלי רכב טס בשמיים עם כנפיים קבועות?,Which vehicle flies with fixed wings?,מטוס,מסוק,רכבת,מטוס,מסוק,רכבת,0
+general_knowledge,10-11,מה הצבע שמתקבל מערבוב אדום וכחול?,What color results from mixing red and blue?,סגול,ירוק,כתום,סגול,ירוק,כתום,0
+general_knowledge,10-11,איזה ספורט משחקים על קרח עם מחבטים ודיסקית?,Which sport is played on ice with sticks and a puck?,הוקי קרח,כדורגל,טניס,הוקי קרח,כדורגל,טניס,0
+general_knowledge,10-11,מה שם היבשת שבה נמצאת ישראל?,Which continent is Israel located in?,אסיה,אירופה,אפריקה,אסיה,אירופה,אפריקה,0
+general_knowledge,10-11,איזו חיה ידועה כחברו הטוב ביותר של האדם?,Which animal is known as man's best friend?,כלב,נמר,זאב,כלב,נמר,זאב,0
+general_knowledge,10-11,איזה כלי נגינה מנגנים בו על ידי נשיפה בפייה?,Which instrument is played by blowing into a mouthpiece?,חליל,תופים,פסנתר,חליל,תופים,פסנתר,0
+general_knowledge,10-11,כמה צבעים יש בקשת בענן?,How many colors does a rainbow have?,7,5,10,7,5,10,0
+general_knowledge,10-11,מה שם הספורט שמשחקים בו עם כדור עגול ובועטים ברגל?,What sport is played by kicking a round ball?,כדורגל,כדורסל,טניס,כדורגל,כדורסל,טניס,0
+general_knowledge,10-11,איזה בעל חיים ידוע כ'מלך החיות'?,Which animal is known as the 'King of the Jungle'?,אריה,נמר,דוב,אריה,נמר,דוב,0
+general_knowledge,10-11,איזו מדינה ידועה במגדל אייפל?,Which country is known for the Eiffel Tower?,צרפת,איטליה,גרמניה,צרפת,איטליה,גרמניה,0
+general_knowledge,12-13,מי כתב את סדרת ספרי 'הארי פוטר'?,Who wrote the 'Harry Potter' book series?,ג'יי קיי רולינג,רולד דאל,סי אס לואיס,ג'יי קיי רולינג,רולד דאל,סי אס לואיס,0
+general_knowledge,12-13,מהי בירת גרמניה?,What is the capital of Germany?,ברלין,מינכן,המבורג,ברלין,מינכן,המבורג,0
+general_knowledge,12-13,"איזו יבשת ידועה בשל יער האמזונס, הגדול בעולם?",Which continent is home to the Amazon rainforest?,דרום אמריקה,אפריקה,אסיה,דרום אמריקה,אפריקה,אסיה,0
+general_knowledge,12-13,איזה ענף ספורט אולימפי חורפי כולל גלישה במורד הר על מגלשיים?,Which winter Olympic sport involves skiing down a mountain?,סקי אלפיני,החלקה אמנותית,הוקי קרח,סקי אלפיני,החלקה אמנותית,הוקי קרח,0
+general_knowledge,12-13,מהי בירת רוסיה?,What is the capital of Russia?,מוסקבה,סנט פטרסבורג,קייב,מוסקבה,סנט פטרסבורג,קייב,0
+general_knowledge,12-13,איזה ענף ספורט משחקים בו עם רשת וכדור שמכים ביד?,Which sport is played with a net and hitting a ball with your hand?,כדורעף,כדורסל,כדורגל,כדורעף,כדורסל,כדורגל,0
+general_knowledge,12-13,מי צייר את הציור המפורסם 'הצעקה'?,Who painted the famous artwork 'The Scream'?,אדוארד מונק,פיקאסו,דה וינצ'י,אדוארד מונק,פיקאסו,דה וינצ'י,0
+general_knowledge,12-13,מהי בירת בריטניה?,What is the capital of the United Kingdom?,לונדון,מנצ'סטר,ליברפול,לונדון,מנצ'סטר,ליברפול,0
+general_knowledge,12-13,איזו היא היבשת הגדולה ביותר בעולם?,Which is the largest continent in the world?,אסיה,אפריקה,אירופה,אסיה,אפריקה,אירופה,0
+general_knowledge,12-13,איזה מלחין ידוע כתב את 'ארבע העונות'?,Which famous composer wrote 'The Four Seasons'?,ויוואלדי,באך,בטהובן,ויוואלדי,באך,בטהובן,0
+general_knowledge,12-13,מהי בירת סין?,What is the capital of China?,בייג'ינג,שנגחאי,הונג קונג,בייג'ינג,שנגחאי,הונג קונג,0
+general_knowledge,12-13,איזה ספורט משוחק בין שתי קבוצות של 5 שחקנים עם כדור כתום?,Which sport is played between two teams of 5 with an orange ball?,כדורסל,כדורעף,בייסבול,כדורסל,כדורעף,בייסבול,0
+general_knowledge,12-13,מהי בירת ברזיל?,What is the capital of Brazil?,ברזיליה,ריו דה ז'ניירו,סאו פאולו,ברזיליה,ריו דה ז'ניירו,סאו פאולו,0
+general_knowledge,12-13,איזה כוכב לכת מכונה 'כוכב הלכת הכחול'?,Which planet is called the 'Blue Planet'?,כדור הארץ,נוגה,נפטון,כדור הארץ,נוגה,נפטון,0
+general_knowledge,14-16,מי חיבר את 'האי המטמון'?,Who wrote 'Treasure Island'?,רוברט לואי סטיבנסון,מארק טוויין,צ'ארלס דיקנס,רוברט לואי סטיבנסון,מארק טוויין,צ'ארלס דיקנס,0
+general_knowledge,14-16,איזה פילוסוף יווני היה מורו של אריסטו?,Which Greek philosopher was Aristotle's teacher?,אפלטון,סוקרטס,הרקליטוס,אפלטון,סוקרטס,הרקליטוס,0
+general_knowledge,14-16,מהי המדינה עם האוכלוסייה הגדולה ביותר בעולם נכון להיום?,Which country currently has the world's largest population?,הודו,סין,"ארה""ב",הודו,סין,"ארה""ב",0
+general_knowledge,14-16,מי צייר את 'ליל הכוכבים'?,Who painted 'Starry Night'?,וינסנט ואן גוך,קלוד מונה,פבלו פיקאסו,וינסנט ואן גוך,קלוד מונה,פבלו פיקאסו,0
+general_knowledge,14-16,איזו אימפריה עתיקה בנתה את הקולוסיאום ברומא?,Which ancient empire built the Colosseum in Rome?,האימפריה הרומית,האימפריה היוונית,האימפריה הפרסית,האימפריה הרומית,האימפריה היוונית,האימפריה הפרסית,0
+general_knowledge,14-16,מי כתב את 'מלחמה ושלום'?,Who wrote 'War and Peace'?,לב טולסטוי,פיודור דוסטויבסקי,אנטון צ'כוב,לב טולסטוי,פיודור דוסטויבסקי,אנטון צ'כוב,0
+general_knowledge,14-16,באיזו שנה הסתיימה מלחמת העולם השנייה?,In what year did World War II end?,1945,1939,1950,1945,1939,1950,0
+general_knowledge,14-16,איזו אומה עתיקה בנתה את הפירמידות בגיזה?,Which ancient civilization built the pyramids of Giza?,המצרים הקדמונים,הבבלים,הפרסים,המצרים הקדמונים,הבבלים,הפרסים,0
+general_knowledge,14-16,מהי בירת דרום קוריאה?,What is the capital of South Korea?,סיאול,טוקיו,בייג'ינג,סיאול,טוקיו,בייג'ינג,0
+general_knowledge,14-16,איזה מדען פיתח את תורת היחסות?,Which scientist developed the theory of relativity?,אלברט איינשטיין,אייזק ניוטון,גלילאו גליליי,אלברט איינשטיין,אייזק ניוטון,גלילאו גליליי,0
+general_knowledge,14-16,איזו מדינה הייתה הראשונה לשלוח אדם לחלל?,Which country was the first to send a human to space?,ברית המועצות,"ארה""ב",סין,ברית המועצות,"ארה""ב",סין,0
+general_knowledge,14-16,מהי בירת מקסיקו?,What is the capital of Mexico?,מקסיקו סיטי,גוודלחרה,קנקון,מקסיקו סיטי,גוודלחרה,קנקון,0
+general_knowledge,14-16,מי כתב את 'הנסיך הקטן'?,Who wrote 'The Little Prince'?,אנטואן דה סנט-אכזופרי,ז'ול ורן,ויקטור הוגו,אנטואן דה סנט-אכזופרי,ז'ול ורן,ויקטור הוגו,0
+general_knowledge,14-16,"מי גילה את חוק הכבידה, לפי האגדה כשראה תפוח נופל?","Who discovered the law of gravity, according to legend, upon seeing an apple fall?",אייזק ניוטון,גלילאו גליליי,אלברט איינשטיין,אייזק ניוטון,גלילאו גליליי,אלברט איינשטיין,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""ילדה""?","What is the correct English translation of the Hebrew word ""ילדה""?",Girl,Boy,Baby,Girl,Boy,Baby,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""אמא""?","What is the correct English translation of the Hebrew word ""אמא""?",Mother,Father,Sister,Mother,Father,Sister,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""אבא""?","What is the correct English translation of the Hebrew word ""אבא""?",Father,Mother,Brother,Father,Mother,Brother,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""גור""?","What is the correct English translation of the Hebrew word ""גור""?",Puppy,Kitten,Cub,Puppy,Kitten,Cub,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""מהר""?","What is the correct English translation of the Hebrew word ""מהר""?",Fast,Slow,Quiet,Fast,Slow,Quiet,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""איטי""?","What is the correct English translation of the Hebrew word ""איטי""?",Slow,Fast,Loud,Slow,Fast,Loud,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""לשחק""?","What is the correct English translation of the Hebrew word ""לשחק""?",To play,To work,To sleep,To play,To work,To sleep,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""תיק""?","What is the correct English translation of the Hebrew word ""תיק""?",Bag,Book,Pen,Bag,Book,Pen,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""חלון""?","What is the correct English translation of the Hebrew word ""חלון""?",Window,Door,Wall,Window,Door,Wall,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""דלת""?","What is the correct English translation of the Hebrew word ""דלת""?",Door,Window,Roof,Door,Window,Roof,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""שמיים""?","What is the correct English translation of the Hebrew word ""שמיים""?",Sky,Ground,Sea,Sky,Ground,Sea,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""ים""?","What is the correct English translation of the Hebrew word ""ים""?",Sea,Sky,Mountain,Sea,Sky,Mountain,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""הר""?","What is the correct English translation of the Hebrew word ""הר""?",Mountain,Sea,River,Mountain,Sea,River,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""פרח""?","What is the correct English translation of the Hebrew word ""פרח""?",Flower,Tree,Grass,Flower,Tree,Grass,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""ציפור""?","What is the correct English translation of the Hebrew word ""ציפור""?",Bird,Fish,Insect,Bird,Fish,Insect,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""דג""?","What is the correct English translation of the Hebrew word ""דג""?",Fish,Bird,Frog,Fish,Bird,Frog,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""לישון""?","What is the correct English translation of the Hebrew word ""לישון""?",To sleep,To eat,To run,To sleep,To eat,To run,0
+english_vocabulary,10-11,"מה התרגום הנכון לאנגלית של המילה ""לאכול""?","What is the correct English translation of the Hebrew word ""לאכול""?",To eat,To drink,To sleep,To eat,To drink,To sleep,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לפתור""?","What is the correct English translation of the Hebrew word ""לפתור""?",To solve,To create,To copy,To solve,To create,To copy,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לתכנן""?","What is the correct English translation of the Hebrew word ""לתכנן""?",To plan,To forget,To break,To plan,To forget,To break,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""אמיץ""?","What is the correct English translation of the Hebrew word ""אמיץ""?",Brave,Scared,Weak,Brave,Scared,Weak,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""עצוב""?","What is the correct English translation of the Hebrew word ""עצוב""?",Sad,Happy,Angry,Sad,Happy,Angry,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""עייף""?","What is the correct English translation of the Hebrew word ""עייף""?",Tired,Energetic,Hungry,Tired,Energetic,Hungry,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""רעב""?","What is the correct English translation of the Hebrew word ""רעב""?",Hungry,Full,Thirsty,Hungry,Full,Thirsty,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""צמא""?","What is the correct English translation of the Hebrew word ""צמא""?",Thirsty,Full,Tired,Thirsty,Full,Tired,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להרגיש""?","What is the correct English translation of the Hebrew word ""להרגיש""?",To feel,To think,To see,To feel,To think,To see,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לחשוב""?","What is the correct English translation of the Hebrew word ""לחשוב""?",To think,To feel,To speak,To think,To feel,To speak,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לדבר""?","What is the correct English translation of the Hebrew word ""לדבר""?",To speak,To listen,To write,To speak,To listen,To write,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""להקשיב""?","What is the correct English translation of the Hebrew word ""להקשיב""?",To listen,To speak,To read,To listen,To speak,To read,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לכתוב""?","What is the correct English translation of the Hebrew word ""לכתוב""?",To write,To read,To draw,To write,To read,To draw,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לקרוא""?","What is the correct English translation of the Hebrew word ""לקרוא""?",To read,To write,To count,To read,To write,To count,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""לספור""?","What is the correct English translation of the Hebrew word ""לספור""?",To count,To read,To measure,To count,To read,To measure,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""יקר""?","What is the correct English translation of the Hebrew word ""יקר""?",Expensive,Cheap,Free,Expensive,Cheap,Free,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""זול""?","What is the correct English translation of the Hebrew word ""זול""?",Cheap,Expensive,Rare,Cheap,Expensive,Rare,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""נקי""?","What is the correct English translation of the Hebrew word ""נקי""?",Clean,Dirty,Wet,Clean,Dirty,Wet,0
+english_vocabulary,12-13,"מה התרגום הנכון לאנגלית של המילה ""רטוב""?","What is the correct English translation of the Hebrew word ""רטוב""?",Wet,Dry,Clean,Wet,Dry,Clean,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להשקיע""?","What is the correct English translation of the Hebrew word ""להשקיע""?",To invest,To waste,To borrow,To invest,To waste,To borrow,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""יעד""?","What is the correct English translation of the Hebrew word ""יעד""?",Goal,Obstacle,Mistake,Goal,Obstacle,Mistake,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""אתגר""?","What is the correct English translation of the Hebrew word ""אתגר""?",Challenge,Solution,Reward,Challenge,Solution,Reward,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""הזדמנות""?","What is the correct English translation of the Hebrew word ""הזדמנות""?",Opportunity,Threat,Failure,Opportunity,Threat,Failure,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""לשפר""?","What is the correct English translation of the Hebrew word ""לשפר""?",To improve,To worsen,To ignore,To improve,To worsen,To ignore,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להתפתח""?","What is the correct English translation of the Hebrew word ""להתפתח""?",To develop,To decline,To pause,To develop,To decline,To pause,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""עצמאי""?","What is the correct English translation of the Hebrew word ""עצמאי""?",Independent,Dependent,Weak,Independent,Dependent,Weak,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""אחריות""?","What is the correct English translation of the Hebrew word ""אחריות""?",Responsibility,Freedom,Luck,Responsibility,Freedom,Luck,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""לתרום""?","What is the correct English translation of the Hebrew word ""לתרום""?",To contribute,To take,To waste,To contribute,To take,To waste,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""משמעות""?","What is the correct English translation of the Hebrew word ""משמעות""?",Meaning,Confusion,Silence,Meaning,Confusion,Silence,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""להעריך""?","What is the correct English translation of the Hebrew word ""להעריך""?",To appreciate,To dismiss,To forget,To appreciate,To dismiss,To forget,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""סבלנות""?","What is the correct English translation of the Hebrew word ""סבלנות""?",Patience,Anger,Speed,Patience,Anger,Speed,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""יצירתי""?","What is the correct English translation of the Hebrew word ""יצירתי""?",Creative,Boring,Strict,Creative,Boring,Strict,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""גמיש""?","What is the correct English translation of the Hebrew word ""גמיש""?",Flexible,Rigid,Weak,Flexible,Rigid,Weak,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""אמין""?","What is the correct English translation of the Hebrew word ""אמין""?",Reliable,Untrustworthy,Lazy,Reliable,Untrustworthy,Lazy,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""תוצאה""?","What is the correct English translation of the Hebrew word ""תוצאה""?",Result,Cause,Question,Result,Cause,Question,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""סיבה""?","What is the correct English translation of the Hebrew word ""סיבה""?",Reason,Result,Guess,Reason,Result,Guess,0
+english_vocabulary,14-16,"מה התרגום הנכון לאנגלית של המילה ""חוסן""?","What is the correct English translation of the Hebrew word ""חוסן""?",Resilience,Weakness,Fear,Resilience,Weakness,Fear,0
+science,10-11,איזה איבר בגוף עוזר לנו לטעום?,Which organ helps us taste?,הלשון,האף,האוזן,הלשון,האף,האוזן,0
+science,10-11,איזו חיה יונקת אך חיה בים?,Which mammal lives in the sea?,דולפין,כריש,תמנון,דולפין,כריש,תמנון,0
+science,12-13,מהו הסמל הכימי של סידן?,What is the chemical symbol for calcium?,Ca,Cd,Si,Ca,Cd,Si,0
+science,12-13,איזו מערכת בגוף שולחת אותות חשמליים למוח?,Which body system sends electrical signals to the brain?,מערכת העצבים,מערכת השרירים,מערכת החיסון,מערכת העצבים,מערכת השרירים,מערכת החיסון,0
+science,12-13,מה שם כוח המשיכה בין כל שני גופים בעלי מסה?,What is the force of attraction between any two masses called?,כוח הכבידה,כוח חיכוך,כוח קפיצי,כוח הכבידה,כוח חיכוך,כוח קפיצי,0
+science,14-16,איזה חלק בתא אחראי על ייצור אנרגיה?,Which part of the cell is responsible for producing energy?,המיטוכונדריון,הגרעין,הריבוזום,המיטוכונדריון,הגרעין,הריבוזום,0
+science,14-16,מה שם מצב הצבירה שבו לחלקיקים אין צורה קבועה אך יש נפח קבוע?,What state of matter has no fixed shape but a fixed volume?,נוזל,מוצק,גז,נוזל,מוצק,גז,0
+science,14-16,איזה כוח אחראי לקשר בין אטומים במולקולה?,Which force is responsible for bonding atoms in a molecule?,קשר כימי,כוח הכבידה,כוח חיכוך,קשר כימי,כוח הכבידה,כוח חיכוך,0
+israeli_history,10-11,מה שם הבירה של ישראל שבה יושבת הממשלה?,"What is Israel's capital, seat of government?",ירושלים,תל אביב,חיפה,ירושלים,תל אביב,חיפה,0
+israeli_history,10-11,איזה יום נחשב ליום השואה בישראל?,Which day is Holocaust Remembrance Day in Israel?,יום השואה,יום העצמאות,יום ירושלים,יום השואה,יום העצמאות,יום ירושלים,0
+israeli_history,10-11,מה שם הפרח שממנו מכינים לרוב זר ליום הזיכרון?,What flower is often used for Memorial Day wreaths?,דם המכבים,ורד,כלנית,דם המכבים,ורד,כלנית,0
+israeli_history,12-13,מי הייתה האישה הראשונה שכיהנה כשופטת בבית המשפט העליון בישראל?,Who was the first woman to serve as a Supreme Court justice in Israel?,מרים בן-פורת,גולדה מאיר,דליה איציק,מרים בן-פורת,גולדה מאיר,דליה איציק,0
+israeli_history,12-13,מה שם מלחמת 1948 הידועה גם כמלחמת השחרור?,What is the 1948 war also known as the War of Independence called?,מלחמת העצמאות,מלחמת סיני,מלחמת ההתשה,מלחמת העצמאות,מלחמת סיני,מלחמת ההתשה,0
+israeli_history,12-13,איזו עיר שימשה כבירת ממלכת ישראל הקדומה (הצפונית)?,Which city served as the capital of the ancient (northern) Kingdom of Israel?,שומרון,ירושלים,חברון,שומרון,ירושלים,חברון,0
+israeli_history,14-16,מי היה ראש הממשלה שהקים את פרויקט הכור הגרעיני בדימונה?,Which Prime Minister established the Dimona nuclear reactor project?,דוד בן-גוריון,לוי אשכול,גולדה מאיר,דוד בן-גוריון,לוי אשכול,גולדה מאיר,0
+israeli_history,14-16,מה שם ההסכם שקבע את נסיגת ישראל הראשונה מחלקים מסיני אחרי 1973?,What agreement set Israel's first withdrawal from parts of Sinai after 1973?,הסכם הפרדת הכוחות,הסכם קמפ דייויד,הסכם רודוס,הסכם הפרדת הכוחות,הסכם קמפ דייויד,הסכם רודוס,0
+general_knowledge,10-11,איזו חיה ידועה בכך שהיא ישנה כמעט כל היום?,Which animal is known for sleeping almost all day?,קואלה,סוס,כלב,קואלה,סוס,כלב,0
+general_knowledge,10-11,מהי בירת ארצות הברית?,What is the capital of the United States?,וושינגטון,ניו יורק,לוס אנג'לס,וושינגטון,ניו יורק,לוס אנג'לס,0
+general_knowledge,10-11,איזה כלי משמש למדידת זמן?,Which tool is used to measure time?,שעון,סרגל,מאזניים,שעון,סרגל,מאזניים,0
+general_knowledge,10-11,"איזה ירק כתום וגדל באדמה, וארנבים אוהבים לאכול?","Which orange vegetable, grown underground, do rabbits love to eat?",גזר,תפוח אדמה,בצל,גזר,תפוח אדמה,בצל,0
+general_knowledge,12-13,מהי בירת הולנד?,What is the capital of the Netherlands?,אמסטרדם,רוטרדם,האג,אמסטרדם,רוטרדם,האג,0
+general_knowledge,12-13,איזה ענף ספורט משתמשים בו במקל ארוך ומכים בכדור קטן לתוך חור?,Which sport uses a long club to hit a small ball into a hole?,גולף,בייסבול,קריקט,גולף,בייסבול,קריקט,0
+general_knowledge,12-13,מי המציא את המנורה החשמלית הראשונה שנחשבת פרקטית?,Who invented the first practical electric light bulb?,תומאס אדיסון,ניקולה טסלה,אלכסנדר גרהם בל,תומאס אדיסון,ניקולה טסלה,אלכסנדר גרהם בל,0
+general_knowledge,14-16,מהי בירת פורטוגל?,What is the capital of Portugal?,ליסבון,פורטו,ברגה,ליסבון,פורטו,ברגה,0
+general_knowledge,14-16,איזו תרבות עתיקה פיתחה את מערכת הכתב ההירוגליפי?,Which ancient culture developed hieroglyphic writing?,המצרים הקדמונים,הבבלים,היוונים,המצרים הקדמונים,הבבלים,היוונים,0
+general_knowledge,14-16,מי כתב את 'דון קיחוטה'?,Who wrote 'Don Quixote'?,מיגל דה סרוואנטס,גבריאל גרסיה מארקס,חורחה לואיס בורחס,מיגל דה סרוואנטס,גבריאל גרסיה מארקס,חורחה לואיס בורחס,0
+general_knowledge,10-11,איזה כלי רכב נוסע על מים?,Which vehicle travels on water?,סירה,מטוס,רכבת,סירה,מטוס,רכבת,0
+general_knowledge,10-11,באיזה חודש חוגגים את חג המולד?,In which month is Christmas celebrated?,דצמבר,ינואר,נובמבר,דצמבר,ינואר,נובמבר,0
+general_knowledge,12-13,מהי בירת שוודיה?,What is the capital of Sweden?,שטוקהולם,אוסלו,קופנהגן,שטוקהולם,אוסלו,קופנהגן,0
+general_knowledge,12-13,איזה ענף ספורט משוחק בין שתי קבוצות עם מקלות עקומים וכדור קטן קשה?,Which sport is played with curved sticks and a small hard ball?,הוקי שדה,כדורעף,קריקט,הוקי שדה,כדורעף,קריקט,0
+general_knowledge,12-13,"מי הלחין את האופרה ""חליל הקסם""?",Who composed the opera 'The Magic Flute'?,מוצרט,בטהובן,ורדי,מוצרט,בטהובן,ורדי,0
+general_knowledge,14-16,מהי בירת נורווגיה?,What is the capital of Norway?,אוסלו,ברגן,סטוונגר,אוסלו,ברגן,סטוונגר,0
+general_knowledge,14-16,איזה סופר רוסי כתב את 'החטא ועונשו'?,Which Russian author wrote 'Crime and Punishment'?,פיודור דוסטויבסקי,לב טולסטוי,אנטון צ'כוב,פיודור דוסטויבסקי,לב טולסטוי,אנטון צ'כוב,0
+general_knowledge,14-16,מי היה הצייר ההולנדי שצייר את 'ליל המשמר' (The Night Watch)?,Which Dutch painter painted 'The Night Watch'?,רמברנדט,ואן גוך,ורמיר,רמברנדט,ואן גוך,ורמיר,0
+israeli_history,10-11,מה שם ההר שעליו נמצא מוזיאון יד ושם?,Which mountain is Yad Vashem museum located on?,הר הזיכרון,הר הכרמל,הר סיני,הר הזיכרון,הר הכרמל,הר סיני,0
+israeli_history,10-11,איזה יום נחגג בו איחוד ירושלים?,Which day celebrates the reunification of Jerusalem?,יום ירושלים,יום העצמאות,יום הזיכרון,יום ירושלים,יום העצמאות,יום הזיכרון,0
+israeli_history,12-13,מה שם השכונה הירושלמית הראשונה שנבנתה מחוץ לחומות העיר העתיקה?,What was the first Jewish neighborhood built outside the Old City walls called?,משכנות שאננים,רחביה,גילה,משכנות שאננים,רחביה,גילה,0
+israeli_history,12-13,איזו מלחמה כונתה גם 'מלחמת סיני'?,Which war was also called the 'Sinai War'?,מבצע קדש 1956,מלחמת ששת הימים,מלחמת יום כיפור,מבצע קדש 1956,מלחמת ששת הימים,מלחמת יום כיפור,0
+israeli_history,14-16,מי היה ראש הממשלה בזמן חתימת הסכם השלום עם ירדן ב-1994?,Who was Prime Minister when the 1994 peace treaty with Jordan was signed?,יצחק רבין,שמעון פרס,בנימין נתניהו,יצחק רבין,שמעון פרס,בנימין נתניהו,0
+israeli_history,14-16,מה שם התוכנית לפינוי יישובים יהודים מסיני שהוחלה ב-1982?,What was the plan to evacuate Jewish settlements from Sinai in 1982 called?,פינוי ימית,תוכנית ההתנתקות,תוכנית אלון,פינוי ימית,תוכנית ההתנתקות,תוכנית אלון,0
+israeli_history,14-16,איזו ועדה המליצה על חלוקת ארץ ישראל ב-1937?,Which commission recommended partitioning Palestine in 1937?,ועדת פיל,ועדת אנגלו-אמריקאית,"ועדת אונסקו""פ",ועדת פיל,ועדת אנגלו-אמריקאית,"ועדת אונסקו""פ",0

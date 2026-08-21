@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "seed:questions": "node --env-file=.env.local scripts/seed-questions.mjs",
     "import:questions": "node --env-file=.env.local scripts/import-question-bank.mjs",
+    "import:mc-questions": "node --env-file=.env.local scripts/import-mc-questions.mjs",
     "test:reset": "node --env-file=.env.local scripts/reset-child.mjs",
     "test:children": "node --env-file=.env.local scripts/create-test-children.mjs"
   },

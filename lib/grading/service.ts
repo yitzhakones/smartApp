@@ -186,6 +186,19 @@ export async function gradeSubmission(input: {
     ? submission.daily_sets[0]
     : submission.daily_sets
 
+  // Defensive: this path is legacy-free-text-only (the multiple-choice pivot,
+  // migration 013, dispatches by correct_index in /api/grade before ever
+  // reaching here) — difficulty_tier/answer_key_* are nullable at the DB level
+  // now (NOT NULL only for a legacy row, per questions_legacy_complete_check),
+  // so a genuinely multiple-choice question landing here would mean the
+  // dispatch logic was bypassed. Fail loudly rather than call Claude with a
+  // missing answer key.
+  if (question.difficulty_tier === null || question.answer_key_he === null || question.answer_key_en === null) {
+    throw new Error(
+      `Question ${submission.question_id} is missing free-text fields (difficulty_tier/answer_key) — likely a multiple-choice question routed to the wrong grader`
+    )
+  }
+
   const locale = child.locale
   const answerKey = locale === 'he' ? question.answer_key_he : question.answer_key_en
   const questionText = locale === 'he' ? question.text_he : question.text_en

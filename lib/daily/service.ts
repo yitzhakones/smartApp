@@ -105,7 +105,9 @@ function mulberry32(a: number): () => number {
 type BankRow = {
   id: string
   category: Category
-  difficulty_tier: DifficultyTier
+  // Nullable since migration 013 — NULL for a multiple-choice row (it has no
+  // tier; age_band drives selection instead). Never NULL for a legacy row.
+  difficulty_tier: DifficultyTier | null
   text_he: string
   text_en: string
   option1_he: string | null

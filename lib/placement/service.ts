@@ -88,13 +88,6 @@ function localeText(
   return locale === 'he' ? row.text_he : row.text_en
 }
 
-function localeAnswerKey(
-  row: { answer_key_he: string; answer_key_en: string },
-  locale: Locale
-): string {
-  return locale === 'he' ? row.answer_key_he : row.answer_key_en
-}
-
 /**
  * Pick a random unused question of the given category+tier from the shared bank.
  * Placement volume is tiny (≤2 per category), so we fetch candidates and pick in
@@ -122,7 +115,12 @@ async function selectQuestion(
   return {
     id: picked.id,
     category: picked.category,
-    tier: picked.difficulty_tier,
+    // Not picked.difficulty_tier: that's nullable since migration 013 (NULL
+    // for a multiple-choice row), but the query above filtered on
+    // `difficulty_tier = tier`, which never matches a NULL column — so every
+    // candidate here is guaranteed a legacy row with this exact tier already.
+    // Returning the input param sidesteps the nullable field entirely.
+    tier,
     text: localeText(picked, locale),
   }
 }
@@ -143,12 +141,26 @@ async function fetchForGrading(
 
   if (error) throw error
 
+  // Defensive: placement only ever stores ids from selectQuestion above,
+  // which only ever selects legacy (non-NULL-tier) rows — but this re-fetch
+  // has no tier filter of its own, so assert rather than silently pass a
+  // NULL difficulty_tier/answer_key into the Claude grading path.
+  if (data.difficulty_tier === null || data.answer_key_he === null || data.answer_key_en === null) {
+    throw new Error(
+      `Placement question ${questionId} is missing free-text fields (difficulty_tier/answer_key) — likely a multiple-choice question id leaked into a placement session`
+    )
+  }
+
   return {
     id: data.id,
     category: data.category,
     difficulty_tier: data.difficulty_tier,
     text: localeText(data, locale),
-    answerKey: localeAnswerKey(data, locale),
+    // Not localeAnswerKey(data, locale): passing the whole `data` object loses
+    // the narrowing the guard above just proved (TS narrows a property
+    // ACCESS, not the type of an object passed elsewhere) — so inline the
+    // same ternary against the already-narrowed properties directly instead.
+    answerKey: locale === 'he' ? data.answer_key_he : data.answer_key_en,
   }
 }
 

@@ -172,11 +172,14 @@ export type Database = {
         Row: {
           id: string
           category: Category
-          difficulty_tier: DifficultyTier
+          // Nullable since migration 013 — meaningless for a multiple-choice
+          // row (age_band + correct_index drive that instead). A LEGACY row
+          // always has all three (questions_legacy_complete_check).
+          difficulty_tier: DifficultyTier | null
           text_he: string
           text_en: string
-          answer_key_he: string
-          answer_key_en: string
+          answer_key_he: string | null
+          answer_key_en: string | null
           // Multiple-choice pivot (migration 013) — all nullable; legacy
           // free-text rows leave every one of these NULL. A row is multiple-
           // choice iff correct_index IS NOT NULL (checked, never a separate
@@ -193,11 +196,11 @@ export type Database = {
         Insert: {
           id?: string
           category: Category
-          difficulty_tier: DifficultyTier
+          difficulty_tier?: DifficultyTier | null
           text_he: string
           text_en: string
-          answer_key_he: string
-          answer_key_en: string
+          answer_key_he?: string | null
+          answer_key_en?: string | null
           option1_he?: string | null
           option2_he?: string | null
           option3_he?: string | null
@@ -210,11 +213,11 @@ export type Database = {
         Update: {
           id?: string
           category?: Category
-          difficulty_tier?: DifficultyTier
+          difficulty_tier?: DifficultyTier | null
           text_he?: string
           text_en?: string
-          answer_key_he?: string
-          answer_key_en?: string
+          answer_key_he?: string | null
+          answer_key_en?: string | null
           option1_he?: string | null
           option2_he?: string | null
           option3_he?: string | null

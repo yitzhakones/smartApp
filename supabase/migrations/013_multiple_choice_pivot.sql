@@ -59,8 +59,21 @@ ALTER TABLE analytics_fact_performance
 -- ---------------------------------------------------------------------------
 -- (2) Multiple-choice columns on questions. All nullable — legacy free-text
 --     rows leave every one of these NULL and are completely unaffected.
+--
+-- Corollary (added once the real MC content arrived and made this concrete):
+-- an MC row has no difficulty_tier and no answer_key_he/en — those are the
+-- free-text grader's inputs, meaningless for a fixed-option question (MC uses
+-- age_band + correct_index instead). The ORIGINAL schema (migration 001) made
+-- all three NOT NULL, which would reject every MC row outright. Relax them to
+-- nullable here, and add the mirror-image completeness check to
+-- questions_mc_complete_check below: a LEGACY row must still have all three,
+-- so the free-text path (lib/grading/service.ts's gradeSubmission) can never
+-- silently hit a row missing its answer key either.
 -- ---------------------------------------------------------------------------
 ALTER TABLE questions
+  ALTER COLUMN difficulty_tier DROP NOT NULL,
+  ALTER COLUMN answer_key_he DROP NOT NULL,
+  ALTER COLUMN answer_key_en DROP NOT NULL,
   ADD COLUMN option1_he TEXT,
   ADD COLUMN option2_he TEXT,
   ADD COLUMN option3_he TEXT,
@@ -74,14 +87,20 @@ ALTER TABLE questions
   ADD CONSTRAINT questions_correct_index_check CHECK (correct_index IS NULL OR correct_index IN (0,1,2)),
   ADD CONSTRAINT questions_age_band_check CHECK (age_band IS NULL OR age_band IN ('10-11','12-13','14-16')),
   -- A row is either fully multiple-choice (all 6 option columns + correct_index
-  -- populated) or fully legacy (correct_index NULL) — never a half-filled row
-  -- that would silently render broken option buttons.
+  -- populated, difficulty_tier/answer_key_* left NULL) or fully legacy
+  -- (correct_index NULL, difficulty_tier + both answer keys populated) — never
+  -- a half-filled row that would silently render broken option buttons or hit
+  -- the free-text grader with no answer key.
   ADD CONSTRAINT questions_mc_complete_check CHECK (
     correct_index IS NULL
     OR (
       option1_he IS NOT NULL AND option2_he IS NOT NULL AND option3_he IS NOT NULL AND
       option1_en IS NOT NULL AND option2_en IS NOT NULL AND option3_en IS NOT NULL
     )
+  ),
+  ADD CONSTRAINT questions_legacy_complete_check CHECK (
+    correct_index IS NOT NULL
+    OR (difficulty_tier IS NOT NULL AND answer_key_he IS NOT NULL AND answer_key_en IS NOT NULL)
   );
 
 -- ---------------------------------------------------------------------------
