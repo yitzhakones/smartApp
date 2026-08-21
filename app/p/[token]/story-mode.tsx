@@ -42,9 +42,10 @@ const CATEGORY_BG: Record<string, string> = {
   general_knowledge:
     'radial-gradient(circle at 70% 75%, #FF8A3D 0%, #6E3A1A 35%, #0B0B0F 75%)',
   // Multiple-choice pivot (migration 013) — new category, its own amber/brown
-  // gradient (distinct from general_knowledge's orange/rust).
+  // gradient (distinct from general_knowledge's orange/rust). Values match
+  // story-mode-multiple-choice-mockup.jsx exactly.
   english_vocabulary:
-    'radial-gradient(circle at 30% 75%, #D9A441 0%, #4A3218 35%, #0B0B0F 75%)',
+    'radial-gradient(circle at 50% 30%, #FFB63D 0%, #6E3E1A 35%, #0B0B0F 75%)',
   bonus: 'conic-gradient(from 90deg at 50% 50%, #FFB63D, #241A00, #FF3DBB, #0B0B0F)',
 }
 const CATEGORY_LABEL: Record<string, string> = {
@@ -52,7 +53,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   science: 'מדעים',
   israeli_history: 'היסטוריה של ישראל',
   general_knowledge: 'ידע כללי',
-  english_vocabulary: 'אוצר מילים באנגלית',
+  english_vocabulary: 'תרגום מילים',
   bonus: 'שאלת בונוס',
 }
 const CATEGORY_ACCENT: Record<string, string> = {
@@ -60,7 +61,7 @@ const CATEGORY_ACCENT: Record<string, string> = {
   science: '#3DFFD6',
   israeli_history: '#FF9DCB',
   general_knowledge: '#FFC48A',
-  english_vocabulary: '#E8C089',
+  english_vocabulary: '#FFD394',
   bonus: AMBER,
 }
 
@@ -93,6 +94,7 @@ const KEYFRAMES = `
   @keyframes confettiFall { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(340px) rotate(400deg); opacity: 0; } }
   @keyframes flash { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 0; } }
   @keyframes pulseRing { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); } 50% { box-shadow: 0 0 0 4px rgba(255,255,255,0); } }
+  @keyframes tapPulse { 0% { transform: scale(1); } 50% { transform: scale(0.96); } 100% { transform: scale(1); } }
 `
 // Fonts are loaded once via next/font in app/layout.tsx and referenced through
 // the CSS variables below — no runtime @import (avoids the hydration mismatch).
@@ -201,6 +203,11 @@ export function StoryMode({
     'question'
   )
   const [answer, setAnswer] = useState('')
+  // Multiple-choice pivot (migration 013) — which option (0-2) was tapped, so
+  // it can render highlighted (mockup's "selected" look: white bg, dark badge/
+  // text, tapPulse) for however long grading actually takes, instead of the
+  // mockup's fixed 450ms demo delay. Cleared at the same points `answer` is.
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
   const [lastCorrect, setLastCorrect] = useState<boolean | null>(null)
   const [resultAnswer, setResultAnswer] = useState('')
   const [resultFeedback, setResultFeedback] = useState('')
@@ -315,15 +322,17 @@ export function StoryMode({
   }
 
   // Multiple-choice pivot (migration 013). No separate confirm step — tapping
-  // an option immediately locks it in and grades: the buttons disappear the
-  // instant `phase` leaves 'question' (same conditional render as the
-  // free-text input), so there's nothing left to tap a second time. The
-  // `phase !== 'question'` guard below is just a cheap belt-and-suspenders
-  // against a double-tap landing inside that same render tick.
+  // an option immediately locks it in (selectedIndex highlights it, matching
+  // story-mode-multiple-choice-mockup.jsx's "selected" look) and grades. All
+  // 3 buttons become disabled the instant phase leaves 'question', so there's
+  // nothing left to tap a second time. The `phase !== 'question'` guard below
+  // is just a cheap belt-and-suspenders against a double-tap landing inside
+  // that same render tick.
   async function submitOption(index: number) {
     if (!q || phase !== 'question') return
     const submissionId = q.submissionId
     const chosenText = q.options?.[index] ?? ''
+    setSelectedIndex(index)
     setPhase('grading')
     try {
       const res = await fetch('/api/grade', {
@@ -336,6 +345,7 @@ export function StoryMode({
       applyGradeResponse(data, chosenText)
     } catch (err) {
       console.error('Grading request failed', err)
+      setSelectedIndex(null)
       setPhase('question') // let the child try again
     }
   }
@@ -351,6 +361,7 @@ export function StoryMode({
       return [...rest, current]
     })
     setAnswer('')
+    setSelectedIndex(null)
   }
 
   // Answer/return-to a not-yet-graded question. Keeps the queue free of graded
@@ -366,6 +377,7 @@ export function StoryMode({
       ),
     ])
     setAnswer('')
+    setSelectedIndex(null)
     setPhase('question')
   }
 
@@ -390,6 +402,7 @@ export function StoryMode({
 
     setQueue(remaining)
     setAnswer('')
+    setSelectedIndex(null)
     setPhase('question')
     setLastCorrect(null)
 
@@ -420,6 +433,7 @@ export function StoryMode({
   function attemptBonus() {
     setQueue([5])
     setAnswer('')
+    setSelectedIndex(null)
     setLastCorrect(null)
     setPhase('question')
     setStage('playing')
@@ -784,53 +798,72 @@ export function StoryMode({
           )}
 
           {/* Multiple-choice pivot (migration 013): 3 tappable options, letter
-              badges (א/ב/ג). Tapping one immediately submits — no separate
-              confirm button, no editable state to hold (unlike `answer`
-              below); submitOption() fires straight from the onClick. */}
-          {reviewIndex === null && !currentGraded && phase === 'question' && q?.options && (
-            <div className="flex flex-col gap-3">
-              {q.options.map((opt, i) => (
-                <button
-                  key={i}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    submitOption(i)
-                  }}
-                  className="flex items-center gap-3 p-4 text-start"
-                  style={{
-                    background: 'rgba(255,255,255,0.14)',
-                    backdropFilter: 'blur(12px)',
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    borderRadius: 26,
-                  }}
-                >
-                  <span
-                    className="shrink-0 rounded-full flex items-center justify-center font-black"
-                    style={{ width: 36, height: 36, background: accent, color: BASE }}
+              badges (א/ב/ג), matching story-mode-multiple-choice-mockup.jsx
+              pixel-for-pixel. Tapping one immediately submits — no separate
+              confirm button — and highlights (white bg, dark badge/text,
+              tapPulse) while the real /api/grade request is in flight, which
+              stands in for the mockup's fixed 450ms demo delay: same visual,
+              driven by the real network round-trip instead of a timer. All 3
+              buttons disable together the moment phase leaves 'question', so
+              this stays rendered through 'grading' (unlike the free-text path
+              below, which swaps to the generic Dots spinner instead). */}
+          {reviewIndex === null &&
+            !currentGraded &&
+            (phase === 'question' || phase === 'grading') &&
+            q?.options && (
+              <div className="flex flex-col gap-3" onClick={(e) => e.stopPropagation()}>
+                {q.options.map((opt, i) => {
+                  const isSelected = selectedIndex === i
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => submitOption(i)}
+                      disabled={phase !== 'question'}
+                      className="w-full flex items-center gap-4 p-4 rounded-3xl text-right"
+                      style={{
+                        background: isSelected ? 'white' : 'rgba(255,255,255,0.12)',
+                        border: `2px solid ${isSelected ? 'white' : 'rgba(255,255,255,0.25)'}`,
+                        animation: isSelected ? 'tapPulse 0.3s ease' : 'none',
+                      }}
+                    >
+                      <span
+                        className="flex items-center justify-center shrink-0 font-black"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 14,
+                          background: isSelected ? BASE : 'rgba(255,255,255,0.15)',
+                          color: isSelected ? ACCENT : 'white',
+                          fontSize: 18,
+                        }}
+                      >
+                        {OPTION_LETTERS[i]}
+                      </span>
+                      <span
+                        style={{ color: isSelected ? BASE : 'white', fontFamily: ASSISTANT }}
+                        className="text-xl font-bold"
+                      >
+                        {opt}
+                      </span>
+                    </button>
+                  )
+                })}
+                {phase === 'question' && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      skip()
+                    }}
+                    className="self-center flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-full"
+                    style={{ color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.08)' }}
                   >
-                    {OPTION_LETTERS[i]}
-                  </span>
-                  <span
-                    style={{ color: 'white', fontFamily: ASSISTANT }}
-                    className="flex-1 text-lg font-bold"
-                  >
-                    {opt}
-                  </span>
-                </button>
-              ))}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  skip()
-                }}
-                className="self-center flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-full"
-                style={{ color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.08)' }}
-              >
-                <ArrowLeftCircle size={15} /> דלגי לעכשיו, אחזור אליה
-              </button>
-            </div>
-          )}
+                    <ArrowLeftCircle size={15} /> דלגי לעכשיו, אחזור אליה
+                  </button>
+                )}
+              </div>
+            )}
 
+          {/* Legacy free-text path — unchanged, untouched by the mockup pass. */}
           {reviewIndex === null && !currentGraded && phase === 'question' && q && !q.options && (
             <div className="flex flex-col gap-3">
               <div
@@ -873,7 +906,10 @@ export function StoryMode({
             </div>
           )}
 
-          {reviewIndex === null && phase === 'grading' && (
+          {/* Free-text grading only — the MC path above stays rendered (with
+              its own selected-highlight) through 'grading' instead of
+              swapping to this generic spinner, matching the mockup. */}
+          {reviewIndex === null && phase === 'grading' && !q?.options && (
             <div className="flex justify-center">
               <div className="flex gap-2">
                 {[0, 1, 2].map((i) => (
