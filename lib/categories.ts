@@ -8,9 +8,18 @@ export const CATEGORY_LABEL_HE: Record<Category, string> = {
   science: 'מדעים',
   israeli_history: 'היסטוריה של ישראל',
   general_knowledge: 'ידע כללי',
+  // Multiple-choice pivot (migration 013) — new category.
+  english_vocabulary: 'אוצר מילים באנגלית',
 }
 
 // Fixed display order, matching the doc's own listing ("math / science /
-// israeli_history / general_knowledge") — used anywhere the full category bank
-// is iterated (e.g. EditChildScreen's category picker).
-export const CATEGORY_ORDER: Category[] = ['math', 'science', 'israeli_history', 'general_knowledge']
+// israeli_history / general_knowledge" + english_vocabulary, appended at the
+// end so existing children's category chip order never reshuffles) — used
+// anywhere the full category bank is iterated (e.g. EditChildScreen's picker).
+export const CATEGORY_ORDER: Category[] = [
+  'math',
+  'science',
+  'israeli_history',
+  'general_knowledge',
+  'english_vocabulary',
+]

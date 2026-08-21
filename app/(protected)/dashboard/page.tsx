@@ -36,7 +36,7 @@ export default async function DashboardPage({
   const { data: rows } = await supabase
     .from('children')
     .select(
-      `id, display_name, gender, locale, enabled_categories,
+      `id, display_name, gender, locale, age, enabled_categories,
        shekel_per_star, weekly_improvement_bonus, access_mode, access_pin, access_token,
        child_stats ( total_stars, total_money_owed_nis, streak )`
     )
@@ -67,6 +67,7 @@ export default async function DashboardPage({
         name: c.display_name,
         gender: c.gender,
         locale: c.locale,
+        age: c.age,
         enabledCategories: c.enabled_categories,
         shekelPerStar: Number(c.shekel_per_star),
         weeklyImprovementBonus: Number(c.weekly_improvement_bonus),

@@ -1,6 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
-import { AlreadyGradedError, gradeSubmission } from '@/lib/grading/service'
+import {
+  AlreadyGradedError,
+  gradeMultipleChoiceSubmission,
+  gradeSubmission,
+} from '@/lib/grading/service'
 
 // Grading calls Claude and writes rewards — always server-side (protects the API
 // key, prevents tampering). Node runtime (the Anthropic SDK is not edge-safe).
@@ -10,6 +14,8 @@ interface GradeRequestBody {
   accessToken?: string
   submissionId?: string
   answerText?: string
+  // Multiple-choice pivot (migration 013) — the child's chosen option (0-2).
+  selectedIndex?: number
 }
 
 export async function POST(request: NextRequest) {
@@ -20,10 +26,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  const { accessToken, submissionId, answerText } = body
-  if (!accessToken || !submissionId || typeof answerText !== 'string') {
+  const { accessToken, submissionId, answerText, selectedIndex } = body
+  const hasAnswerText = typeof answerText === 'string'
+  const hasSelectedIndex = typeof selectedIndex === 'number'
+  if (!accessToken || !submissionId || (!hasAnswerText && !hasSelectedIndex)) {
     return NextResponse.json(
-      { error: 'accessToken, submissionId and answerText are required' },
+      {
+        error:
+          'accessToken and submissionId are required, plus either answerText or selectedIndex',
+      },
       { status: 400 }
     )
   }
@@ -42,17 +53,43 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid access token' }, { status: 401 })
   }
 
+  // Server decides which grading path a submission takes from the question's
+  // own correct_index — never trusts which field the client happened to send,
+  // so a mismatched/forged payload can't force the wrong grader to run.
   const { data: submission } = await db
     .from('submissions')
-    .select('id, child_id, status, ai_feedback_text')
+    .select('id, child_id, status, ai_feedback_text, questions!inner ( correct_index )')
     .eq('id', submissionId)
     .maybeSingle()
   if (!submission || submission.child_id !== child.id) {
     return NextResponse.json({ error: 'Submission not found' }, { status: 404 })
   }
+  const question = Array.isArray(submission.questions)
+    ? submission.questions[0]
+    : submission.questions
+  const isMultipleChoice = question.correct_index !== null
+
+  if (isMultipleChoice && !hasSelectedIndex) {
+    return NextResponse.json(
+      { error: 'This question is multiple-choice — selectedIndex is required' },
+      { status: 400 }
+    )
+  }
+  if (!isMultipleChoice && !hasAnswerText) {
+    return NextResponse.json(
+      { error: 'This question is free-text — answerText is required' },
+      { status: 400 }
+    )
+  }
 
   try {
-    const result = await gradeSubmission({ submissionId, answerText, db })
+    const result = isMultipleChoice
+      ? await gradeMultipleChoiceSubmission({
+          submissionId,
+          selectedIndex: selectedIndex as number,
+          db,
+        })
+      : await gradeSubmission({ submissionId, answerText: answerText as string, db })
     return NextResponse.json(result)
   } catch (err) {
     // Locked — return the existing verdict instead of erroring (one attempt/day).

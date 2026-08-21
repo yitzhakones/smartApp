@@ -36,6 +36,7 @@ export interface DashboardChild {
   name: string
   gender: Gender
   locale: Locale
+  age: number
   enabledCategories: Category[]
   shekelPerStar: number
   weeklyImprovementBonus: number
@@ -110,6 +111,7 @@ export function DashboardClient({
       name: patch.displayName,
       gender: patch.gender,
       locale: patch.locale,
+      age: patch.age,
       enabledCategories: patch.enabledCategories,
       shekelPerStar: patch.shekelPerStar,
       weeklyImprovementBonus: patch.weeklyImprovementBonus,
@@ -178,6 +180,7 @@ export function DashboardClient({
       displayName: currentChild.name,
       gender: currentChild.gender,
       locale: currentChild.locale,
+      age: currentChild.age,
       enabledCategories: currentChild.enabledCategories,
       shekelPerStar: currentChild.shekelPerStar,
       weeklyImprovementBonus: currentChild.weeklyImprovementBonus,

@@ -30,7 +30,11 @@ export type Category =
   | 'science'
   | 'israeli_history'
   | 'general_knowledge'
+  | 'english_vocabulary'
 export type DifficultyTier = 'easy' | 'medium' | 'hard'
+// Multiple-choice pivot (migration 013). Stored on questions.age_band; derived
+// (never stored) for children from `age` — see lib/ages.ts.
+export type AgeBand = '10-11' | '12-13' | '14-16'
 export type Gender = 'male' | 'female'
 export type Locale = 'he' | 'en'
 export type AccessMode = 'pin' | 'no_code'
@@ -39,7 +43,7 @@ export type SubmissionStatus =
   | 'grading'
   | 'correct'
   | 'incorrect'
-export type GradedBy = 'claude_api' | 'parent_override'
+export type GradedBy = 'claude_api' | 'parent_override' | 'mc_deterministic'
 export type LedgerType =
   | 'star'
   | 'weekly_bonus'
@@ -102,6 +106,10 @@ export type Database = {
           display_name: string
           gender: Gender
           locale: Locale
+          // Required (migration 013) — the 15 pre-existing rows were backfilled
+          // to 12 (TEMPORARY DEFAULT; see that migration's header). Drives
+          // age_band (lib/ages.ts), which filters the daily question pool.
+          age: number
           age_group: string | null
           region: string | null
           access_mode: AccessMode
@@ -119,6 +127,8 @@ export type Database = {
           display_name: string
           gender: Gender
           locale?: Locale
+          // No DB default — every insert must supply it (see Row comment).
+          age: number
           age_group?: string | null
           region?: string | null
           access_mode?: AccessMode
@@ -136,6 +146,7 @@ export type Database = {
           display_name?: string
           gender?: Gender
           locale?: Locale
+          age?: number
           age_group?: string | null
           region?: string | null
           access_mode?: AccessMode
@@ -166,6 +177,18 @@ export type Database = {
           text_en: string
           answer_key_he: string
           answer_key_en: string
+          // Multiple-choice pivot (migration 013) — all nullable; legacy
+          // free-text rows leave every one of these NULL. A row is multiple-
+          // choice iff correct_index IS NOT NULL (checked, never a separate
+          // type column — see that migration's header).
+          option1_he: string | null
+          option2_he: string | null
+          option3_he: string | null
+          option1_en: string | null
+          option2_en: string | null
+          option3_en: string | null
+          correct_index: number | null
+          age_band: AgeBand | null
         }
         Insert: {
           id?: string
@@ -175,6 +198,14 @@ export type Database = {
           text_en: string
           answer_key_he: string
           answer_key_en: string
+          option1_he?: string | null
+          option2_he?: string | null
+          option3_he?: string | null
+          option1_en?: string | null
+          option2_en?: string | null
+          option3_en?: string | null
+          correct_index?: number | null
+          age_band?: AgeBand | null
         }
         Update: {
           id?: string
@@ -184,6 +215,14 @@ export type Database = {
           text_en?: string
           answer_key_he?: string
           answer_key_en?: string
+          option1_he?: string | null
+          option2_he?: string | null
+          option3_he?: string | null
+          option1_en?: string | null
+          option2_en?: string | null
+          option3_en?: string | null
+          correct_index?: number | null
+          age_band?: AgeBand | null
         }
         Relationships: []
       }
@@ -564,6 +603,9 @@ export type Database = {
           p_feedback: string
           p_amount_nis: number
           p_play_date: string
+          // Optional (migration 013), defaults to 'claude_api' in Postgres —
+          // pass 'mc_deterministic' from the multiple-choice grading path.
+          p_graded_by?: GradedBy
         }
         // TRUE when a correct answer crossed a 10-star milestone.
         Returns: boolean

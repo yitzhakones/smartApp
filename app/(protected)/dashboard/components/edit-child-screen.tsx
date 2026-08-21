@@ -4,13 +4,16 @@ import { useState } from 'react'
 import { Check } from 'lucide-react'
 import type { Category } from '@/types/database'
 import { CATEGORY_LABEL_HE, CATEGORY_ORDER } from '@/lib/categories'
+import { MAX_CHILD_AGE, MIN_CHILD_AGE } from '@/lib/ages'
 import { updateChild, type UpdateChildInput } from '../actions'
 import { ScreenHeader } from './screen-header'
 import { ShareLinkCard } from './share-link-card'
 import { SHELL, INK, PAPER, CARD, FUCHSIA, SOFT, ASSISTANT, SETTINGS_TEXT, SETTINGS_TAP } from '../theme'
 
-// Real fields only — age_group/region aren't part of this screen (not asked
-// for, and not otherwise editable anywhere in this dashboard yet).
+// age_group/region still aren't part of this screen (not asked for, and not
+// otherwise editable anywhere in this dashboard yet) — but `age` (migration
+// 013) is real, required, and drives the daily game's question selection, so
+// it's editable here like every other real field.
 export function EditChildScreen({
   child,
   shareUrl,
@@ -27,6 +30,7 @@ export function EditChildScreen({
   const [name, setName] = useState(child.displayName)
   const [gender, setGender] = useState(child.gender)
   const [locale, setLocale] = useState(child.locale)
+  const [age, setAge] = useState(child.age)
   const [categories, setCategories] = useState<Category[]>(child.enabledCategories)
   const [perStar, setPerStar] = useState(child.shekelPerStar)
   const [weeklyBonus, setWeeklyBonus] = useState(child.weeklyImprovementBonus)
@@ -47,6 +51,7 @@ export function EditChildScreen({
       displayName: name,
       gender,
       locale,
+      age,
       enabledCategories: categories,
       shekelPerStar: perStar,
       weeklyImprovementBonus: weeklyBonus,
@@ -127,6 +132,28 @@ export function EditChildScreen({
                 }}
               >
                 {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p style={{ color: SOFT, fontFamily: ASSISTANT }} className={`font-bold mb-1.5 ${SETTINGS_TEXT.caption}`}>
+            גיל <span className="font-normal">(קובע את רמת השאלות שיוצגו)</span>
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {Array.from({ length: MAX_CHILD_AGE - MIN_CHILD_AGE + 1 }, (_, i) => MIN_CHILD_AGE + i).map((a) => (
+              <button
+                key={a}
+                onClick={() => setAge(a)}
+                className={`${SETTINGS_TAP.circleBtn} rounded-2xl font-black text-sm shrink-0`}
+                style={{
+                  background: age === a ? INK : CARD,
+                  color: age === a ? 'white' : INK,
+                  border: age === a ? 'none' : '1px solid #e4e2d8',
+                }}
+              >
+                {a}
               </button>
             ))}
           </div>

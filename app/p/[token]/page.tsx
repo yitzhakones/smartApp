@@ -45,7 +45,7 @@ export default async function ChildPlayPage({
   const { data: child, error: childQueryError } = await db
     .from('children')
     .select(
-      'id, display_name, locale, enabled_categories, category_levels, shekel_per_star'
+      'id, display_name, locale, age, enabled_categories, category_levels, shekel_per_star'
     )
     .eq('access_token', params.token)
     .maybeSingle()
@@ -95,6 +95,7 @@ export default async function ChildPlayPage({
     game = await getOrCreateTodaysGame(db, {
       id: child.id,
       locale: child.locale,
+      age: child.age,
       enabled_categories: child.enabled_categories,
       category_levels: levels,
     })

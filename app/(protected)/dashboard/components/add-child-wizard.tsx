@@ -4,8 +4,9 @@ import { useState } from 'react'
 import { Check, ChevronLeft, ChevronRight, User, BookOpen, Coins, Lock, Sparkles } from 'lucide-react'
 import type { AccessMode, Category, Gender, Locale } from '@/types/database'
 import { CATEGORY_LABEL_HE, CATEGORY_ORDER } from '@/lib/categories'
+import { MAX_CHILD_AGE, MIN_CHILD_AGE } from '@/lib/ages'
 import { createChild } from '../actions'
-import { INK, PAPER, CARD, LIME, FUCHSIA, AMBER, SOFT, RUBIK, ASSISTANT } from '../theme'
+import { INK, PAPER, CARD, LIME, FUCHSIA, SOFT, RUBIK, ASSISTANT } from '../theme'
 
 // Ported from child-profile-setup-mockup.jsx — 4-step wizard, same design.
 // Two adjustments from the mock, both necessary rather than cosmetic:
@@ -25,9 +26,11 @@ import { INK, PAPER, CARD, LIME, FUCHSIA, AMBER, SOFT, RUBIK, ASSISTANT } from '
 // (shown before a name is typed) agrees with whichever verb form is picked,
 // since a mismatched pronoun+verb would be its own new grammar error.
 //
-// age_group is deliberately never asked here, matching the mock's own note in
-// step 0 — it's collected later (not yet built) for anonymous peer comparison
-// only, not for content selection.
+// Multiple-choice pivot (migration 013): `age` (10-16) is now a REQUIRED field,
+// asked right here in step 0 — it drives age_band, which the daily game's
+// question-selection filters by (mandatory age-based content selection, not
+// just the anonymous peer-comparison bucketing age_group was originally for).
+// This replaces the mock's original "age asked later" note.
 
 const STEPS = [
   { key: 'identity', label: 'פרטי הילד/ה', icon: User },
@@ -62,6 +65,7 @@ export function AddChildWizard({ onBack }: { onBack: () => void }) {
   const [name, setName] = useState('')
   const [gender, setGender] = useState<Gender>('female')
   const [locale, setLocale] = useState<Locale>('he')
+  const [age, setAge] = useState<number | null>(null)
   const [categories, setCategories] = useState<Category[]>(['math', 'science'])
   const [perStar, setPerStar] = useState(1)
   const [weeklyBonus, setWeeklyBonus] = useState(10)
@@ -83,17 +87,21 @@ export function AddChildWizard({ onBack }: { onBack: () => void }) {
     else onBack()
   }
 
-  const canNextIdentity = name.trim().length > 0
+  const canNextIdentity = name.trim().length > 0 && age !== null
   const canNextCategories = categories.length > 0
   const canNextRewards = accessMode === 'no_code' || pin.length === 4
 
   async function submit() {
+    // Defensive — the wizard already blocks reaching this step without an age
+    // (canNextIdentity), so this is just narrowing `number | null` for TS.
+    if (age === null) return
     setPending(true)
     setError(null)
     const res = await createChild({
       displayName: name,
       gender,
       locale,
+      age,
       enabledCategories: categories,
       shekelPerStar: perStar,
       weeklyImprovementBonus: weeklyBonus,
@@ -186,10 +194,28 @@ export function AddChildWizard({ onBack }: { onBack: () => void }) {
               </div>
             </div>
 
-            <div className="rounded-2xl p-3" style={{ background: `${AMBER}15`, border: `1px solid ${AMBER}44` }}>
-              <p style={{ color: '#8a5c00', fontFamily: ASSISTANT }} className="text-xs">
-                קבוצת גיל תתבקש בהמשך - משמשת רק להשוואה אנונימית מול ילדים אחרים, לא לתוכן עצמו.
+            <div>
+              <p style={{ color: SOFT, fontFamily: ASSISTANT }} className="text-xs font-bold mb-1.5">
+                גיל <span className="font-normal">(קובע את רמת השאלות שיוצגו)</span>
               </p>
+              <div className="flex flex-wrap gap-2">
+                {Array.from({ length: MAX_CHILD_AGE - MIN_CHILD_AGE + 1 }, (_, i) => MIN_CHILD_AGE + i).map(
+                  (a) => (
+                    <button
+                      key={a}
+                      onClick={() => setAge(a)}
+                      className="w-11 h-11 rounded-2xl font-black text-sm shrink-0"
+                      style={{
+                        background: age === a ? INK : CARD,
+                        color: age === a ? 'white' : INK,
+                        border: age === a ? 'none' : '1px solid #e4e2d8',
+                      }}
+                    >
+                      {a}
+                    </button>
+                  )
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -330,7 +356,7 @@ export function AddChildWizard({ onBack }: { onBack: () => void }) {
                 {name || 'הילד/ה'}
               </p>
               <p style={{ color: INK, fontFamily: ASSISTANT }} className="text-xs font-bold mt-1">
-                {gender === 'female' ? 'בת' : 'בן'} · {locale === 'he' ? 'עברית' : 'English'}
+                {gender === 'female' ? 'בת' : 'בן'} · גיל {age} · {locale === 'he' ? 'עברית' : 'English'}
               </p>
             </div>
             <div className="rounded-2xl p-4" style={{ background: CARD, border: '1px solid #e4e2d8' }}>

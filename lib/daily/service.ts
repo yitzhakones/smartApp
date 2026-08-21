@@ -15,18 +15,21 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type {
+  AgeBand,
   Category,
   Database,
   DifficultyTier,
   Locale,
   SubmissionStatus,
 } from '@/types/database'
+import { deriveAgeBand } from '@/lib/ages'
 
 const DEFAULT_TIER: DifficultyTier = 'medium'
 
 export interface ChildForDaily {
   id: string
   locale: Locale
+  age: number
   enabled_categories: Category[]
   category_levels: Record<string, DifficultyTier>
 }
@@ -38,9 +41,16 @@ export interface GameQuestion {
   text: string
   status: SubmissionStatus
   isBonus: boolean
+  // Multiple-choice pivot (migration 013). `options` is the 3 choices in the
+  // child's locale, ALWAYS present for an MC question (picking an option is
+  // not a spoiler) — null for a legacy free-text question. Which index is
+  // correct is never sent to the client before grading (anti-cheat, same
+  // principle as correctAnswer below).
+  options: string[] | null
   // Populated ONLY for already-graded questions (correct/incorrect) so the client
   // can render a locked read-only result. Null for ungraded questions — the answer
-  // key is never sent for a question the child hasn't answered yet (anti-cheat).
+  // key (free-text) / correct option text (MC) is never sent for a question the
+  // child hasn't answered yet (anti-cheat).
   answerText: string | null
   feedback: string | null
   correctAnswer: string | null
@@ -98,6 +108,24 @@ type BankRow = {
   difficulty_tier: DifficultyTier
   text_he: string
   text_en: string
+  option1_he: string | null
+  option2_he: string | null
+  option3_he: string | null
+  option1_en: string | null
+  option2_en: string | null
+  option3_en: string | null
+  correct_index: number | null
+  age_band: AgeBand | null
+}
+
+const BANK_COLUMNS =
+  'id, category, difficulty_tier, text_he, text_en, option1_he, option2_he, option3_he, option1_en, option2_en, option3_en, correct_index, age_band'
+
+/** True for a legacy free-text row (age_band was never set) or one that
+ *  matches the child's own band — never a row explicitly banded for a
+ *  DIFFERENT age (docs → mandatory age-based content selection). */
+function matchesAgeBand(q: BankRow, childBand: AgeBand): boolean {
+  return q.age_band === null || q.age_band === childBand
 }
 
 /** Deterministically pick 5 regular question ids + 1 bonus id from the bank. */
@@ -105,12 +133,13 @@ function pickDailySet(
   bank: BankRow[],
   enabled: Category[],
   levels: Record<string, DifficultyTier>,
+  childBand: AgeBand,
   seedStr: string
 ): { five: string[]; bonus: string } {
   const rng = mulberry32(xmur3(seedStr)())
   const used = new Set<string>()
   const avail = (pred: (q: BankRow) => boolean) =>
-    bank.filter((q) => !used.has(q.id) && pred(q))
+    bank.filter((q) => !used.has(q.id) && matchesAgeBand(q, childBand) && pred(q))
   const pick = (arr: BankRow[]) =>
     arr.length ? arr[Math.floor(rng() * arr.length)] : null
 
@@ -204,7 +233,7 @@ export async function getOrCreateTodaysGame(
   } else {
     const { data: bank, error: bankErr } = await db
       .from('questions')
-      .select('id, category, difficulty_tier, text_he, text_en')
+      .select(BANK_COLUMNS)
     if (bankErr) throw bankErr
     if (!bank || bank.length === 0) throw new EmptyBankError()
 
@@ -212,6 +241,7 @@ export async function getOrCreateTodaysGame(
       bank as BankRow[],
       child.enabled_categories,
       child.category_levels ?? {},
+      deriveAgeBand(child.age),
       `${child.id}|${date}`
     )
     fiveIds = picked.five
@@ -276,13 +306,12 @@ async function ensureBonus(
   if (found) return found.question_id
 
   // Older set with no bonus row — pick and insert one now.
-  const { data: bank } = await db
-    .from('questions')
-    .select('id, category, difficulty_tier, text_he, text_en')
+  const { data: bank } = await db.from('questions').select(BANK_COLUMNS)
   const { bonus } = pickDailySet(
     (bank ?? []) as BankRow[],
     child.enabled_categories,
     child.category_levels ?? {},
+    deriveAgeBand(child.age),
     `${child.id}|${date}|bonus`
   )
   await db.from('submissions').insert({
@@ -310,7 +339,9 @@ async function buildGame(
   const allIds = [...fiveIds, bonusId]
   const { data: qs, error: qErr } = await db
     .from('questions')
-    .select('id, category, text_he, text_en, answer_key_he, answer_key_en')
+    .select(
+      'id, category, text_he, text_en, answer_key_he, answer_key_en, option1_he, option2_he, option3_he, option1_en, option2_en, option3_en, correct_index'
+    )
     .in('id', allIds)
   if (qErr) throw qErr
 
@@ -321,19 +352,32 @@ async function buildGame(
     const q = qById.get(qid)!
     const sub = subByQid.get(qid)!
     const graded = sub.status === 'correct' || sub.status === 'incorrect'
+    // A row is multiple-choice iff correct_index is set (migration 013's
+    // questions_mc_complete_check guarantees all 6 option columns are then
+    // populated too) — never a separate type column.
+    const isMC = q.correct_index !== null
+    const options = isMC
+      ? child.locale === 'he'
+        ? [q.option1_he!, q.option2_he!, q.option3_he!]
+        : [q.option1_en!, q.option2_en!, q.option3_en!]
+      : null
+    const correctAnswer = !graded
+      ? null
+      : isMC
+        ? (options as string[])[q.correct_index!]
+        : child.locale === 'he'
+          ? q.answer_key_he
+          : q.answer_key_en
     return {
       submissionId: sub.id,
       category: q.category,
       text: child.locale === 'he' ? q.text_he : q.text_en,
       status: sub.status,
       isBonus,
+      options,
       answerText: graded ? (sub.answer_text ?? '') : null,
       feedback: graded ? (sub.ai_feedback_text ?? '') : null,
-      correctAnswer: graded
-        ? child.locale === 'he'
-          ? q.answer_key_he
-          : q.answer_key_en
-        : null,
+      correctAnswer,
     }
   }
 

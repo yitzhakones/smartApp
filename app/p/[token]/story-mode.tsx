@@ -20,6 +20,11 @@ import {
 } from 'lucide-react'
 import type { Category, SubmissionStatus } from '@/types/database'
 
+// Multiple-choice pivot (migration 013). Letter badges for the 3 fixed options
+// — Hebrew alphabet regardless of the child's locale, matching the story-mode
+// screens' existing convention of icons/shapes over locale-specific chrome.
+const OPTION_LETTERS = ['א', 'ב', 'ג']
+
 const ACCENT = '#C6FF3D' // ליים חשמלי - נכון
 const ACCENT2 = '#FF3DBB' // פוקסיה - בונוס
 const AMBER = '#FFB63D' // ענבר - לא נכון
@@ -36,6 +41,10 @@ const CATEGORY_BG: Record<string, string> = {
     'radial-gradient(circle at 25% 80%, #FF3DA1 0%, #5E1A3D 35%, #0B0B0F 75%)',
   general_knowledge:
     'radial-gradient(circle at 70% 75%, #FF8A3D 0%, #6E3A1A 35%, #0B0B0F 75%)',
+  // Multiple-choice pivot (migration 013) — new category, its own amber/brown
+  // gradient (distinct from general_knowledge's orange/rust).
+  english_vocabulary:
+    'radial-gradient(circle at 30% 75%, #D9A441 0%, #4A3218 35%, #0B0B0F 75%)',
   bonus: 'conic-gradient(from 90deg at 50% 50%, #FFB63D, #241A00, #FF3DBB, #0B0B0F)',
 }
 const CATEGORY_LABEL: Record<string, string> = {
@@ -43,6 +52,7 @@ const CATEGORY_LABEL: Record<string, string> = {
   science: 'מדעים',
   israeli_history: 'היסטוריה של ישראל',
   general_knowledge: 'ידע כללי',
+  english_vocabulary: 'אוצר מילים באנגלית',
   bonus: 'שאלת בונוס',
 }
 const CATEGORY_ACCENT: Record<string, string> = {
@@ -50,6 +60,7 @@ const CATEGORY_ACCENT: Record<string, string> = {
   science: '#3DFFD6',
   israeli_history: '#FF9DCB',
   general_knowledge: '#FFC48A',
+  english_vocabulary: '#E8C089',
   bonus: AMBER,
 }
 
@@ -94,6 +105,11 @@ export interface GameQuestion {
   text: string
   status: SubmissionStatus
   isBonus: boolean
+  // Multiple-choice pivot (migration 013) — the 3 choices in the child's
+  // locale, always present for an MC question (never a spoiler), null for a
+  // legacy free-text question. Presence of this field is what the UI branches
+  // on (options buttons vs. the free-text input), not a separate type flag.
+  options: string[] | null
   // Present only for already-graded questions (for the locked read-only view).
   answerText: string | null
   feedback: string | null
@@ -106,6 +122,14 @@ interface ResultData {
   feedback: string
   correctAnswer: string
   award: number
+}
+
+/** Shape of the /api/grade JSON response — used by both grading paths. */
+interface GradeApiResponse {
+  isCorrect?: boolean
+  awardedNis?: number
+  correctAnswer?: string
+  feedbackMessage?: string
 }
 
 type UIStatus = 'locked' | 'open' | 'skipped' | 'correct' | 'incorrect'
@@ -241,6 +265,36 @@ export function StoryMode({
     })
   }
 
+  // Shared tail for both grading paths (free-text submit() and multiple-choice
+  // submitOption() below) — everything after the /api/grade response comes
+  // back is identical: verdict, reward, result screen, progress bar. Only how
+  // each path calls the endpoint (and what it shows as "your answer") differs.
+  function applyGradeResponse(data: GradeApiResponse, answerDisplay: string) {
+    const correct = !!data.isCorrect
+    const award = Number(data.awardedNis ?? 0)
+    setLastCorrect(correct)
+    setResultAnswer(data.correctAnswer ?? '')
+    setResultFeedback(data.feedbackMessage ?? '')
+    setResultAward(award)
+    setResults((prev) => ({
+      ...prev,
+      [current]: {
+        isCorrect: correct,
+        answerText: answerDisplay,
+        feedback: data.feedbackMessage ?? '',
+        correctAnswer: data.correctAnswer ?? '',
+        award,
+      },
+    }))
+    setPhase('result')
+    markResolved(correct ? 'correct' : 'incorrect')
+    if (correct) {
+      setEarnedToday((v) => v + award)
+      setPulseEarned(true)
+      setTimeout(() => setPulseEarned(false), 600)
+    }
+  }
+
   async function submit() {
     if (!answer.trim() || !q) return
     const submissionId = q.submissionId
@@ -253,30 +307,33 @@ export function StoryMode({
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data?.error ?? 'grade failed')
+      applyGradeResponse(data, answer)
+    } catch (err) {
+      console.error('Grading request failed', err)
+      setPhase('question') // let the child try again
+    }
+  }
 
-      const correct = !!data.isCorrect
-      const award = Number(data.awardedNis ?? 0)
-      setLastCorrect(correct)
-      setResultAnswer(data.correctAnswer ?? '')
-      setResultFeedback(data.feedbackMessage ?? '')
-      setResultAward(award)
-      setResults((prev) => ({
-        ...prev,
-        [current]: {
-          isCorrect: correct,
-          answerText: answer,
-          feedback: data.feedbackMessage ?? '',
-          correctAnswer: data.correctAnswer ?? '',
-          award,
-        },
-      }))
-      setPhase('result')
-      markResolved(correct ? 'correct' : 'incorrect')
-      if (correct) {
-        setEarnedToday((v) => v + award)
-        setPulseEarned(true)
-        setTimeout(() => setPulseEarned(false), 600)
-      }
+  // Multiple-choice pivot (migration 013). No separate confirm step — tapping
+  // an option immediately locks it in and grades: the buttons disappear the
+  // instant `phase` leaves 'question' (same conditional render as the
+  // free-text input), so there's nothing left to tap a second time. The
+  // `phase !== 'question'` guard below is just a cheap belt-and-suspenders
+  // against a double-tap landing inside that same render tick.
+  async function submitOption(index: number) {
+    if (!q || phase !== 'question') return
+    const submissionId = q.submissionId
+    const chosenText = q.options?.[index] ?? ''
+    setPhase('grading')
+    try {
+      const res = await fetch('/api/grade', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ accessToken, submissionId, selectedIndex: index }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error ?? 'grade failed')
+      applyGradeResponse(data, chosenText)
     } catch (err) {
       console.error('Grading request failed', err)
       setPhase('question') // let the child try again
@@ -726,7 +783,55 @@ export function StoryMode({
             </p>
           )}
 
-          {reviewIndex === null && !currentGraded && phase === 'question' && (
+          {/* Multiple-choice pivot (migration 013): 3 tappable options, letter
+              badges (א/ב/ג). Tapping one immediately submits — no separate
+              confirm button, no editable state to hold (unlike `answer`
+              below); submitOption() fires straight from the onClick. */}
+          {reviewIndex === null && !currentGraded && phase === 'question' && q?.options && (
+            <div className="flex flex-col gap-3">
+              {q.options.map((opt, i) => (
+                <button
+                  key={i}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    submitOption(i)
+                  }}
+                  className="flex items-center gap-3 p-4 text-start"
+                  style={{
+                    background: 'rgba(255,255,255,0.14)',
+                    backdropFilter: 'blur(12px)',
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderRadius: 26,
+                  }}
+                >
+                  <span
+                    className="shrink-0 rounded-full flex items-center justify-center font-black"
+                    style={{ width: 36, height: 36, background: accent, color: BASE }}
+                  >
+                    {OPTION_LETTERS[i]}
+                  </span>
+                  <span
+                    style={{ color: 'white', fontFamily: ASSISTANT }}
+                    className="flex-1 text-lg font-bold"
+                  >
+                    {opt}
+                  </span>
+                </button>
+              ))}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  skip()
+                }}
+                className="self-center flex items-center gap-1.5 text-sm font-bold px-4 py-2 rounded-full"
+                style={{ color: 'rgba(255,255,255,0.7)', background: 'rgba(255,255,255,0.08)' }}
+              >
+                <ArrowLeftCircle size={15} /> דלגי לעכשיו, אחזור אליה
+              </button>
+            </div>
+          )}
+
+          {reviewIndex === null && !currentGraded && phase === 'question' && q && !q.options && (
             <div className="flex flex-col gap-3">
               <div
                 onClick={(e) => e.stopPropagation()}

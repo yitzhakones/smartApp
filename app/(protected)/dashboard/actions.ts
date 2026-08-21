@@ -11,6 +11,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
+import { isValidChildAge } from '@/lib/ages'
 import type {
   AccessMode,
   Category,
@@ -176,6 +177,9 @@ export interface ChildProfileInput {
   displayName: string
   gender: Gender
   locale: Locale
+  // Required (migration 013) — drives age_band, which the daily game filters
+  // its question pool by. See lib/ages.ts.
+  age: number
   enabledCategories: Category[]
   shekelPerStar: number
   weeklyImprovementBonus: number
@@ -190,6 +194,7 @@ export interface UpdateChildInput extends ChildProfileInput {
 /** Shared by createChild and updateChild — the two write different rows, but the same shape. */
 function validateChildProfile(input: ChildProfileInput): string | null {
   if (!input.displayName.trim()) return 'חסר שם'
+  if (!isValidChildAge(input.age)) return 'גיל חייב להיות בין 10 ל-16'
   if (input.enabledCategories.length === 0) return 'יש לבחור לפחות קטגוריה אחת'
   if (!Number.isFinite(input.shekelPerStar) || input.shekelPerStar <= 0) {
     return '₪ לכוכב חייב להיות מספר חיובי'
@@ -279,6 +284,7 @@ export async function createChild(input: ChildProfileInput): Promise<ActionResul
       display_name: input.displayName.trim(),
       gender: input.gender,
       locale: input.locale,
+      age: input.age,
       enabled_categories: input.enabledCategories,
       category_levels: defaultCategoryLevels(input.enabledCategories), // TEMPORARY BYPASS, see above
       shekel_per_star: input.shekelPerStar,
@@ -314,6 +320,7 @@ export async function updateChild(
       display_name: input.displayName.trim(),
       gender: input.gender,
       locale: input.locale,
+      age: input.age,
       enabled_categories: input.enabledCategories,
       shekel_per_star: input.shekelPerStar,
       weekly_improvement_bonus: input.weeklyImprovementBonus,
@@ -322,7 +329,7 @@ export async function updateChild(
     })
     .eq('id', input.childId)
     .select(
-      'id, display_name, gender, locale, enabled_categories, shekel_per_star, weekly_improvement_bonus, access_mode, access_pin'
+      'id, display_name, gender, locale, age, enabled_categories, shekel_per_star, weekly_improvement_bonus, access_mode, access_pin'
     )
     .single()
   if (error || !data) return { ok: false, error: 'שמירת הפרופיל נכשלה' }
@@ -335,6 +342,7 @@ export async function updateChild(
       displayName: data.display_name,
       gender: data.gender,
       locale: data.locale,
+      age: data.age,
       enabledCategories: data.enabled_categories,
       shekelPerStar: Number(data.shekel_per_star),
       weeklyImprovementBonus: Number(data.weekly_improvement_bonus),
