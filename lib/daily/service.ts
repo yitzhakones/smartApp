@@ -64,7 +64,10 @@ export interface GameQuestion {
 // every call site that threads it through, once the investigation is closed.
 export interface DailySlotDebug {
   category: Category
-  tier: DifficultyTier
+  /** null for the bonus slot — it has no tier concept at all now that the
+   *  "bonus must be difficulty_tier='hard'" rule is temporarily dropped (see
+   *  the bonus selection block in pickDailySet). */
+  tier: DifficultyTier | null
   mcCount: number
   legacyTierCount: number
   legacyAnyCount: number
@@ -82,6 +85,9 @@ export interface DailyDebugInfo {
   age: number
   ageBand: AgeBand
   slots: DailySlotDebug[]
+  /** The bonus slot's own selection stats — null when `reused` is true (no
+   *  selection ran this request), same as `slots` being empty. */
+  bonus: DailySlotDebug | null
 }
 
 export interface TodaysGame {
@@ -176,7 +182,7 @@ function pickDailySet(
   levels: Record<string, DifficultyTier>,
   childBand: AgeBand,
   seedStr: string
-): { five: string[]; bonus: string; slotDebug: DailySlotDebug[] } {
+): { five: string[]; bonus: string; slotDebug: DailySlotDebug[]; bonusDebug: DailySlotDebug } {
   const rng = mulberry32(xmur3(seedStr)())
   const used = new Set<string>()
   const avail = (pred: (q: BankRow) => boolean) =>
@@ -285,26 +291,64 @@ function pickDailySet(
     slotDebug.push(debug)
   }
 
-  // Bonus is ALWAYS the 'hard' tier (docs → Difficulty calibration). Prefer an
-  // enabled category; fall back to any hard question so the bonus stays hard even
-  // if the child's categories have none left; only if the bank has no hard tier
-  // at all do we take anything, so the game never breaks.
+  // Bonus slot — same MC-priority rule as the regular slots above, still
+  // restricted to a category the child actually has enabled.
   //
-  // NOT given the same MC-priority fix as pickForCategory above, deliberately
-  // out of scope here: MC rows have no difficulty_tier at all, so there's no
-  // existing concept of an "MC hard question" to select — the bonus slot
-  // stays legacy-only until that's a real product decision, not something to
-  // improvise while fixing the regular-5 selection bug.
-  let bonus =
-    pick(
-      avail(
-        (q) => enabled.includes(q.category) && q.difficulty_tier === 'hard'
-      )
-    ) ?? pick(avail((q) => q.difficulty_tier === 'hard'))
-  if (!bonus) bonus = pick(avail(() => true))
+  // TEMPORARY SIMPLIFICATION: the old rule was "bonus is ALWAYS
+  // difficulty_tier = 'hard'" (docs → Difficulty calibration). That rule
+  // cannot be honored against MC content at all — MC rows have no
+  // difficulty_tier (it's NULL by design; age_band is their only difficulty
+  // axis), so requiring a 'hard' tier would exclude every MC row from the
+  // bonus slot exactly the way it did from the regular slots (the bug fixed
+  // above). Dropping the tier requirement for now rather than leaving the
+  // bonus permanently legacy-only. The bonus is still meaningfully "bigger"
+  // via its 3x reward multiplier and its own visual treatment, both
+  // unchanged. REVISIT: restore a real difficulty distinction for the bonus
+  // once tiered MC content exists (a per-age_band "harder" flag, or MC rows
+  // that carry a tier of their own) — tracked as follow-up work, not
+  // silently dropped.
+  const bonusMcPool = avail((q) => enabled.includes(q.category) && isMultipleChoice(q))
+  const bonusLegacyHardPool = avail(
+    (q) => enabled.includes(q.category) && q.difficulty_tier === 'hard'
+  )
+  const bonusLegacyAnyEnabledPool = avail((q) => enabled.includes(q.category))
+
+  let bonusBranch: string
+  let bonus: BankRow | null
+  if (bonusMcPool.length > 0) {
+    bonusBranch = 'MC-match'
+    bonus = pick(bonusMcPool)
+  } else if (bonusLegacyHardPool.length > 0) {
+    bonusBranch = 'legacy-hard-fallback'
+    bonus = pick(bonusLegacyHardPool)
+  } else if (bonusLegacyAnyEnabledPool.length > 0) {
+    bonusBranch = 'legacy-any-enabled-fallback'
+    bonus = pick(bonusLegacyAnyEnabledPool)
+  } else {
+    // Last resort so the game never breaks: anything left in the bank at all,
+    // even outside the child's enabled categories.
+    bonusBranch = 'any-question-emergency-fallback'
+    bonus = pick(avail(() => true))
+  }
   if (!bonus) throw new Error('No question available for the bonus slot')
 
-  return { five, bonus: bonus.id, slotDebug }
+  console.log(
+    `[daily][pickBonus] age_band=${childBand} mcCount=${bonusMcPool.length} ` +
+      `legacyHardCount=${bonusLegacyHardPool.length} legacyAnyEnabledCount=${bonusLegacyAnyEnabledPool.length} ` +
+      `branch=${bonusBranch} picked=${bonus.id} pickedIsMC=${isMultipleChoice(bonus)} bankSize=${bank.length}`
+  )
+
+  const bonusDebug: DailySlotDebug = {
+    category: bonus.category,
+    tier: null,
+    mcCount: bonusMcPool.length,
+    legacyTierCount: bonusLegacyHardPool.length,
+    legacyAnyCount: bonusLegacyAnyEnabledPool.filter((q) => !isMultipleChoice(q)).length,
+    branch: bonusBranch,
+    pickedIsMC: isMultipleChoice(bonus),
+  }
+
+  return { five, bonus: bonus.id, slotDebug, bonusDebug }
 }
 
 /** YYYY-MM-DD "today" in the given IANA timezone (default Israel). */
@@ -373,7 +417,13 @@ export async function getOrCreateTodaysGame(
     dailySetId = existing.id
     fiveIds = existing.question_ids
     bonusId = await ensureBonus(db, dailySetId, child, fiveIds, date)
-    debugInfo = { reused: true, age: child.age, ageBand: deriveAgeBand(child.age), slots: [] }
+    debugInfo = {
+      reused: true,
+      age: child.age,
+      ageBand: deriveAgeBand(child.age),
+      slots: [],
+      bonus: null,
+    }
   } else {
     const { data: bank, error: bankErr } = await db
       .from('questions')
@@ -403,6 +453,7 @@ export async function getOrCreateTodaysGame(
       age: child.age,
       ageBand: deriveAgeBand(child.age),
       slots: picked.slotDebug,
+      bonus: picked.bonusDebug,
     }
 
     const { data: inserted, error: insErr } = await db

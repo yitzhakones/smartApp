@@ -1062,12 +1062,22 @@ function DebugBanner({ debugInfo, commitSha }: { debugInfo: DailyDebugInfo; comm
           existing daily_set reused verbatim — pickForCategory did NOT run this request
         </div>
       ) : (
-        debugInfo.slots.map((s, i) => (
-          <div key={i}>
-            slot{i}: cat={s.category} tier={s.tier} → {s.pickedIsMC ? 'MC' : 'legacy'} | mc=
-            {s.mcCount} legacyTier={s.legacyTierCount} legacyAny={s.legacyAnyCount} branch={s.branch}
-          </div>
-        ))
+        <>
+          {debugInfo.slots.map((s, i) => (
+            <div key={i}>
+              slot{i}: cat={s.category} tier={s.tier ?? '-'} → {s.pickedIsMC ? 'MC' : 'legacy'} | mc=
+              {s.mcCount} legacyTier={s.legacyTierCount} legacyAny={s.legacyAnyCount} branch={s.branch}
+            </div>
+          ))}
+          {debugInfo.bonus && (
+            <div style={{ color: '#FFB63D' }}>
+              BONUS: cat={debugInfo.bonus.category} tier={debugInfo.bonus.tier ?? '-'} →{' '}
+              {debugInfo.bonus.pickedIsMC ? 'MC' : 'legacy'} | mc={debugInfo.bonus.mcCount}{' '}
+              legacyHard={debugInfo.bonus.legacyTierCount} legacyAny={debugInfo.bonus.legacyAnyCount}{' '}
+              branch={debugInfo.bonus.branch}
+            </div>
+          )}
+        </>
       )}
     </div>
   )
