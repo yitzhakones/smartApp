@@ -120,6 +120,20 @@ export function DashboardClient({
     })
   }
 
+  // A deleted child has to leave `items`, and `activeId` has to move off it —
+  // every screen below the empty-children guard reads `active!` and would
+  // crash on a dangling id. Deleting the LAST child leaves items empty, which
+  // the guard already renders as the "הוסף ילד/ה" empty state, so that case
+  // needs no special handling here beyond not routing to a per-child screen.
+  function handleChildDeleted(childId: string) {
+    const remaining = items.filter((c) => c.id !== childId)
+    setItems(remaining)
+    setActiveId(remaining[0]?.id ?? '')
+    // Clear the new-child banner if it was pointing at the deleted child.
+    setBannerChildId((prev) => (prev === childId ? null : prev))
+    setScreen('dashboard')
+  }
+
   function handleAccountSaved(patch: { locale: Locale; whatsappNumber: string | null; email: boolean }) {
     setAccount((prev) => ({
       locale: patch.locale,
@@ -193,6 +207,7 @@ export function DashboardClient({
         shareUrl={currentChild.shareUrl}
         onBack={() => setScreen('settings')}
         onSaved={handleChildSaved}
+        onDeleted={handleChildDeleted}
       />
     )
   }

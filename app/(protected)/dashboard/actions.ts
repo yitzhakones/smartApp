@@ -352,6 +352,69 @@ export async function updateChild(
   }
 }
 
+/**
+ * Permanently delete a child profile and everything attached to it.
+ *
+ * RLS-scoped directly (children.parent_id = auth.uid(), enforced by the
+ * "Parent manages own children" policy, which is FOR ALL and so covers DELETE)
+ * — no service role. A parent therefore cannot delete another parent's child
+ * even by guessing an id: the DELETE simply matches zero rows, which this
+ * treats as failure rather than reporting a false success.
+ *
+ * Related data is removed by the database's own FK cascades, NOT by deleting
+ * rows here: every child-scoped table (daily_sets, submissions, child_stats,
+ * reward_ledger, notifications, weekly_rollups) declares
+ * `child_id ... ON DELETE CASCADE` in migration 001. Verified empirically
+ * against the live database before this was written (seeded one row in each
+ * of those six tables for a throwaway child, deleted the child, confirmed all
+ * six were gone) rather than trusting the migration files alone. The one
+ * later-added FK that could have blocked — reward_ledger.submission_id from
+ * migration 008 — is ON DELETE SET NULL, so it can't. No new migration is
+ * needed; doing the cleanup in app code instead would be strictly worse (six
+ * more round trips that can partially fail, with no transaction around them).
+ *
+ * `confirmName` must exactly match the child's stored display_name: this is
+ * irreversible and unrecoverable, so a mistap can't trigger it. Compared
+ * server-side (trimmed) — the client asks for it too, but that check is a
+ * convenience, not the gate.
+ */
+// ActionResult's default T (unknown), not <never>: this action actually
+// returns on success, and `{ ok: true } & never` collapses to `never` — the
+// exact intersection gotcha documented on ActionResult above. (createChild
+// gets away with <never> only because it redirects and never returns.)
+export async function deleteChild(input: {
+  childId: string
+  confirmName: string
+}): Promise<ActionResult> {
+  const supabase = await createClient()
+
+  // Read the child first (RLS-scoped — a child belonging to another parent
+  // reads as not-found here) so the typed-name check compares against the
+  // real stored name, and so a wrong id fails before any delete is attempted.
+  const { data: child, error: readError } = await supabase
+    .from('children')
+    .select('id, display_name')
+    .eq('id', input.childId)
+    .maybeSingle()
+  if (readError || !child) return { ok: false, error: 'הפרופיל לא נמצא' }
+
+  if (input.confirmName.trim() !== child.display_name.trim()) {
+    return { ok: false, error: 'השם שהוקלד אינו תואם לשם הילד/ה' }
+  }
+
+  const { error, count } = await supabase
+    .from('children')
+    .delete({ count: 'exact' })
+    .eq('id', input.childId)
+  if (error) return { ok: false, error: 'מחיקת הפרופיל נכשלה' }
+  // count === 0 means RLS filtered the row out (not this parent's child) —
+  // never report success for a delete that didn't happen.
+  if (!count) return { ok: false, error: 'מחיקת הפרופיל נכשלה' }
+
+  revalidatePath('/dashboard')
+  return { ok: true }
+}
+
 /** Mark every unread in-app notification, across all of this parent's children, as read. */
 export async function markNotificationsRead(): Promise<ActionResult<{ readAt: string }>> {
   const owned = await requireParent()

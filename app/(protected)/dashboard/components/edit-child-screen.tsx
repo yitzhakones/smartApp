@@ -1,14 +1,18 @@
 'use client'
 
 import { useState } from 'react'
-import { Check } from 'lucide-react'
+import { Check, Trash2 } from 'lucide-react'
 import type { Category } from '@/types/database'
 import { CATEGORY_LABEL_HE, CATEGORY_ORDER } from '@/lib/categories'
 import { MAX_CHILD_AGE, MIN_CHILD_AGE } from '@/lib/ages'
-import { updateChild, type UpdateChildInput } from '../actions'
+import { deleteChild, updateChild, type UpdateChildInput } from '../actions'
 import { ScreenHeader } from './screen-header'
 import { ShareLinkCard } from './share-link-card'
 import { SHELL, INK, PAPER, CARD, FUCHSIA, SOFT, ASSISTANT, SETTINGS_TEXT, SETTINGS_TAP } from '../theme'
+
+// The one destructive color in this dashboard — matches the existing inline
+// error red already used for validation messages on this screen.
+const DANGER = '#E24B4B'
 
 // age_group/region still aren't part of this screen (not asked for, and not
 // otherwise editable anywhere in this dashboard yet) — but `age` (migration
@@ -19,6 +23,7 @@ export function EditChildScreen({
   shareUrl,
   onBack,
   onSaved,
+  onDeleted,
 }: {
   child: UpdateChildInput
   /** The child's one-time access link (app.com/p/{access_token}) — read-only,
@@ -26,6 +31,10 @@ export function EditChildScreen({
   shareUrl: string
   onBack: () => void
   onSaved: (patch: UpdateChildInput) => void
+  /** Called after a successful delete so the dashboard can drop this child
+   *  from its list and route away — including to the empty state, if this was
+   *  the last child. */
+  onDeleted: (childId: string) => void
 }) {
   const [name, setName] = useState(child.displayName)
   const [gender, setGender] = useState(child.gender)
@@ -38,6 +47,19 @@ export function EditChildScreen({
   const [pin, setPin] = useState(child.accessPin ?? '')
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // Delete flow: collapsed by default, expands into a type-the-name
+  // confirmation. Kept as its own state (not a modal/route) so it can't be
+  // reached without deliberately opening it first.
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [deleteConfirmName, setDeleteConfirmName] = useState('')
+  const [deletePending, setDeletePending] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  // Compared against the child's ORIGINAL stored name (child.displayName), not
+  // the `name` edit field — otherwise typing a new name above would silently
+  // change what you have to type to delete. The server re-checks this against
+  // the DB value regardless; this only gates the button.
+  const deleteNameMatches = deleteConfirmName.trim() === child.displayName.trim()
 
   function toggleCategory(key: Category) {
     setCategories((prev) => (prev.includes(key) ? prev.filter((c) => c !== key) : [...prev, key]))
@@ -65,6 +87,24 @@ export function EditChildScreen({
     }
     onSaved(res.child)
     onBack()
+  }
+
+  async function confirmDelete() {
+    if (!deleteNameMatches) return
+    setDeletePending(true)
+    setDeleteError(null)
+    const res = await deleteChild({
+      childId: child.childId,
+      confirmName: deleteConfirmName,
+    })
+    setDeletePending(false)
+    if (!res.ok) {
+      setDeleteError(res.error)
+      return
+    }
+    // Parent decides where to go — this screen can't route itself, since
+    // whether a dashboard still exists depends on the remaining child count.
+    onDeleted(child.childId)
   }
 
   return (
@@ -274,6 +314,85 @@ export function EditChildScreen({
         </div>
 
         <ShareLinkCard url={shareUrl} childName={child.displayName} />
+
+        {/* Destructive zone — visually separated from everything above it, and
+            from the fixed save button below, so it can't be confused for part
+            of the normal edit flow. */}
+        <div
+          className="rounded-2xl p-4 mt-2"
+          style={{ background: `${DANGER}0d`, border: `1px solid ${DANGER}55` }}
+        >
+          {!confirmingDelete ? (
+            <>
+              <p style={{ color: DANGER, fontFamily: ASSISTANT }} className={`font-bold ${SETTINGS_TEXT.body}`}>
+                מחיקת פרופיל
+              </p>
+              <p style={{ color: SOFT, fontFamily: ASSISTANT }} className={`mt-1 mb-3 ${SETTINGS_TEXT.caption}`}>
+                מחיקה לצמיתות של {child.displayName} — כולל כל ההתקדמות, הכוכבים, היסטוריית התגמולים והשאלות
+                שנענו. לא ניתן לשחזר.
+              </p>
+              <button
+                onClick={() => {
+                  setConfirmingDelete(true)
+                  setDeleteConfirmName('')
+                  setDeleteError(null)
+                }}
+                className={`w-full ${SETTINGS_TAP.buttonPadY} rounded-full font-black ${SETTINGS_TEXT.button} flex items-center justify-center gap-2`}
+                style={{ background: 'transparent', color: DANGER, border: `1.5px solid ${DANGER}` }}
+              >
+                <Trash2 size={16} /> מחיקת פרופיל
+              </button>
+            </>
+          ) : (
+            <>
+              <p style={{ color: DANGER, fontFamily: ASSISTANT }} className={`font-bold ${SETTINGS_TEXT.body}`}>
+                בטוחים? הפעולה בלתי הפיכה
+              </p>
+              <p style={{ color: SOFT, fontFamily: ASSISTANT }} className={`mt-1 mb-3 ${SETTINGS_TEXT.caption}`}>
+                כדי לאשר, הקלידו את שם הילד/ה במדויק:{' '}
+                <span style={{ color: INK, fontWeight: 700 }}>{child.displayName}</span>
+              </p>
+              <input
+                value={deleteConfirmName}
+                onChange={(e) => setDeleteConfirmName(e.target.value)}
+                placeholder={child.displayName}
+                autoFocus
+                className={`w-full rounded-2xl px-4 py-3.5 font-bold mb-3 ${SETTINGS_TEXT.input}`}
+                style={{ background: CARD, border: `1px solid ${DANGER}55`, color: INK }}
+              />
+              {deleteError && (
+                <p
+                  style={{ color: DANGER, fontFamily: ASSISTANT }}
+                  className={`text-center mb-2 ${SETTINGS_TEXT.caption}`}
+                >
+                  {deleteError}
+                </p>
+              )}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    setConfirmingDelete(false)
+                    setDeleteConfirmName('')
+                    setDeleteError(null)
+                  }}
+                  disabled={deletePending}
+                  className={`flex-1 ${SETTINGS_TAP.buttonPadY} rounded-full font-black ${SETTINGS_TEXT.button} disabled:opacity-50`}
+                  style={{ background: CARD, color: INK, border: '1px solid #e4e2d8' }}
+                >
+                  ביטול
+                </button>
+                <button
+                  onClick={confirmDelete}
+                  disabled={!deleteNameMatches || deletePending}
+                  className={`flex-1 ${SETTINGS_TAP.buttonPadY} rounded-full font-black ${SETTINGS_TEXT.button} disabled:opacity-40`}
+                  style={{ background: DANGER, color: 'white' }}
+                >
+                  {deletePending ? 'מוחק…' : 'מחיקה לצמיתות'}
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div
