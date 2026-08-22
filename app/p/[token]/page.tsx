@@ -155,6 +155,11 @@ export default async function ChildPlayPage({
         streak: stats?.streak ?? 0,
       }}
       parentMessage={msg?.note ?? null}
+      // TEMPORARY DIAGNOSTIC (on-screen banner) — REVERT: drop these two
+      // props, and the corresponding ones on StoryMode, once the "MC not
+      // showing up for real requests" investigation is closed.
+      debugInfo={game.debugInfo}
+      commitSha={process.env.VERCEL_GIT_COMMIT_SHA ?? 'unknown (VERCEL_GIT_COMMIT_SHA not set — not running on Vercel?)'}
     />
   )
 }

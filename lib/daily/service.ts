@@ -56,10 +56,40 @@ export interface GameQuestion {
   correctAnswer: string | null
 }
 
+// TEMPORARY DIAGNOSTIC (on-screen banner, not just server logs — the earlier
+// console.log-only version turned out to be undebuggable for whoever can't
+// reach Vercel's Runtime Logs). Per-slot selection stats, captured at the
+// exact moment pickForCategory picked that slot's question. REVERT: delete
+// this type, DailyDebugInfo below, the debugInfo field on TodaysGame, and
+// every call site that threads it through, once the investigation is closed.
+export interface DailySlotDebug {
+  category: Category
+  tier: DifficultyTier
+  mcCount: number
+  legacyTierCount: number
+  legacyAnyCount: number
+  branch: string
+  pickedIsMC: boolean
+}
+
+// TEMPORARY DIAGNOSTIC — see DailySlotDebug above. `slots` is empty when
+// `reused` is true: an existing daily_sets row was returned verbatim and
+// pickForCategory never ran this request, so there's nothing to report per
+// slot — only that fact itself (still useful: it tells you whether you're
+// looking at fresh-selection behavior or a cached leftover).
+export interface DailyDebugInfo {
+  reused: boolean
+  age: number
+  ageBand: AgeBand
+  slots: DailySlotDebug[]
+}
+
 export interface TodaysGame {
   date: string
   /** 5 regular questions (in daily-set order) followed by the bonus question. */
   questions: GameQuestion[]
+  // TEMPORARY DIAGNOSTIC — see DailyDebugInfo above.
+  debugInfo: DailyDebugInfo
 }
 
 /** The child has no enabled_categories — parent hasn't finished setup. */
@@ -146,7 +176,7 @@ function pickDailySet(
   levels: Record<string, DifficultyTier>,
   childBand: AgeBand,
   seedStr: string
-): { five: string[]; bonus: string } {
+): { five: string[]; bonus: string; slotDebug: DailySlotDebug[] } {
   const rng = mulberry32(xmur3(seedStr)())
   const used = new Set<string>()
   const avail = (pred: (q: BankRow) => boolean) =>
@@ -170,17 +200,21 @@ function pickDailySet(
   // read-only simulation against the live bank before this fix: a fresh
   // pick for an existing child produced the exact same all-legacy result
   // already stored, proving this was a selection bug, not stale data.
-  // TEMPORARY DIAGNOSTIC LOGGING — fires on every real pickForCategory call in
-  // a live request (never from a simulation script). Restructured from the
-  // original `pick(avail(...)) ?? pick(avail(...)) ?? pick(avail(...))` chain
-  // into an explicit if/else so exactly one branch's pool is ever passed to
-  // pick() — same as before (pick() only calls rng() when its array is
-  // non-empty, and only one array is ever handed to it here), so this is
-  // instrumentation only, not a behavior change; the actual selection logic
-  // is unchanged from the previous commit. REVERT: once the "MC not showing
-  // up for real requests" investigation is closed, restore the single `??`
-  // chain above and delete this console.log.
-  const pickForCategory = (cat: Category, tier: DifficultyTier) => {
+  // TEMPORARY DIAGNOSTIC — fires on every real pickForCategory call in a live
+  // request (never from a simulation script). Restructured from the original
+  // `pick(avail(...)) ?? pick(avail(...)) ?? pick(avail(...))` chain into an
+  // explicit if/else so exactly one branch's pool is ever passed to pick() —
+  // same as before (pick() only calls rng() when its array is non-empty, and
+  // only one array is ever handed to it here), so this is instrumentation
+  // only, not a behavior change; the actual selection logic is unchanged from
+  // the previous commit. Returns its diagnostics alongside the picked row
+  // (not just console.log) so the caller can surface them on-screen. REVERT:
+  // once the "MC not showing up for real requests" investigation is closed,
+  // restore the single `??` chain returning a bare BankRow | null.
+  const pickForCategory = (
+    cat: Category,
+    tier: DifficultyTier
+  ): { result: BankRow | null; debug: DailySlotDebug } => {
     const mcPool = avail((q) => q.category === cat && isMultipleChoice(q))
     const legacyTierPool = avail((q) => q.category === cat && q.difficulty_tier === tier)
     const legacyAnyPool = avail((q) => q.category === cat)
@@ -209,19 +243,46 @@ function pickDailySet(
         `bankSize=${bank.length}`
     )
 
-    return result
+    return {
+      result,
+      debug: {
+        category: cat,
+        tier,
+        mcCount: mcPool.length,
+        legacyTierCount: legacyTierPool.length,
+        legacyAnyCount: legacyCount,
+        branch,
+        pickedIsMC: result ? isMultipleChoice(result) : false,
+      },
+    }
   }
 
   const five: string[] = []
+  const slotDebug: DailySlotDebug[] = []
   for (let i = 0; i < 5; i++) {
     const cat = enabled[i % enabled.length]
     const tier = levels[cat] ?? DEFAULT_TIER
-    let q = pickForCategory(cat, tier)
-    if (!q) for (const c of enabled) if ((q = pickForCategory(c, DEFAULT_TIER))) break
+    let picked = pickForCategory(cat, tier)
+    let q = picked.result
+    let debug = picked.debug
+    if (!q) {
+      for (const c of enabled) {
+        picked = pickForCategory(c, DEFAULT_TIER)
+        if (picked.result) {
+          q = picked.result
+          debug = picked.debug
+          break
+        }
+      }
+    }
     if (!q) q = pick(avail(() => true))
     if (!q) throw new Error('Not enough questions in the bank to build a daily set')
     used.add(q.id)
     five.push(q.id)
+    // debug reflects whichever pickForCategory call actually produced `q`
+    // (or, in the extremely rare emergency any-fallback, the last attempt —
+    // still the truthful "what did selection see" answer for this slot).
+    slotDebug.push(debug)
   }
 
   // Bonus is ALWAYS the 'hard' tier (docs → Difficulty calibration). Prefer an
@@ -243,7 +304,7 @@ function pickDailySet(
   if (!bonus) bonus = pick(avail(() => true))
   if (!bonus) throw new Error('No question available for the bonus slot')
 
-  return { five, bonus: bonus.id }
+  return { five, bonus: bonus.id, slotDebug }
 }
 
 /** YYYY-MM-DD "today" in the given IANA timezone (default Israel). */
@@ -281,6 +342,9 @@ export async function getOrCreateTodaysGame(
   let dailySetId: string
   let fiveIds: string[]
   let bonusId: string
+  // TEMPORARY DIAGNOSTIC — see DailyDebugInfo's own comment. Set in both
+  // branches below, then attached to the returned TodaysGame by buildGame.
+  let debugInfo: DailyDebugInfo
 
   // Only trust an existing set if it has 5 ids that ALL still resolve to real
   // questions. A set built before the bank was seeded (or against since-removed
@@ -309,6 +373,7 @@ export async function getOrCreateTodaysGame(
     dailySetId = existing.id
     fiveIds = existing.question_ids
     bonusId = await ensureBonus(db, dailySetId, child, fiveIds, date)
+    debugInfo = { reused: true, age: child.age, ageBand: deriveAgeBand(child.age), slots: [] }
   } else {
     const { data: bank, error: bankErr } = await db
       .from('questions')
@@ -333,6 +398,12 @@ export async function getOrCreateTodaysGame(
     )
     fiveIds = picked.five
     bonusId = picked.bonus
+    debugInfo = {
+      reused: false,
+      age: child.age,
+      ageBand: deriveAgeBand(child.age),
+      slots: picked.slotDebug,
+    }
 
     const { data: inserted, error: insErr } = await db
       .from('daily_sets')
@@ -364,7 +435,7 @@ export async function getOrCreateTodaysGame(
     }
   }
 
-  return buildGame(db, child, dailySetId, fiveIds, bonusId)
+  return buildGame(db, child, dailySetId, fiveIds, bonusId, debugInfo)
 }
 
 /** True iff every id still resolves to a real question row. */
@@ -415,7 +486,8 @@ async function buildGame(
   child: ChildForDaily,
   dailySetId: string,
   fiveIds: string[],
-  bonusId: string
+  bonusId: string,
+  debugInfo: DailyDebugInfo
 ): Promise<TodaysGame> {
   const { data: subs, error: subsErr } = await db
     .from('submissions')
@@ -474,5 +546,6 @@ async function buildGame(
       ...fiveIds.map((qid) => toGameQuestion(qid, false)),
       toGameQuestion(bonusId, true),
     ],
+    debugInfo,
   }
 }

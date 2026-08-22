@@ -19,6 +19,10 @@ import {
   ArrowLeftCircle,
 } from 'lucide-react'
 import type { Category, SubmissionStatus } from '@/types/database'
+// TEMPORARY DIAGNOSTIC (on-screen banner) — REVERT: remove this import along
+// with the DebugBanner component and its two props on StoryMode, once the
+// "MC not showing up for real requests" investigation is closed.
+import type { DailyDebugInfo } from '@/lib/daily/service'
 
 // Multiple-choice pivot (migration 013). Letter badges for the 3 fixed options
 // — Hebrew alphabet regardless of the child's locale, matching the story-mode
@@ -143,6 +147,9 @@ export interface StoryModeProps {
   questions: GameQuestion[] // 5 regular + 1 bonus
   stats: { totalStars: number; totalMoney: number; streak: number }
   parentMessage: string | null
+  // TEMPORARY DIAGNOSTIC (on-screen banner) — see the import above.
+  debugInfo: DailyDebugInfo
+  commitSha: string
 }
 
 function displayKey(q: GameQuestion): string {
@@ -156,6 +163,8 @@ export function StoryMode({
   questions,
   stats,
   parentMessage,
+  debugInfo,
+  commitSha,
 }: StoryModeProps) {
   const [screen, setScreen] = useState<'intro' | 'game' | 'dashboard'>('intro')
 
@@ -643,6 +652,8 @@ export function StoryMode({
     >
       <style>{KEYFRAMES}</style>
 
+      <DebugBanner debugInfo={debugInfo} commitSha={commitSha} />
+
       {phase === 'result' && reviewIndex === null && (
         <div
           style={{
@@ -1011,6 +1022,53 @@ export function StoryMode({
           )}
         </div>
       </div>
+    </div>
+  )
+}
+
+// TEMPORARY DIAGNOSTIC (on-screen banner) — surfaces exactly what
+// pickForCategory saw at daily-set-generation time, directly on the game
+// screen, so this is screenshot-able without needing Vercel Runtime Logs
+// access. REVERT: delete this whole component and its call site above once
+// the "MC not showing up for real requests" investigation is closed.
+function DebugBanner({ debugInfo, commitSha }: { debugInfo: DailyDebugInfo; commitSha: string }) {
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      dir="ltr"
+      style={{
+        position: 'relative',
+        zIndex: 20,
+        margin: '6px 8px 0',
+        padding: '6px 8px',
+        borderRadius: 10,
+        background: 'rgba(0,0,0,0.85)',
+        border: '1px solid #FF3DBB',
+        fontFamily: 'monospace',
+        fontSize: 9,
+        lineHeight: 1.5,
+        color: '#C6FF3D',
+        wordBreak: 'break-all',
+      }}
+    >
+      <div style={{ color: '#FF3DBB', fontWeight: 700 }}>
+        TEMP DEBUG — commit={commitSha}
+      </div>
+      <div>
+        age={debugInfo.age} age_band={debugInfo.ageBand} reused={String(debugInfo.reused)}
+      </div>
+      {debugInfo.reused ? (
+        <div style={{ color: '#FFB63D' }}>
+          existing daily_set reused verbatim — pickForCategory did NOT run this request
+        </div>
+      ) : (
+        debugInfo.slots.map((s, i) => (
+          <div key={i}>
+            slot{i}: cat={s.category} tier={s.tier} → {s.pickedIsMC ? 'MC' : 'legacy'} | mc=
+            {s.mcCount} legacyTier={s.legacyTierCount} legacyAny={s.legacyAnyCount} branch={s.branch}
+          </div>
+        ))
+      )}
     </div>
   )
 }
