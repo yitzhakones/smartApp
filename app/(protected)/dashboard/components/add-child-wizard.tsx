@@ -425,7 +425,7 @@ export function AddChildWizard({ onBack }: { onBack: () => void }) {
             className="flex-1 py-3 rounded-full font-black flex items-center justify-center gap-1.5 disabled:opacity-50"
             style={{ background: 'linear-gradient(135deg, #C6FF3D, #D6127A)', color: INK }}
           >
-            <Sparkles size={17} /> {pending ? 'יוצר פרופיל…' : 'צור פרופיל והתחל שאלון היכרות להתאמת השאלות'}
+            <Sparkles size={17} /> {pending ? 'יוצר פרופיל…' : 'צור פרופיל'}
           </button>
         )}
       </div>
