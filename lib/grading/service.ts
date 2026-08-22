@@ -17,7 +17,7 @@
 // =============================================================================
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { Database, SubmissionStatus } from '@/types/database'
+import type { Database, Locale, SubmissionStatus } from '@/types/database'
 import { createServiceClient } from '@/lib/supabase/service'
 import { gradeAnswer, type GradeResult } from './claude'
 
@@ -47,52 +47,68 @@ export class AlreadyGradedError extends Error {
   }
 }
 
+/** Already-fetched, already-normalized submission data an MC grade needs —
+ *  the caller (app/api/grade/route.ts) fetches this once, as part of the same
+ *  query it uses for the MC-vs-legacy dispatch decision, instead of this
+ *  function re-fetching it from scratch (see the latency-fix comment at that
+ *  call site). */
+export interface MCSubmissionBundle {
+  id: string
+  status: SubmissionStatus
+  child_id: string
+  question_id: string
+  submitted_at: string | null
+  dailySet: { date: string; question_ids: string[] }
+  question: {
+    option1_he: string | null
+    option2_he: string | null
+    option3_he: string | null
+    option1_en: string | null
+    option2_en: string | null
+    option3_en: string | null
+    correct_index: number | null
+  }
+  child: { locale: Locale; shekel_per_star: number }
+}
+
 /**
  * Multiple-choice pivot (migration 013) — grade a submission whose question has
  * fixed options, fully deterministic: compare the child's chosen index to the
  * question's correct_index server-side. NO Claude call — the whole point of
  * this path is that MC questions never touch the AI grader, unlike gradeSubmission
  * above (which stays exactly as-is for any remaining free-text question).
+ *
+ * Latency: this used to (1) re-fetch the submission from scratch — redundant,
+ * the caller already fetched everything needed to dispatch here — then (2)
+ * write answer_text+status='grading', THEN (3) call apply_grading_result as a
+ * separate awaited step. (2) and (3) were sequential only because both used
+ * to touch `status` (a real write-order dependency); now (2) leaves `status`
+ * alone entirely — apply_grading_result already accepts a submission that's
+ * still 'unanswered' (see migration 006), so there was never an actual need
+ * for an intermediate 'grading' state on a path with no waiting to reflect —
+ * so (2) and (3) now run concurrently via Promise.all, safe because they
+ * write disjoint columns (no lost-update risk). Net: 3 sequential DB round
+ * trips (fetch, write, RPC) down to 1 (write ‖ RPC), on top of whatever the
+ * caller's own now-single dispatch fetch cost.
  */
 export async function gradeMultipleChoiceSubmission(input: {
-  submissionId: string
+  submission: MCSubmissionBundle
   selectedIndex: number
   db?: SupabaseClient<Database>
 }): Promise<GradeSubmissionResult> {
   const db = input.db ?? createServiceClient()
-  const { submissionId, selectedIndex } = input
+  const { submission, selectedIndex } = input
 
   if (!Number.isInteger(selectedIndex) || selectedIndex < 0 || selectedIndex > 2) {
     throw new Error(`selectedIndex must be 0, 1, or 2 — got ${selectedIndex}`)
   }
 
-  const { data: submission, error: subErr } = await db
-    .from('submissions')
-    .select(
-      `id, status, child_id, question_id, submitted_at,
-       daily_sets!inner ( date, question_ids ),
-       questions!inner ( option1_he, option2_he, option3_he, option1_en, option2_en, option3_en, correct_index ),
-       children!inner ( locale, shekel_per_star )`
-    )
-    .eq('id', submissionId)
-    .single()
-
-  if (subErr) throw subErr
-
   // Locked once graded — one attempt per question per day, no retry.
   if (submission.status === 'correct' || submission.status === 'incorrect') {
-    throw new AlreadyGradedError(submission.status, submissionId)
+    throw new AlreadyGradedError(submission.status, submission.id)
   }
 
-  const question = Array.isArray(submission.questions)
-    ? submission.questions[0]
-    : submission.questions
-  const child = Array.isArray(submission.children)
-    ? submission.children[0]
-    : submission.children
-  const dailySet = Array.isArray(submission.daily_sets)
-    ? submission.daily_sets[0]
-    : submission.daily_sets
+  const { question, child, dailySet } = submission
 
   if (question.correct_index === null) {
     // Defensive: this endpoint was called for a legacy free-text question.
@@ -115,26 +131,29 @@ export async function gradeMultipleChoiceSubmission(input: {
 
   // Store the chosen option's own text as answer_text — same column, same
   // read-only-review UI as the free-text path (ReadOnlyResult's "התשובה שלך").
-  await db
-    .from('submissions')
-    .update({
-      answer_text: selectedText,
-      submitted_at: submission.submitted_at ?? new Date().toISOString(),
-      status: 'grading',
-    })
-    .eq('id', submissionId)
-
-  // No AI feedback for a deterministic MC grade — the immediate correct/incorrect
-  // + reward is the whole signal; there's no ambiguous answer to explain.
-  const { data: milestone, error: rpcErr } = await db.rpc('apply_grading_result', {
-    p_submission_id: submissionId,
-    p_child_id: submission.child_id,
-    p_status: status,
-    p_feedback: '',
-    p_amount_nis: awardNis,
-    p_play_date: dailySet.date,
-    p_graded_by: 'mc_deterministic',
-  })
+  // Deliberately does NOT touch `status` (see the latency comment above) —
+  // apply_grading_result below transitions it straight from 'unanswered'.
+  const [, { data: milestone, error: rpcErr }] = await Promise.all([
+    db
+      .from('submissions')
+      .update({
+        answer_text: selectedText,
+        submitted_at: submission.submitted_at ?? new Date().toISOString(),
+      })
+      .eq('id', submission.id),
+    // No AI feedback for a deterministic MC grade — the immediate
+    // correct/incorrect + reward is the whole signal; there's no ambiguous
+    // answer to explain.
+    db.rpc('apply_grading_result', {
+      p_submission_id: submission.id,
+      p_child_id: submission.child_id,
+      p_status: status,
+      p_feedback: '',
+      p_amount_nis: awardNis,
+      p_play_date: dailySet.date,
+      p_graded_by: 'mc_deterministic',
+    }),
+  ])
   if (rpcErr) throw rpcErr
   const milestoneReached = status === 'correct' ? (milestone ?? false) : false
 
