@@ -6,9 +6,7 @@ export const metadata: Metadata = {
   title: 'מדיניות פרטיות — Tzuffix',
 }
 
-// Content sourced verbatim from docs/terms-and-privacy-draft.md — still a
-// DRAFT pending legal review before this goes fully live (see that doc's
-// warning note, deliberately not rendered here).
+// Content lives in app/legal/content.ts (PRIVACY_HE / PRIVACY_EN).
 export default function PrivacyPage() {
   return <LegalPage heDoc={PRIVACY_HE} enDoc={PRIVACY_EN} backHref="/signup" />
 }

@@ -1,14 +1,13 @@
-// Copy for /terms and /privacy — sourced verbatim from
-// docs/terms-and-privacy-draft.md (the canonical draft). Wording is not
-// altered here, only structured into renderable blocks (LegalDocument in
-// legal-document.tsx turns `**bold**` spans into <strong> and `list` blocks
-// into <ul>/<li>). This is still a DRAFT pending legal review — see the
-// warning note at the top of the source doc (deliberately not rendered on
-// the public pages themselves, per the request that added this file).
+// Copy for /terms and /privacy — sourced verbatim from the canonical legal
+// content supplied by the account owner. Wording is not altered here, only
+// structured into renderable blocks (LegalPage in legal-page.tsx turns
+// `**bold**` spans into <strong> and `list` blocks into <ul>/<li>).
 //
-// [bracketed placeholders] (publish date, contact email, retention period)
-// are left exactly as-is in the rendered text until they're filled in ahead
-// of going fully live.
+// No placeholders remain: publish date, contact email, and retention terms
+// are all real values. The internal draft-warning note that used to head the
+// source document has been removed at the author's instruction — it was never
+// rendered on the public pages (it lived only in the source doc and in code
+// comments here), and no longer exists in either place.
 
 export type Locale = 'he' | 'en'
 
@@ -35,7 +34,7 @@ function list(items: string[]): LegalBlock {
 
 export const TERMS_HE: LegalDoc = {
   title: 'תנאי שימוש - Tzuffix',
-  lastUpdatedLabel: 'עדכון אחרון: [להשלים תאריך בעת פרסום]',
+  lastUpdatedLabel: 'עדכון אחרון: 21 באוגוסט 2026',
   sections: [
     {
       heading: '1. כללי',
@@ -49,8 +48,8 @@ export const TERMS_HE: LegalDoc = {
       heading: '2. תיאור השירות',
       blocks: [
         p('2.1 השירות מאפשר להורה להגדיר קטגוריות לימוד, לצפות בהתקדמות הילד/ה, ולהעניק תגמול (כספי ו/או לא-כספי) על פי שיקול דעתו הבלעדי.'),
-        p('2.2 שאלות נבחרות אוטומטית מדי יום מתוך מאגר שאלות, ומותאמות לרמת הקושי של הילד/ה על בסיס שאלון היכרות ראשוני והתקדמות שוטפת.'),
-        p('2.3 תשובות הילד/ה נבדקות באופן אוטומטי באמצעות מערכת בינה מלאכותית (Claude API של חברת Anthropic). ראו פירוט בסעיף 3 למדיניות הפרטיות.'),
+        p('2.2 שאלות נבחרות אוטומטית מדי יום מתוך מאגר שאלות, ומותאמות לשכבת הגיל של הילד/ה כפי שהוגדרה על ידי ההורה בעת יצירת הפרופיל.'),
+        p('2.3 תשובות הילד/ה נבדקות באופן אוטומטי. שאלות רב-ברירה (הפורמט הנוכחי של השירות) נבדקות באופן מקומי בשרתי השירות בלבד — התשובה אינה נשלחת לצד שלישי כלשהו. ראו פירוט בסעיף 3 למדיניות הפרטיות.'),
         p('2.4 **התגמול הכספי/החומרי הוא באחריות ההורה בלבד.** האפליקציה אינה מעבירה כסף בפועל, אינה מהווה שירות תשלומים, ואינה צד לכל הסכם כספי בין ההורה לילד/ה - היא רק עוקבת ומציגה נתונים.'),
         p('2.5 מנגנון התגמול הוא **דטרמיניסטי בלבד** - תשובה נכונה מזכה תמיד באותו תגמול קבוע מראש שההורה הגדיר. אין באפליקציה שום מנגנון מבוסס מזל, הגרלה, או אקראיות.'),
       ],
@@ -92,14 +91,14 @@ export const TERMS_HE: LegalDoc = {
     },
     {
       heading: '9. יצירת קשר',
-      blocks: [p('[Printhood.il@gmail.com / כתובת ליצירת קשר להשלמה]')],
+      blocks: [p('Printhood.il@gmail.com')],
     },
   ],
 }
 
 export const PRIVACY_HE: LegalDoc = {
   title: 'מדיניות פרטיות - Tzuffix',
-  lastUpdatedLabel: 'עדכון אחרון: [להשלים תאריך בעת פרסום]',
+  lastUpdatedLabel: 'עדכון אחרון: 21 באוגוסט 2026',
   sections: [
     {
       heading: '1. כללי',
@@ -129,7 +128,7 @@ export const PRIVACY_HE: LegalDoc = {
       heading: '3. כיצד אנו משתמשים במידע',
       blocks: [
         p(
-          '3.1 בדיקת תשובות: תשובת הילד/ה **נשלחת לשירות הבינה המלאכותית Claude API (של חברת Anthropic)** לצורך בדיקה אוטומטית מול התשובה הנכונה. Anthropic מעבדת מידע זה כ"מעבד משנה" (sub-processor) בהתאם למדיניות הפרטיות שלה, ואינה משתמשת בו לאימון מודלים כלליים במסגרת שירות זה.'
+          '3.1 בדיקת תשובות: בפורמט הנוכחי (שאלות רב-ברירה), תשובת הילד/ה נבדקת **באופן מקומי בשרתי השירות בלבד** — השוואה פשוטה מול התשובה הנכונה השמורה במאגר. **התשובה אינה נשלחת לשום צד שלישי, ואינה עוברת עיבוד על ידי מערכת בינה מלאכותית כלשהי.**'
         ),
         p('3.2 מעקב התקדמות: הצגת נתונים להורה בלבד (דשבורד).'),
         p(
@@ -142,7 +141,7 @@ export const PRIVACY_HE: LegalDoc = {
       blocks: [
         p('4.1 אנו **לא מוכרים** מידע לצדדים שלישיים ולא משתמשים בו לפרסום ממוקד.'),
         p(
-          '4.2 ספקי תשתית: Supabase (אחסון מסד נתונים), Vercel (אחסון/הרצת האפליקציה), Anthropic (בדיקת תשובות) - כולם פועלים כמעבדי משנה תחת התחייבויות חוזיות להגנת מידע.'
+          '4.2 ספקי תשתית: Supabase (אחסון מסד נתונים) ו-Vercel (אחסון/הרצת האפליקציה) - שניהם פועלים כמעבדי משנה תחת התחייבויות חוזיות להגנת מידע. בפורמט הנוכחי, בדיקת התשובות מתבצעת בשרתי השירות בלבד ואינה כרוכה בהעברת מידע לספק חיצוני נוסף.'
         ),
       ],
     },
@@ -167,7 +166,11 @@ export const PRIVACY_HE: LegalDoc = {
     },
     {
       heading: '7. שמירת מידע',
-      blocks: [p('המידע נשמר כל עוד החשבון פעיל. עם מחיקת חשבון/פרופיל ילד/ה, המידע נמחק לצמיתות תוך [להשלים - למשל 30 יום].')],
+      blocks: [
+        p(
+          'המידע נשמר כל עוד החשבון פעיל. עם מחיקת חשבון או פרופיל ילד/ה, המידע נמחק לצמיתות באופן מיידי מהמערכת הפעילה. ייתכן שעותקים יישארו בגיבויים תפעוליים לתקופה קצרה נוספת עד למחזור הגיבויים הרגיל, ואינם נגישים לשימוש שוטף.'
+        ),
+      ],
     },
     {
       heading: '8. קטינים',
@@ -183,14 +186,14 @@ export const PRIVACY_HE: LegalDoc = {
     },
     {
       heading: '10. יצירת קשר בנושאי פרטיות',
-      blocks: [p('[Printhood.il@gmail.com / כתובת ליצירת קשר להשלמה]')],
+      blocks: [p('Printhood.il@gmail.com')],
     },
   ],
 }
 
 export const TERMS_EN: LegalDoc = {
   title: 'Terms of Service - Tzuffix',
-  lastUpdatedLabel: 'Last updated: [fill in at publish time]',
+  lastUpdatedLabel: 'Last updated: August 21, 2026',
   sections: [
     {
       heading: '1. General',
@@ -204,7 +207,7 @@ export const TERMS_EN: LegalDoc = {
       heading: '2. Description of Service',
       blocks: [
         p(
-          'The Service lets a parent set learning categories, view their child\'s progress, and grant rewards (monetary and/or non-monetary) at their sole discretion. Questions are automatically selected daily and matched to the child\'s difficulty level based on an initial placement quiz and ongoing performance. Answers are automatically graded using an AI system (Anthropic\'s Claude API) - see Privacy Policy Section 3. **Monetary/material rewards are the parent\'s sole responsibility** - the App does not transfer real money, is not a payment service, and is not a party to any financial arrangement between parent and child; it only tracks and displays data. The reward mechanism is **strictly deterministic** - a correct answer always earns the same pre-set reward the parent configured. There is no chance-based, lottery, or random mechanism anywhere in the App.'
+          "The Service lets a parent set learning categories, view their child's progress, and grant rewards (monetary and/or non-monetary) at their sole discretion. Questions are automatically selected daily and matched to the child's age group, as set by the parent when creating the profile. Answers are graded automatically - see Privacy Policy Section 3. **Monetary/material rewards are the parent's sole responsibility** - the App does not transfer real money, is not a payment service, and is not a party to any financial arrangement between parent and child; it only tracks and displays data. The reward mechanism is **strictly deterministic** - a correct answer always earns the same pre-set reward the parent configured. There is no chance-based, lottery, or random mechanism anywhere in the App."
         ),
       ],
     },
@@ -250,14 +253,14 @@ export const TERMS_EN: LegalDoc = {
     },
     {
       heading: '9. Contact',
-      blocks: [p('[Printhood.il@gmail.com / contact address to complete]')],
+      blocks: [p('Printhood.il@gmail.com')],
     },
   ],
 }
 
 export const PRIVACY_EN: LegalDoc = {
   title: 'Privacy Policy - Tzuffix',
-  lastUpdatedLabel: 'Last updated: [fill in at publish time]',
+  lastUpdatedLabel: 'Last updated: August 21, 2026',
   sections: [
     {
       heading: '1. General',
@@ -274,7 +277,7 @@ export const PRIVACY_EN: LegalDoc = {
           '**About the parent:** email address, password (encrypted), WhatsApp number (optional, for future notifications), preferred interface language.'
         ),
         p(
-          "**About the child (entered by the parent only, never by the child):** first name/nickname, gender (used solely for Hebrew grammatical phrasing), general age group (used solely for anonymous benchmarking, never for content), game language, answers and per-topic performance."
+          '**About the child (entered by the parent only, never by the child):** first name/nickname, gender (used solely for Hebrew grammatical phrasing), general age group (used solely for anonymous benchmarking, never for content), game language, answers and per-topic performance.'
         ),
         p(
           '**We do not collect:** government ID, precise home address, photos, voice/video recordings, or any other identifying information not required for the Service.'
@@ -285,7 +288,7 @@ export const PRIVACY_EN: LegalDoc = {
       heading: '3. How We Use Information',
       blocks: [
         p(
-          "Answer grading: a child's answer **is sent to the Claude API AI service (by Anthropic)** for automated grading against the correct answer. Anthropic processes this data as a sub-processor per its own privacy policy and does not use it to train general models as part of this service. Progress tracking is shown to the parent only (dashboard). Anonymous benchmarking (optional, off by default): if enabled by the parent, only an **aggregated, anonymous percentile** is shown (e.g. \"in the 75th percentile among children their age\") - **never** raw or identifying data of children from other families, and never shown to the child directly."
+          'Answer grading: in the current format (multiple-choice questions), a child\'s answer is graded **locally on the Service\'s own servers only** - a simple comparison against the correct answer stored in our question bank. **The answer is not sent to any third party, and is not processed by any AI system.** Progress tracking is shown to the parent only (dashboard). Anonymous benchmarking (optional, off by default): if enabled by the parent, only an **aggregated, anonymous percentile** is shown (e.g. "in the 75th percentile among children their age") - **never** raw or identifying data of children from other families, and never shown to the child directly.'
         ),
       ],
     },
@@ -293,7 +296,7 @@ export const PRIVACY_EN: LegalDoc = {
       heading: '4. Sharing Information with Third Parties',
       blocks: [
         p(
-          'We do **not sell** data to third parties and do not use it for targeted advertising. Infrastructure providers: Supabase (database hosting), Vercel (app hosting), Anthropic (answer grading) - all operate as sub-processors under contractual data-protection obligations.'
+          "We do **not sell** data to third parties and do not use it for targeted advertising. Infrastructure providers: Supabase (database hosting) and Vercel (app hosting) - both operate as sub-processors under contractual data-protection obligations. In the current format, answer grading happens on the Service's own servers and does not involve transferring data to any additional external provider."
         ),
       ],
     },
@@ -317,7 +320,7 @@ export const PRIVACY_EN: LegalDoc = {
       heading: '7. Data Retention',
       blocks: [
         p(
-          'Data is retained as long as the account is active. Upon deletion of an account/child profile, data is permanently deleted within [to complete - e.g. 30 days].'
+          'Data is retained as long as the account is active. Upon deletion of an account or child profile, data is permanently deleted from the live system immediately. Copies may persist briefly in operational backups until the normal backup rotation completes, and are not accessible for ongoing use.'
         ),
       ],
     },
@@ -335,7 +338,7 @@ export const PRIVACY_EN: LegalDoc = {
     },
     {
       heading: '10. Privacy Contact',
-      blocks: [p('[Printhood.il@gmail.com / contact address to complete]')],
+      blocks: [p('Printhood.il@gmail.com')],
     },
   ],
 }

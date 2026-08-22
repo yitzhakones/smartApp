@@ -6,9 +6,7 @@ export const metadata: Metadata = {
   title: 'תנאי שימוש — Tzuffix',
 }
 
-// Content sourced verbatim from docs/terms-and-privacy-draft.md — still a
-// DRAFT pending legal review before this goes fully live (see that doc's
-// warning note, deliberately not rendered here).
+// Content lives in app/legal/content.ts (TERMS_HE / TERMS_EN).
 export default function TermsPage() {
   return <LegalPage heDoc={TERMS_HE} enDoc={TERMS_EN} backHref="/signup" />
 }

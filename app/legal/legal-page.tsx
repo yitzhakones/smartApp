@@ -9,8 +9,8 @@ import { INK, PAPER, CARD, BORDER, SOFT, FUCHSIA, RUBIK, ASSISTANT } from './the
 // Shared renderer for /terms and /privacy — same visual system as the
 // landing page and auth screens (PAPER background, white rounded-2xl card,
 // Rubik headings, the rotated-square Tzuffix mark) plus the landing page's
-// own he/en locale toggle. Content comes from ./content.ts, sourced verbatim
-// from docs/terms-and-privacy-draft.md; this file only lays it out.
+// own he/en locale toggle. Content comes from ./content.ts; this file only
+// lays it out.
 
 // Turns `**bold**` spans into <strong>; everything else renders as plain text.
 function renderInline(text: string): ReactNode[] {
